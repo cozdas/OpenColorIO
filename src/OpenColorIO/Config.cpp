@@ -151,6 +151,7 @@ const char* LookupRole(const StringMap & roles, const std::string & rolename)
     return iter->second.c_str();
 }
 
+#if OCIO_LUT_SUPPORT
 void GetFileReferences(std::set<std::string> & files, const ConstTransformRcPtr & transform)
 {
     if(!transform) return;
@@ -169,6 +170,7 @@ void GetFileReferences(std::set<std::string> & files, const ConstTransformRcPtr 
         files.insert(fileTransform->getSrc());
     }
 }
+#endif OCIO_LUT_SUPPORT
 
 // Return the list of all color spaces referenced by the transform (including all sub-transforms in
 // a group). All legal context variables are expanded, so if any are remaining, the caller may want
@@ -948,6 +950,7 @@ public:
         return processor;
     }
  
+#if OCIO_LUT_SUPPORT
     int instantiateDisplay(const std::string & monitorName,
                            const std::string & monitorDescription,
                            const std::string & ICCProfileFilepath)
@@ -1103,6 +1106,7 @@ public:
         // That should never happen.
         return -1;
     }
+#endif //OCIO_LUT_SUPPORT
 };
 
 
@@ -1179,6 +1183,7 @@ ConstConfigRcPtr Config::CreateFromFile(const char * filename)
         throw Exception (os.str().c_str());
     }
 
+#if OCIO_ARCHIVE_SUPPORT
     char magicNumber[2] = { 0 };
     if (ifstream.read(magicNumber, 2))
     {
@@ -1198,7 +1203,7 @@ ConstConfigRcPtr Config::CreateFromFile(const char * filename)
             return CreateFromConfigIOProxy(ciop);
         }
     } 
-
+#endif //OCIO_ARCHIVE_SUPPORT
     // Not an OCIOZ archive. Continue as usual.
     ifstream.clear();
     ifstream.seekg(0);
@@ -1953,6 +1958,7 @@ void Config::validate() const
         throw Exception(getImpl()->m_validationtext.c_str());
     }
 
+#if OCIO_LUT_SUPPORT
     ///// Resolve all file Transforms using context variables.
 
     {
@@ -2044,6 +2050,7 @@ void Config::validate() const
             }
         }
     }
+#endif //OCIO_LUT_SUPPORT
 
     ///// NamedTransforms
 
@@ -3901,6 +3908,7 @@ void Config::clearVirtualDisplay() noexcept
     getImpl()->resetCacheIDs();
 }
 
+#if OCIO_LUT_SUPPORT
 int Config::instantiateDisplayFromMonitorName(const char * monitorName)
 {
     if (!monitorName || !*monitorName)
@@ -3929,6 +3937,7 @@ int Config::instantiateDisplayFromICCProfile(const char * ICCProfileFilepath)
 
     return getImpl()->instantiateDisplay("", monitorDescription, ICCProfileFilepath);
 }
+#endif //OCIO_LUT_SUPPORT
 
 void Config::setActiveDisplays(const char * displays)
 {
@@ -4886,6 +4895,9 @@ const char * Config::getCacheID(const ConstContextRcPtr & context) const
 
     // Also include all file references, using the context (if specified)
     std::string fileReferencesFastHash;
+
+#if OCIO_LUT_SUPPORT
+
     if(context)
     {
         std::ostringstream filehash;
@@ -4920,6 +4932,7 @@ const char * Config::getCacheID(const ConstContextRcPtr & context) const
         const std::string fullstr = filehash.str();
         fileReferencesFastHash = CacheIDHash(fullstr.c_str(), fullstr.size());
     }
+#endif //OCIO_LUT_SUPPORT
 
     getImpl()->m_cacheids[contextcacheid] = getImpl()->m_cacheidnocontext + ":" + fileReferencesFastHash;
     return getImpl()->m_cacheids[contextcacheid].c_str();
@@ -5242,6 +5255,7 @@ void Config::Impl::checkVersionConsistency(ConstTransformRcPtr & transform) cons
                 throw Exception(os.str().c_str());
             }
         }
+#if OCIO_LUT_SUPPORT
         else if (ConstCDLTransformRcPtr cdl = DynamicPtrCast<const CDLTransform>(transform))
         {
             if (m_majorVersion < 2 && cdl->getStyle() != CDL_TRANSFORM_DEFAULT)
@@ -5250,6 +5264,7 @@ void Config::Impl::checkVersionConsistency(ConstTransformRcPtr & transform) cons
                                 "CDLTransform.");
             }
         }
+#endif //OCIO_LUT_SUPPORT
         else if (DynamicPtrCast<const DisplayViewTransform>(transform))
         {
             if (m_majorVersion < 2)
@@ -5282,6 +5297,7 @@ void Config::Impl::checkVersionConsistency(ConstTransformRcPtr & transform) cons
                                 "ExposureContrastTransform.");
             }
         }
+#if OCIO_LUT_SUPPORT
         else if (ConstFileTransformRcPtr ft = DynamicPtrCast<const FileTransform>(transform))
         {
             if (m_majorVersion < 2)
@@ -5298,6 +5314,8 @@ void Config::Impl::checkVersionConsistency(ConstTransformRcPtr & transform) cons
                 }
             }
         }
+#endif //OCIO_LUT_SUPPORT
+
         else if (ConstFixedFunctionTransformRcPtr ff = DynamicPtrCast<const FixedFunctionTransform>(transform))
         {
             if (m_majorVersion < 2)
@@ -5482,7 +5500,7 @@ ConfigIOProxyRcPtr Config::getConfigIOProxy() const
 {
     return getImpl()->m_context->getConfigIOProxy();
 }
-
+#if OCIO_ARCHIVE_SUPPORT
 bool Config::isArchivable() const
 {
     ConstContextRcPtr context = getCurrentContext();
@@ -5563,5 +5581,5 @@ void Config::archive(std::ostream & ostream) const
     // Using utility functions in OCIOZArchive.cpp.
     archiveConfig(ostream, *this, getCurrentContext()->getWorkingDir());
 }
-
+#endif //OCIO_ARCHIVE_SUPPORT
 } // namespace OCIO_NAMESPACE
