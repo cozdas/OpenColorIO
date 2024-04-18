@@ -141,6 +141,7 @@ protected:
     Transform() = default;
 };
 
+// TODO: this operator can just call virtual print function, which will simplify things a lot. /coz 2024-04-16
 extern OCIOEXPORT std::ostream& operator<< (std::ostream&, const Transform&);
 
 
@@ -226,7 +227,7 @@ private:
 //
 extern OCIOEXPORT std::ostream & operator<<(std::ostream &, const BuiltinTransform &) noexcept;
 
-
+#if OCIO_LUT_SUPPORT
 /**
  * \brief 
  *     An implementation of the ASC Color Decision List (CDL), based on the ASC v1.2
@@ -328,6 +329,7 @@ protected:
 };
 
 extern OCIOEXPORT std::ostream & operator<<(std::ostream &, const CDLTransform &);
+#endif //OCIO_LUT_SUPPORT
 
 
 class OCIOEXPORT ColorSpaceTransform : public Transform
@@ -1022,7 +1024,7 @@ private:
 extern OCIOEXPORT std::ostream & operator<<(std::ostream &,
                                             const ExposureContrastTransform &);
 
-
+#if OCIO_LUT_SUPPORT
 class OCIOEXPORT FileTransform : public Transform
 {
 public:
@@ -1095,6 +1097,7 @@ private:
 };
 
 extern OCIOEXPORT std::ostream & operator<<(std::ostream &, const FileTransform &);
+#endif //OCIO_LUT_SUPPORT
 
 
 /**
@@ -1608,7 +1611,7 @@ private:
 
 extern OCIOEXPORT std::ostream & operator<<(std::ostream &, const LookTransform &);
 
-
+#if OCIO_LUT_SUPPORT
 /// Represents a 1D-LUT transform.
 class OCIOEXPORT Lut1DTransform : public Transform
 {
@@ -1785,6 +1788,8 @@ protected:
 };
 
 extern OCIOEXPORT std::ostream& operator<< (std::ostream&, const Lut3DTransform&);
+#endif //OCIO_LUT_SUPPORT
+
 
 /**
  * Represents an MX+B Matrix transform.

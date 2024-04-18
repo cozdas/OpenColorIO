@@ -7,6 +7,10 @@
 
 #include "OpenColorABI.h"
 
+#define OCIO_LUT_SUPPORT 0
+#define OCIO_ARCHIVE_SUPPORT 0
+
+
 #ifndef OCIO_NAMESPACE
 #error This header cannot be used directly. Use <OpenColorIO/OpenColorIO.h> instead.
 #endif
@@ -179,9 +183,11 @@ class OCIOEXPORT ExposureContrastTransform;
 typedef OCIO_SHARED_PTR<const ExposureContrastTransform> ConstExposureContrastTransformRcPtr;
 typedef OCIO_SHARED_PTR<ExposureContrastTransform> ExposureContrastTransformRcPtr;
 
+#if OCIO_LUT_SUPPORT
 class OCIOEXPORT FileTransform;
 typedef OCIO_SHARED_PTR<const FileTransform> ConstFileTransformRcPtr;
 typedef OCIO_SHARED_PTR<FileTransform> FileTransformRcPtr;
+#endif //OCIO_LUT_SUPPORT
 
 class OCIOEXPORT FixedFunctionTransform;
 typedef OCIO_SHARED_PTR<const FixedFunctionTransform> ConstFixedFunctionTransformRcPtr;
@@ -219,6 +225,7 @@ class OCIOEXPORT LogTransform;
 typedef OCIO_SHARED_PTR<const LogTransform> ConstLogTransformRcPtr;
 typedef OCIO_SHARED_PTR<LogTransform> LogTransformRcPtr;
 
+#if OCIO_LUT_SUPPORT
 class OCIOEXPORT Lut1DTransform;
 typedef OCIO_SHARED_PTR<const Lut1DTransform> ConstLut1DTransformRcPtr;
 typedef OCIO_SHARED_PTR<Lut1DTransform> Lut1DTransformRcPtr;
@@ -226,6 +233,7 @@ typedef OCIO_SHARED_PTR<Lut1DTransform> Lut1DTransformRcPtr;
 class OCIOEXPORT Lut3DTransform;
 typedef OCIO_SHARED_PTR<const Lut3DTransform> ConstLut3DTransformRcPtr;
 typedef OCIO_SHARED_PTR<Lut3DTransform> Lut3DTransformRcPtr;
+#endif //OCIO_LUT_SUPPORT
 
 class OCIOEXPORT MatrixTransform;
 typedef OCIO_SHARED_PTR<const MatrixTransform> ConstMatrixTransformRcPtr;
