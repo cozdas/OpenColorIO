@@ -151,6 +151,7 @@ option(OCIO_BUILD_PYTHON "Specify whether to build python bindings" ON)
 
 option(OCIO_LUT_SUPPORT "Specify wheter to build with LUT and file-transform support. Requies Expat dependency" ON)
 option(OCIO_ARCHIVE_SUPPORT "Specify whether to build with OCIOZ archive support. Requires ZLIB dependency " ON)
+option(OCIO_USE_HALF_LOOKUP_TABLE "Determines if the imath library should 64k LUT for half conversions." ON)
 
 set (OCIO_PYTHON_VERSION "" CACHE STRING
      "Preferred Python version (if any) in case multiple are available")
