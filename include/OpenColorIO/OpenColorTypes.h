@@ -7,10 +7,6 @@
 
 #include "OpenColorABI.h"
 
-#define OCIO_LUT_SUPPORT 0
-#define OCIO_ARCHIVE_SUPPORT 0
-
-
 #ifndef OCIO_NAMESPACE
 #error This header cannot be used directly. Use <OpenColorIO/OpenColorIO.h> instead.
 #endif
