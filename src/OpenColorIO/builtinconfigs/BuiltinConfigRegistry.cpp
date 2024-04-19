@@ -86,7 +86,9 @@ void BuiltinConfigRegistryImpl::init() noexcept
         m_builtinConfigs.clear();
         
         CGCONFIG::Register(*this);
+#if OCIO_HAS_STUDIO_CONFIG
         STUDIOCONFIG::Register(*this);
+#endif //OCIO_HAS_STUDIO_CONFIG
     }
 }
 

@@ -5550,6 +5550,7 @@ bool Config::isArchivable() const
         }
     }
 
+#if OCIO_LUT_SUPPORT
     /////////////////////////////////
     // FileTransform verification. //
     /////////////////////////////////
@@ -5572,6 +5573,7 @@ bool Config::isArchivable() const
             return false;
         }
     }
+#endif //OCIO_LUT_SUPPORT
 
     return true;
 }
