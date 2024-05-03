@@ -86,7 +86,7 @@ const char * SystemMonitorsImpl::getMonitorName(size_t index) const
         std::ostringstream oss;
         oss << "Invalid index for the monitor name " << index
             << " where the number of monitors is " << m_monitors.size() << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     return m_monitors[index].m_monitorName.c_str();
@@ -99,7 +99,7 @@ const char * SystemMonitorsImpl::getProfileFilepath(size_t index) const
         std::ostringstream oss;
         oss << "Invalid index for the monitor name " << index
             << " where the number of monitors is " << m_monitors.size() << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     return m_monitors[index].m_ICCFilepath.c_str();
@@ -117,7 +117,7 @@ std::string SystemMonitorsImpl::GetICCProfileFromMonitorName(const char * monito
 
     std::ostringstream oss;
     oss << "The monitor name '" << monitorName << "' does not exist.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 } // namespace OCIO_NAMESPACE

@@ -247,7 +247,7 @@ OCIO_ADD_TEST(MathUtils, mxb_invert)
 #define KEEP_DENORMS      false
 #define COMPRESS_DENORMS  true
 
-#define TEST_CHECK_MESSAGE(a, msg) if(!(a)) throw OCIO::Exception(msg.c_str())
+#define TEST_CHECK_MESSAGE(a, msg) if(!(a)) throw OCIO::Exception(msg)
 
 
 namespace

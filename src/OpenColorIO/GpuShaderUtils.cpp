@@ -306,10 +306,10 @@ void GpuShaderText::dedent()
     m_indent--;
 }
 
-GpuShaderText::GpuShaderLine GpuShaderText::newLine()
-{
-    return GpuShaderText::GpuShaderLine(this);
-}
+// GpuShaderText::GpuShaderLine GpuShaderText::newLine()
+// {
+//     return GpuShaderText::GpuShaderLine(this);
+// }
 
 std::string GpuShaderText::string() const
 {
@@ -318,6 +318,7 @@ std::string GpuShaderText::string() const
 
 void GpuShaderText::flushLine()
 {
+    /*
     static constexpr unsigned tabSize = 2;
 
     m_ossText << std::string(tabSize * m_indent, ' ')
@@ -326,6 +327,7 @@ void GpuShaderText::flushLine()
 
     m_ossLine.str("");
     m_ossLine.clear();
+    */
 }
 
 std::string GpuShaderText::constKeyword() const
@@ -502,7 +504,7 @@ void GpuShaderText::declareFloatArrayConst(const std::string & name, int size, c
         throw Exception("GPU variable name is empty.");
     }
 
-    auto nl = newLine();
+    auto& nl = newLine();
 
     switch (m_lang)
     {
@@ -556,7 +558,7 @@ void GpuShaderText::declareIntArrayConst(const std::string & name, int size, con
         throw Exception("GPU variable name is empty.");
     }
 
-    auto nl = newLine();
+    auto& nl = newLine();
 
     switch (m_lang)
     {

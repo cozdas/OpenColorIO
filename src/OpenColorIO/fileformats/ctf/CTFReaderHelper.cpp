@@ -607,7 +607,7 @@ void GetNextIndexPair(const char *s, size_t len, size_t& pos, float& num1, float
             std::ostringstream oss;
             oss << "GetNextIndexPair: First number of a pair is the end of the string '"
                 << TruncateString(s, len) << "'.";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
 
         // Extract a number at pos.
@@ -763,7 +763,7 @@ void validateInfoElementVersion(const char * versionAttr,
             std::ostringstream oss;
             oss << "CTF reader. Invalid Info element version attribute: ";
             oss << versionValue << " .";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
 
         // Always compare with 'ints' so we do not include minor versions
@@ -775,7 +775,7 @@ void validateInfoElementVersion(const char * versionAttr,
             std::ostringstream oss;
             oss << "CTF reader. Unsupported Info element version attribute: ";
             oss << versionValue << " .";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
 }
@@ -2671,7 +2671,7 @@ RGBCurveType GetRGBCurveType(const std::string & name)
     }
     std::ostringstream err;
     err << "Invalid curve name '" << name << "'.";
-    throw Exception(err.str().c_str());
+    throw Exception(err);
 }
 }
 
@@ -4426,7 +4426,7 @@ void CTFReaderMatrixElt::endArray(unsigned int position)
         arg << "Expected " << array.getLength() << "x" << array.getLength();
         arg << " Array values, found " << position;
 
-        throw Exception(arg.str().c_str());
+        throw Exception(arg);
     }
 
     // Array parsing is done.
@@ -4478,7 +4478,7 @@ void CTFReaderMatrixElt::convert_1_2_to_Latest()
             arg << "MatrixElt: Expecting array dimension to be 3 or 4. Got: ";
             arg << array.getLength() << ".";
 
-            throw Exception(arg.str().c_str());
+            throw Exception(arg);
         }
     }
 }

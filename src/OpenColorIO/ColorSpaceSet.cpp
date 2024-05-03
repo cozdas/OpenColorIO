@@ -137,7 +137,7 @@ public:
                 std::ostringstream os;
                 os << "Cannot add '" << csName << "' color space, existing color space, '";
                 os << m_colorSpaces[entryIdx]->getName() << "' is using this name as an alias.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
             // There is a color space with the same name that will be replaced (if new color space
             // can be used).
@@ -157,7 +157,7 @@ public:
                 os << "Cannot add '" << csName << "' color space, it has '" << alias;
                 os << "' alias and existing color space, '";
                 os << m_colorSpaces[entryIdx]->getName() << "' is using the same alias.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
         }
         if (replaceIdx != (size_t)-1)

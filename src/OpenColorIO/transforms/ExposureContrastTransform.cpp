@@ -47,7 +47,7 @@ void ExposureContrastTransformImpl::validate() const
     {
         std::string errMsg("ExposureContrastTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

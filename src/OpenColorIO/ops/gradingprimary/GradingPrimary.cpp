@@ -75,7 +75,7 @@ void GradingPrimary::validate(GradingStyle style) const
         std::ostringstream oss;
         oss << "GradingPrimary gamma '" << m_gamma << "' are below lower bound ("
             << GradingPrimaryLowerBound << ").";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     if (style == GRADING_LIN &&
@@ -87,7 +87,7 @@ void GradingPrimary::validate(GradingStyle style) const
         std::ostringstream oss;
         oss << "GradingPrimary contrast '" << m_contrast << "' are below lower bound ("
             << GradingPrimaryLowerBound << ").";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     if ((m_pivotWhite - m_pivotBlack) < GradingPrimaryMin)

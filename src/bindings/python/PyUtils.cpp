@@ -79,7 +79,7 @@ py::dtype bitDepthToDtype(BitDepth bitDepth)
         default:
             err = "Error: Unsupported bit-depth: ";
             err += BitDepthToString(bitDepth);
-            throw Exception(err.c_str());
+            throw Exception(err);
     }
 
     return py::dtype(name);
@@ -106,7 +106,7 @@ py::ssize_t bitDepthToBytes(BitDepth bitDepth)
         default:
             err = "Error: Unsupported bit-depth: ";
             err += BitDepthToString(bitDepth);
-            throw Exception(err.c_str());
+            throw Exception(err);
     }
 }
 

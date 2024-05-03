@@ -79,7 +79,7 @@ void LocalFileFormat::ThrowErrorMessage(const std::string & error,
     }
     os << error;
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void LocalFileFormat::getFormatInfo(FormatInfoVec & formatInfoVec) const
@@ -267,7 +267,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .vf Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

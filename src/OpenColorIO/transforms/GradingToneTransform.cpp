@@ -54,7 +54,7 @@ void GradingToneTransformImpl::validate() const
     {
         std::string errMsg("GradingToneTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

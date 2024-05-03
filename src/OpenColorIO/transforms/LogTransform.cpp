@@ -54,7 +54,7 @@ void LogTransformImpl::validate() const
     {
         std::string errMsg("LogTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

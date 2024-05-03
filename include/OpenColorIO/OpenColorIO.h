@@ -80,6 +80,10 @@ public:
     Exception() = delete;
     /// Constructor that takes a string as the exception message.
     explicit Exception(const char *);
+	explicit Exception(const std::string&);
+	explicit Exception(const std::ostringstream&);
+	explicit Exception(const std::stringstream&);
+
     /// Constructor that takes an existing exception.
     Exception(const Exception &);
     Exception & operator= (const Exception &) = delete;
@@ -2045,7 +2049,7 @@ public:
      * Specify the transform for the appropriate direction.
      * Setting the transform to null will clear it.
      */
-    void setTransform(const ConstTransformRcPtr & transform, ColorSpaceDirection dir);
+    void setTransform(const ConstTransformRcPtr& transform, ColorSpaceDirection dir);
 
     ColorSpace(const ColorSpace &) = delete;
     ColorSpace& operator= (const ColorSpace &) = delete;

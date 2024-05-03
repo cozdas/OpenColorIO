@@ -94,7 +94,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << fileName << "). ";
         os << "File must contain 12 float entries. ";
         os << lineParts.size() << " found.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Turn the parts into floats
@@ -105,7 +105,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << "Error parsing .spimtx file (";
         os << fileName << "). ";
         os << "File must contain all float entries. ";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
 
@@ -153,7 +153,7 @@ void LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build SpiMtx Ops. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

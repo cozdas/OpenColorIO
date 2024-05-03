@@ -53,7 +53,7 @@ void CheckStatus()
     std::string error;
     if (GetGLError(error))
     {
-        throw Exception(error.c_str());
+        throw Exception(error);
     }
 }
 
@@ -173,7 +173,7 @@ GLuint CompileShaderText(GLenum shaderType, const char * text)
         err += "\n";
         err += text;
 
-        throw Exception(err.c_str());
+        throw Exception(err);
     }
 
     return shader;
@@ -204,7 +204,7 @@ void LinkShaders(GLuint program, GLuint fragShader)
 
         std::string err("Shader link error:\n");
         err += log;
-        throw Exception(err.c_str());
+        throw Exception(err);
     }
 }
 }
@@ -229,7 +229,7 @@ void OpenGLBuilder::Uniform::setUp(unsigned program)
         std::string err("Shader parameter ");
         err += m_name;
         err += " not found: ";
-        throw Exception(err.c_str());
+        throw Exception(err);
     }
 }
 

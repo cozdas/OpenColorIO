@@ -70,7 +70,7 @@ int Get3DLutEdgeLenFromNumPixels(int numPixels)
         os << numPixels << " element(s) does not correspond to a ";
         os << "unform cube edge length. (nearest edge length is ";
         os << dim << ").";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return dim;

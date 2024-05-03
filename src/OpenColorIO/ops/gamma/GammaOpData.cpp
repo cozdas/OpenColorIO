@@ -111,7 +111,7 @@ GammaOpData::Style GammaOpData::ConvertStringToStyle(const char * str)
         std::ostringstream os;
         os << "Unknown gamma style: '" << str << "'.";
 
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     throw Exception("Missing gamma style.");
@@ -146,7 +146,7 @@ const char * GammaOpData::ConvertStyleToString(Style style)
     std::stringstream ss("Unknown Gamma style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 NegativeStyle GammaOpData::ConvertStyle(Style style)
@@ -172,7 +172,7 @@ NegativeStyle GammaOpData::ConvertStyle(Style style)
     std::stringstream ss("Unknown Gamma style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 GammaOpData::Style GammaOpData::ConvertStyleBasic(NegativeStyle negStyle, TransformDirection dir)
@@ -205,7 +205,7 @@ GammaOpData::Style GammaOpData::ConvertStyleBasic(NegativeStyle negStyle, Transf
     std::stringstream ss("Unknown negative extrapolation style: ");
     ss << negStyle;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 GammaOpData::Style GammaOpData::ConvertStyleMonCurve(NegativeStyle negStyle, TransformDirection dir)
@@ -238,7 +238,7 @@ GammaOpData::Style GammaOpData::ConvertStyleMonCurve(NegativeStyle negStyle, Tra
     std::stringstream ss("Unknown negative extrapolation style: ");
     ss << negStyle;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 GammaOpData::GammaOpData()
@@ -378,13 +378,13 @@ void validateParams(const GammaOpData::Params & p,
         {
             std::stringstream ss;
             ss << "Parameter " << p[i] << " is less than lower bound " << lowBounds[i];
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
         if (p[i] > highBounds[i])
         {
             std::stringstream ss;
             ss << "Parameter " << p[i] << " is greater than upper bound " << highBounds[i];
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }

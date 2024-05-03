@@ -94,7 +94,7 @@ void FileTransform::validate() const
     {
         std::string errMsg("FileTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     if (getImpl()->m_src.empty())
@@ -389,7 +389,7 @@ void FormatRegistry::registerFileFormat(FileFormat* format)
         std::ostringstream os;
         os << "FileFormat Registry error. ";
         os << "A file format did not provide the required format info.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     for(unsigned int i=0; i<formatInfoVec.size(); ++i)
@@ -400,7 +400,7 @@ void FormatRegistry::registerFileFormat(FileFormat* format)
             os << "FileFormat Registry error. ";
             os << "A file format does not define either";
             os << " reading or writing.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if(getFileFormatByName(formatInfoVec[i].name))
@@ -408,7 +408,7 @@ void FormatRegistry::registerFileFormat(FileFormat* format)
             std::ostringstream os;
             os << "Cannot register multiple file formats named, '";
             os << formatInfoVec[i].name << "'.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         m_formatsByName[StringUtils::Lower(formatInfoVec[i].name)] = format;
@@ -580,7 +580,7 @@ void FileFormat::bake(const Baker & /*baker*/,
 {
     std::ostringstream os;
     os << "Format '" << formatName << "' does not support baking.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void FileFormat::write(const ConstConfigRcPtr & /*config*/,
@@ -591,7 +591,7 @@ void FileFormat::write(const ConstConfigRcPtr & /*config*/,
 {
     std::ostringstream os;
     os << "Format '" << formatName << "' does not support writing.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 namespace
@@ -647,7 +647,7 @@ void LoadFileUncached(FileFormat * & returnFormat,
                 os << filepath << "', could not be opened. ";
                 os << "Please confirm the file exists with ";
                 os << "appropriate read permissions.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             CachedFileRcPtr cachedFile = tryFormat->read(filestream, filepath, interp);
@@ -725,7 +725,7 @@ void LoadFileUncached(FileFormat * & returnFormat,
                 os << "Please confirm the file exists with ";
                 os << "appropriate read";
                 os << " permissions.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             cachedFile = altFormat->read(filestream, filepath, interp);
@@ -791,7 +791,7 @@ void LoadFileUncached(FileFormat * & returnFormat,
         os << primaryErrorText;
     }
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 // We mutex both the main map and each item individually, so that
@@ -881,7 +881,7 @@ void GetCachedFileAndFormat(FileFormat * & format,
 
     if (result->error)
     {
-        throw Exception(result->exceptionText.c_str());
+        throw Exception(result->exceptionText);
     }
     else
     {
@@ -895,7 +895,7 @@ void GetCachedFileAndFormat(FileFormat * & format,
         os << "The specified file load ";
         os << filepath << " appeared to succeed, but no format ";
         os << "was returned.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if (!cachedFile.get())
@@ -904,7 +904,7 @@ void GetCachedFileAndFormat(FileFormat * & format,
         os << "The specified file load ";
         os << filepath << " appeared to succeed, but no cachedFile ";
         os << "was returned.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 }
 
@@ -924,7 +924,7 @@ void BuildFileTransformOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "The transform file has not been specified.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     std::string filepath = context->resolveFileLocation(src.c_str());
@@ -946,7 +946,7 @@ void BuildFileTransformOps(OpRcPtrVec & ops,
                 os << "Reference to: " << filepath;
                 os << " is creating a recursion.";
 
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
         }
     }
@@ -986,7 +986,7 @@ void BuildFileTransformOps(OpRcPtrVec & ops,
         err << "The transform file: " << filepath;
         err << " failed while building ops with this error: ";
         err << e.what();
-        throw Exception(err.str().c_str());
+        throw Exception(err);
     }
 }
 

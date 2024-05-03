@@ -82,7 +82,7 @@ void DisplayViewTransform::validate() const
     {
         std::string errMsg("DisplayViewTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     if (getImpl()->m_src.empty())
@@ -210,7 +210,7 @@ void BuildSourceToDisplay(OpRcPtrVec & ops,
         std::ostringstream os;
         os << "View transform named '" << viewTransform->getName();
         os << "' needs either a transform from or to reference.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Convert from the display-referred reference space to the displayCS.
@@ -248,7 +248,7 @@ void BuildDisplayToSource(OpRcPtrVec & ops,
         std::ostringstream os;
         os << "View transform named '" << viewTransform->getName();
         os << "' needs either a transform from or to reference.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // If necessary, convert from the type of reference space used by the view transform to the
@@ -320,7 +320,7 @@ void BuildDisplayOps(OpRcPtrVec & ops,
         {
             os << " Cannot find source color space named '" << srcColorSpaceName << "'.";
         }
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const std::string display = displayViewTransform.getDisplay();
@@ -329,7 +329,7 @@ void BuildDisplayOps(OpRcPtrVec & ops,
         std::ostringstream os;
         os << "DisplayViewTransform error.";
         os << " Display '" << display << "' not found.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     const std::string view = displayViewTransform.getView();
 
@@ -350,7 +350,7 @@ void BuildDisplayOps(OpRcPtrVec & ops,
                 std::ostringstream os;
                 os << "DisplayViewTransform error. The view transform '";
                 os << viewTransformName << "' is neither a view transform nor a named transform.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
         }
     }
@@ -385,7 +385,7 @@ void BuildDisplayOps(OpRcPtrVec & ops,
             std::ostringstream os;
             os << "DisplayViewTransform error." << " The display '";
             os << display << "' does not have view '" << view << "'.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         // Note: If there is a view transform, the display color space isn't allowed to be a 
@@ -396,7 +396,7 @@ void BuildDisplayOps(OpRcPtrVec & ops,
             os << "DisplayViewTransform error." << " The view '";
             os << view << "' refers to a display color space '";
             os << displayColorSpaceName << "' that can't be found.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         // At this point, there is no view transform, so displayColorSpaceName is typically
@@ -410,7 +410,7 @@ void BuildDisplayOps(OpRcPtrVec & ops,
             os << "DisplayViewTransform error.";
             os << " Cannot find color space or named transform with name '";
             os << displayColorSpaceName << "'.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 

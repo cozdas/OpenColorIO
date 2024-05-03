@@ -179,7 +179,7 @@ void ParseNumber(const char * str, size_t startPos, size_t endPos, T & value)
             << parsedStr
             << "' can not be parsed to numbers in '"
             << TruncateString(fullStr.c_str(), endPos, 100) << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     else if (!IsValid(value, val))
     {
@@ -190,7 +190,7 @@ void ParseNumber(const char * str, size_t startPos, size_t endPos, T & value)
             << parsedStr
             << "' are illegal in '"
             << TruncateString(fullStr.c_str(), endPos, 100) << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     else if (result.ptr != str + endPos)
     {
@@ -202,7 +202,7 @@ void ParseNumber(const char * str, size_t startPos, size_t endPos, T & value)
             << parsedStr
             << "' number is followed by unexpected characters in '"
             << TruncateString(fullStr.c_str(), endPos, 100) << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 

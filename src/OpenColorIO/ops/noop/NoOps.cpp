@@ -262,7 +262,7 @@ void PartitionGPUOps(OpRcPtrVec & gpuPreOps,
             error << "gpuLut3DOpStartIndex: " << gpuLut3DOpStartIndex << " ";
             error << "gpuLut3DOpEndIndex: " << gpuLut3DOpEndIndex << " ";
             error << "cpuOps.size: " << ops.size();
-            throw Exception(error.str().c_str());
+            throw Exception(error);
         }
 
         // If the specified location defines an allocation, use it.

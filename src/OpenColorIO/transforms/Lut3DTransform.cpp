@@ -67,7 +67,7 @@ void Lut3DTransformImpl::validate() const
     {
         std::string errMsg("Lut3DTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 
@@ -123,7 +123,7 @@ void CheckLUT3DIndex(const char * function,
         oss << "Lut3DTransform " << function << ": " << component << " index (";
         oss << index << ") should be less than the grid size (";
         oss << size << ").";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 }

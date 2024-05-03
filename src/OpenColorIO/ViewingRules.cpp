@@ -80,7 +80,7 @@ public:
                 os << "The rule '" << m_name << "' ";
                 os << "refers to color space '" << std::string(csname);
                 os << "' which is not defined.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
         }
         const int numEnc = m_encodings.getNumTokens();
@@ -101,14 +101,14 @@ public:
             std::ostringstream os;
             os << "The rule '" << m_name << "' ";
             os << "must have either a color space or an encoding.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         else if (numCS != 0 && numEnc != 0)
         {
             std::ostringstream os;
             os << "The rule '" << m_name << "' ";
             os << "cannot refer to both a color space and an encoding.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -173,7 +173,7 @@ void ViewingRules::Impl::validatePosition(size_t ruleIndex) const
         std::ostringstream oss;
         oss << "Viewing rules: rule index '" << ruleIndex << "' invalid."
             << " There are only '" << numRules << "' rules.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -192,7 +192,7 @@ void ViewingRules::Impl::validateNewRule(const char * name) const
     {
         std::ostringstream oss;
         oss << "Viewing rules: A rule named '" << name << "' already exists.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -224,7 +224,7 @@ size_t ViewingRules::getIndexForRule(const char * ruleName) const
 
     std::ostringstream oss;
     oss << "Viewing rules: rule name '" << ruleName << "' not found.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 const char * ViewingRules::getName(size_t ruleIndex) const
@@ -249,7 +249,7 @@ const char * ViewingRules::getColorSpace(size_t ruleIndex, size_t colorSpaceInde
         oss << "Viewing rules: rule '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' at index '" << ruleIndex << "': colorspace index '" << colorSpaceIndex
             << "' is invalid. There are only '" << numCS << "' colorspaces.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     return m_impl->m_rules[ruleIndex]->m_colorSpaces.getToken(static_cast<int>(colorSpaceIndex));
 }
@@ -262,7 +262,7 @@ void ViewingRules::addColorSpace(size_t ruleIndex, const char * colorSpace)
         std::ostringstream oss;
         oss << "Viewing rules: rule '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' at index '" << ruleIndex << "': colorspace should have a non-empty name.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     if (m_impl->m_rules[ruleIndex]->m_encodings.getNumTokens() != 0)
     {
@@ -270,7 +270,7 @@ void ViewingRules::addColorSpace(size_t ruleIndex, const char * colorSpace)
         oss << "Viewing rules: rule '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' at index '" << ruleIndex
             << "': colorspace can't be added if there are encodings.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     m_impl->m_rules[ruleIndex]->m_colorSpaces.addToken(colorSpace);
 }
@@ -297,7 +297,7 @@ const char * ViewingRules::getEncoding(size_t ruleIndex, size_t encodingIndex) c
         oss << "Viewing rules: rule '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' at index '" << ruleIndex << "': encoding index '" << encodingIndex
             << "' is invalid. There are only '" << numEnc << "' encodings.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     return m_impl->m_rules[ruleIndex]->m_encodings.getToken(static_cast<int>(encodingIndex));
 }
@@ -310,7 +310,7 @@ void ViewingRules::addEncoding(size_t ruleIndex, const char * encoding)
         std::ostringstream oss;
         oss << "Viewing rules: rule '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' at index '" << ruleIndex << "': encoding should have a non-empty name.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     if (m_impl->m_rules[ruleIndex]->m_colorSpaces.getNumTokens() != 0)
     {
@@ -318,7 +318,7 @@ void ViewingRules::addEncoding(size_t ruleIndex, const char * encoding)
         oss << "Viewing rules: rule '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' at index '" << ruleIndex
             << "': encoding can't be added if there are colorspaces.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     m_impl->m_rules[ruleIndex]->m_encodings.addToken(encoding);
 }
@@ -347,7 +347,7 @@ const char * ViewingRules::getCustomKeyName(size_t ruleIndex, size_t key) const
         std::ostringstream oss;
         oss << "Viewing rules: rule named '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' error: " << e.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -363,7 +363,7 @@ const char * ViewingRules::getCustomKeyValue(size_t ruleIndex, size_t key) const
         std::ostringstream oss;
         oss << "Viewing rules: rule named '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' error: " << e.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -379,7 +379,7 @@ void ViewingRules::setCustomKey(size_t ruleIndex, const char * key, const char *
         std::ostringstream oss;
         oss << "Viewing rules: rule named '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' error: " << e.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 

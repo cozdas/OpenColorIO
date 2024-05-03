@@ -63,7 +63,7 @@ void GroupTransformImpl::validate() const
     {
         std::string errMsg("GroupTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     for(const auto & val : m_vec)
@@ -83,7 +83,7 @@ ConstTransformRcPtr GroupTransformImpl::getTransform(int index) const
     {
         std::ostringstream os;
         os << "Invalid transform index " << index << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return m_vec[index];
@@ -95,7 +95,7 @@ TransformRcPtr & GroupTransformImpl::getTransform(int index)
     {
         std::ostringstream os;
         os << "Invalid transform index " << index << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return m_vec[index];
@@ -123,7 +123,7 @@ void GroupTransformImpl::write(const ConstConfigRcPtr & config,
         std::ostringstream err;
         err << "The format named '" << formatName;
         err << "' could not be found. ";
-        throw Exception(err.str().c_str());
+        throw Exception(err);
     }
 
     try
@@ -135,7 +135,7 @@ void GroupTransformImpl::write(const ConstConfigRcPtr & config,
         std::ostringstream err;
         err << "Error writing format '" << formatName << "': ";
         err << e.what();
-        throw Exception(err.str().c_str());
+        throw Exception(err);
     }
 }
 

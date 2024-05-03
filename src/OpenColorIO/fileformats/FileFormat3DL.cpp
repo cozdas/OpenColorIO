@@ -279,7 +279,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                     os << "Not expecting a line starting with \"<\".";
                     os << "Line (" << lineNumber << "): '";
                     os << lineBuffer << "'.";
-                    throw Exception(os.str().c_str());
+                    throw Exception(os);
                 }
             }
 
@@ -311,7 +311,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                     os << "Appears to contain more than 1 shaper LUT.";
                     os << "Line (" << lineNumber << "): '";
                     os << lineBuffer << "'.";
-                    throw Exception(os.str().c_str());
+                    throw Exception(os);
                 }
             }
             // If we've found 3 ints, add it to our 3D LUT.
@@ -333,7 +333,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 os << "Invalid line with less than 3 values.";
                 os << "Line (" << lineNumber << "): '";
                 os << lineBuffer << "'.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
         }
     }
@@ -343,7 +343,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         std::ostringstream os;
         os << "Error parsing .3dl file. ";
         os << "Does not appear to contain a valid shaper LUT or a 3D LUT.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     LocalCachedFileRcPtr cachedFile = LocalCachedFileRcPtr(new LocalCachedFile());
@@ -378,7 +378,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "file, but instead a related format that shares a similar ";
             os << "structure.";
 
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         int shaperbitdepth = GetLikelyLutBitDepth(shapermax);
@@ -389,7 +389,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "The maximum shaper LUT value, " << shapermax;
             os << ", does not correspond to any likely bit depth. ";
             os << "Please confirm source file is valid.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         out1DBD = GetOCIOBitdepth(shaperbitdepth);
@@ -400,7 +400,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "Error parsing .3dl file. ";
             os << "The shaper LUT bit depth is not known. ";
             os << "Please confirm source file is valid.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if (!IsIdentity(rawshaper, out1DBD))
@@ -440,7 +440,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "file, but instead a related format that shares a similar ";
             os << "structure.";
 
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         int lut3dbitdepth = GetLikelyLutBitDepth(lut3dmax);
@@ -451,7 +451,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "The maximum 3D LUT value, " << lut3dmax;
             os << ", does not correspond to any likely bit depth. ";
             os << "Please confirm source file is valid.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         // Interpret the int array as a 3D LUT
@@ -515,7 +515,7 @@ void LocalFileFormat::bake(const Baker & baker,
         std::ostringstream os;
         os << "Unknown 3dl format name, '";
         os << formatName << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     ConstConfigRcPtr config = baker.getConfig();
@@ -594,7 +594,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .3dl Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

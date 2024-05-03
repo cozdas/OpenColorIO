@@ -126,7 +126,7 @@ void LocalFileFormat::ThrowErrorMessage(const std::string & error,
     os << ").  ";
     os << error;
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 LocalCachedFileRcPtr LocalFileFormat::ReadInfo(std::istream & istream, 
@@ -756,7 +756,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -893,7 +893,7 @@ std::string GetProfileDescriptionFromICCProfile(const char * ICCProfileFilepath)
         os << "The specified file '";
         os << ICCProfileFilepath << "' could not be opened. ";
         os << "Please confirm the file exists with appropriate read permissions.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     SampleICC::IccContent icc;

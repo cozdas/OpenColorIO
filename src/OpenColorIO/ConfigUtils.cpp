@@ -87,7 +87,7 @@ bool GetInterchangeRolesForColorSpaceConversion(const char ** srcInterchangeCSNa
     {
         std::ostringstream os;
         os << "Could not find destination color space '" << dstName << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     interchangeType = REFERENCE_SPACE_SCENE;
@@ -110,7 +110,7 @@ bool GetInterchangeRolesForColorSpaceConversion(const char ** srcInterchangeCSNa
         {
             std::ostringstream os;
             os << "Could not find source color space '" << srcName << "'.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         // Only use the display-referred reference space if both color spaces are 
@@ -143,7 +143,7 @@ bool GetInterchangeRolesForColorSpaceConversion(const char ** srcInterchangeCSNa
         std::ostringstream os;
         os << "The role '" << interchangeRoleName << "' refers to a color space ";
         os << "that is missing in the source config.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     *srcInterchangeCSName = srcInterchangeCS->getName();
 
@@ -158,7 +158,7 @@ bool GetInterchangeRolesForColorSpaceConversion(const char ** srcInterchangeCSNa
         std::ostringstream os;
         os << "The role '" << interchangeRoleName << "' refers to a color space ";
         os << "that is missing in the destination config.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     *dstInterchangeCSName = dstInterchangeCS->getName();
 
@@ -644,7 +644,7 @@ void IdentifyInterchangeSpace(const char ** srcInterchange,
         std::ostringstream os;
         os  << "The heuristics currently only support scene-referred color spaces. "
             << "Please set the interchange roles.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Identify the name of a reference space in the source config.
@@ -653,7 +653,7 @@ void IdentifyInterchangeSpace(const char ** srcInterchange,
     {
         std::ostringstream os;
         os  << "The supplied config does not have a color space for the reference.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // The heuristics need to create a lot of Processors and send RGB values through
@@ -724,7 +724,7 @@ void IdentifyInterchangeSpace(const char ** srcInterchange,
         std::ostringstream os;
         os  << "Heuristics were not able to find a known color space in the provided config. "
             << "Please set the interchange roles.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 }
 
@@ -753,7 +753,7 @@ const char * IdentifyBuiltinColorSpace(const ConstConfigRcPtr & srcConfig,
         std::ostringstream os;
         os  << "Built-in config does not contain the requested color space: " 
             << builtinColorSpaceName << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if (builtinColorSpace->isData())
@@ -763,7 +763,7 @@ const char * IdentifyBuiltinColorSpace(const ConstConfigRcPtr & srcConfig,
         {
             std::ostringstream os;
             os  << "The requested space is a data space but the supplied config does not have a data space.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         return dataName;
     }
@@ -834,7 +834,7 @@ const char * IdentifyBuiltinColorSpace(const ConstConfigRcPtr & srcConfig,
     std::ostringstream os;
     os  << "Heuristics were not able to find an equivalent to the requested color space: "
         << builtinColorSpaceName << ".";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 }  // namespace ConfigUtils

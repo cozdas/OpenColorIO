@@ -696,7 +696,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << " At line (" << errline << "): '";
             os << errorLine << "'.";
         }
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const BitDepth inputBD = Lut1dUtils::GetBitDepth(discreetLut1d->srcBitDepth);
@@ -750,7 +750,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .lut Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

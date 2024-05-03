@@ -47,7 +47,7 @@ void XmlReaderElement::throwMessage(const std::string & error) const
     std::ostringstream os;
     os << "At line " << getXmlLineNumber() << ": ";
     os << error.c_str();
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void XmlReaderElement::logParameterWarning(const char * param) const

@@ -80,7 +80,7 @@ public:
                 ss << "The texture buffer size is invalid: ["
                    << w << " x " << h << " x " << d << "].";
 
-                throw Exception(ss.str().c_str());
+                throw Exception(ss);
             }
 
             // An unfortunate copy is mandatory to allow the creation of a GPU shader cache.
@@ -193,7 +193,7 @@ public:
             std::stringstream ss;
             ss  << "1D LUT size exceeds the maximum: "
                 << width << " > " << get1dLutMaxWidth();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         unsigned numDimensions = static_cast<unsigned>(dimensions);
@@ -214,7 +214,7 @@ public:
             std::ostringstream ss;
             ss << "1D LUT access error: index = " << index
                << " where size = " << m_textures.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures[index];
@@ -228,7 +228,7 @@ public:
             std::stringstream ss;
             ss << "1D LUT cannot have more than two dimensions: "
                 << t.m_dimensions << " > 2";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
         dimensions = static_cast<GpuShaderDesc::TextureDimensions>(t.m_dimensions);
         interpolation = t.m_interp;
@@ -241,7 +241,7 @@ public:
             std::ostringstream ss;
             ss << "1D LUT access error: index = " << index
                << " where size = " << m_textures.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures[index];
@@ -259,7 +259,7 @@ public:
             std::stringstream ss;
             ss  << "3D LUT edge length exceeds the maximum: "
                 << edgelen << " > " << get3dLutMaxLength();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         Texture t(textureName, samplerName, edgelen, edgelen, edgelen,
@@ -279,7 +279,7 @@ public:
             std::ostringstream ss;
             ss << "3D LUT access error: index = " << index
                << " where size = " << m_textures3D.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures3D[index];
@@ -296,7 +296,7 @@ public:
             std::ostringstream ss;
             ss << "3D LUT access error: index = " << index
                << " where size = " << m_textures3D.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures3D[index];
@@ -316,7 +316,7 @@ public:
             std::ostringstream ss;
             ss << "Uniforms access error: index = " << index
                << " where size = " << m_uniforms.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
         data        = m_uniforms[index].m_data;
         return m_uniforms[index].m_name.c_str();

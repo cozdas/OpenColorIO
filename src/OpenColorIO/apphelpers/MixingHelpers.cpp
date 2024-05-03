@@ -182,7 +182,7 @@ const char * MixingColorSpaceManagerImpl::getMixingSpaceUIName(size_t idx) const
     ss << "Invalid mixing space index " << idx
        << " where size is " << m_mixingSpaces.size() << ".";
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 size_t MixingColorSpaceManagerImpl::getSelectedMixingSpaceIdx() const noexcept
@@ -197,7 +197,7 @@ void MixingColorSpaceManagerImpl::setSelectedMixingSpaceIdx(size_t idx)
         std::stringstream ss;
         ss << "Invalid idx for the mixing space index " << idx
            << " where size is " << m_mixingSpaces.size() << ".";
-        throw Exception(ss.str().c_str());
+        throw Exception(ss);
     }
 
     m_selectedMixingSpaceIdx = idx;
@@ -216,7 +216,7 @@ void MixingColorSpaceManagerImpl::setSelectedMixingSpace(const char * mixingSpac
 
     std::stringstream ss;
     ss << "Invalid mixing space name: '" << mixingSpace << "'.";
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 bool MixingColorSpaceManagerImpl::isPerceptuallyUniform() const noexcept
@@ -246,7 +246,7 @@ const char * MixingColorSpaceManagerImpl::getMixingEncodingName(size_t idx) cons
     ss << "Invalid mixing encoding index " << idx
        << " where size is " << m_mixingEncodings.size() << ".";
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 size_t MixingColorSpaceManagerImpl::getSelectedMixingEncodingIdx() const noexcept
@@ -261,7 +261,7 @@ void MixingColorSpaceManagerImpl::setSelectedMixingEncodingIdx(size_t idx)
         std::stringstream ss;
         ss << "Invalid idx for the mixing encoding index " << idx
            << " where size is " << m_mixingEncodings.size() << ".";
-        throw Exception(ss.str().c_str());
+        throw Exception(ss);
     }
 
     m_selectedMixingEncodingIdx = idx;
@@ -280,7 +280,7 @@ void MixingColorSpaceManagerImpl::setSelectedMixingEncoding(const char * mixingE
 
     std::stringstream ss;
     ss << "Invalid mixing encoding: '" << mixingEncoding << "'.";
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Get a processor to convert from the working/rendering space to the mixing space 

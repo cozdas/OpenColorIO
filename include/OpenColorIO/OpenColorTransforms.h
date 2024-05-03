@@ -98,6 +98,8 @@ public:
      */
     virtual const char * getName() const noexcept = 0;
     virtual void setName(const char * name) noexcept = 0;
+	virtual void setName(const std::string& name) noexcept = 0;
+
     /**
      * Convenience method to easily get/set the 'id' attribute.  This corresponds to the
      * ProcessNode id attribute from a CLF/CTF file or the ColorCorrection id attribute from a

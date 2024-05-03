@@ -98,7 +98,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << ").  ";
         os << "LUT does not appear to be valid spilut format. ";
         os << "Expected 'SPILUT'.  Found: '" << lineBuffer << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // TODO: Assert 2nd line is 3 3
@@ -115,7 +115,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << "). ";
         os << "Error while reading LUT size. Found: '";
         os << lineBuffer << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // TODO: Support nonuniformly sized LUTs.
@@ -127,7 +127,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << "). ";
         os << "LUT size should be the same for all components. Found: '";
         os << lineBuffer << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     Lut3DOpDataRcPtr lut3d = std::make_shared<Lut3DOpData>((unsigned long)rSize);
@@ -183,7 +183,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 os << "A color value is specified (";
                 os << redValueS << " " << greenValueS << " " << blueValueS;
                 os << ") that cannot be parsed as a floating-point triplet.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             bool invalidIndex = false;
@@ -214,7 +214,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 os << "A LUT entry is specified (";
                 os << rIndex << " " << gIndex << " " << bIndex;
                 os << ") that falls outside of the cube.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             lutArray[index+0] = redValue;
@@ -235,7 +235,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 os << "A LUT entry is specified multiple times (";
                 os << rIndex << " " << gIndex << " " << bIndex;
                 os <<  ").";  
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
         }
     }
@@ -248,7 +248,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << fileName;
         os << "). ";
         os << "Not enough entries found.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     LocalCachedFileRcPtr cachedFile = LocalCachedFileRcPtr(new LocalCachedFile());
@@ -268,7 +268,7 @@ void LocalFileFormat::bake(const Baker & baker,
         std::ostringstream os;
         os << "Unknown spi format name, '";
         os << formatName << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     ConstConfigRcPtr config = baker.getConfig();
@@ -315,7 +315,7 @@ void LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Spi3D Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

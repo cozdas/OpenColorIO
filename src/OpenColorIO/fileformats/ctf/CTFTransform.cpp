@@ -75,7 +75,7 @@ void CTFVersion::ReadVersion(const std::string & versionString, CTFVersion & ver
         os << versionString;
         os << "' is not a valid version. ";
         os << "Expecting MAJOR[.MINOR[.REVISION]] ";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     versionOut.m_major = 0;
@@ -745,7 +745,7 @@ BitDepth GetValidatedFileBitDepth(BitDepth bd, OpData::Type type)
     std::ostringstream oss;
     oss << "Op " << typeName << ". Bit-depth: " << bd
         << " is not supported for writing to CLF/CTF.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 void OpWriter::getAttributes(XmlFormatter::Attributes & attributes) const
@@ -2477,7 +2477,7 @@ void ThrowWriteOp(const std::string & type)
     std::ostringstream oss;
     oss << "Transform uses the '" << type << "' op which cannot be written "
            "as CLF.  Use CTF format or Bake the transform.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 BitDepth GetInputFileBD(ConstOpDataRcPtr op)

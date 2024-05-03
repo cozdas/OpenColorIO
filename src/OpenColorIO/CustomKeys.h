@@ -68,7 +68,7 @@ private:
             std::ostringstream oss;
             oss << "Key index '" << key << "' is invalid, there are '" << numKeys
                 << "' custom keys.";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
 

@@ -500,7 +500,7 @@ namespace
                     << gpuImage[4 * pixelIdx + 0] << ", " << gpuImage[4 * pixelIdx + 1] << ", "
                     << gpuImage[4 * pixelIdx + 2] << ", " << gpuImage[4 * pixelIdx + 3] << "}\n";
             }
-            throw OCIO::Exception(err.str().c_str());
+            throw OCIO::Exception(err);
         }
         else
         {

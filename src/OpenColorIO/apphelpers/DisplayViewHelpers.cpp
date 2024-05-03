@@ -169,7 +169,7 @@ void AddActiveDisplayView(ConfigRcPtr & config, const char * displayName, const 
                 << OCIO_ACTIVE_DISPLAYS_ENVVAR
                 << "' controls the active list.";
 
-            throw Exception(err.str().c_str());
+            throw Exception(err);
         }
     }
     else
@@ -207,7 +207,7 @@ void AddActiveDisplayView(ConfigRcPtr & config, const char * displayName, const 
                 << OCIO_ACTIVE_VIEWS_ENVVAR
                 << "' controls the active list.";
 
-            throw Exception(err.str().c_str());
+            throw Exception(err);
         }
     }
     else
@@ -250,7 +250,7 @@ void RemoveActiveDisplayView(ConfigRcPtr & config, const char * displayName, con
                 << OCIO_ACTIVE_DISPLAYS_ENVVAR
                 << "' controls the active list.";
 
-            throw Exception(err.str().c_str());
+            throw Exception(err);
         }
     }
     else
@@ -305,7 +305,7 @@ void RemoveActiveDisplayView(ConfigRcPtr & config, const char * displayName, con
                 << OCIO_ACTIVE_VIEWS_ENVVAR
                 << "' controls the active list.";
 
-            throw Exception(err.str().c_str());
+            throw Exception(err);
         }
     }
     else
@@ -410,7 +410,7 @@ void AddDisplayView(ConfigRcPtr & config,
             errMsg += connectionColorSpaceName;
             errMsg += "' does not exist.";
 
-            throw Exception(errMsg.c_str());
+            throw Exception(errMsg);
         }
 
         ConstTransformRcPtr tr = connectionCS->getTransform(COLORSPACE_DIR_FROM_REFERENCE);
@@ -473,7 +473,7 @@ void AddDisplayView(ConfigRcPtr & config,
         errMsg += colorSpace->getName();
         errMsg += "' already exists.";
 
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     // Add categories if any.
@@ -513,7 +513,7 @@ void RemoveDisplayView(ConfigRcPtr & config, const char * displayName, const cha
         errMsg += "' and '";
         errMsg += viewName;
         errMsg += "'.";
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     // Step 1 - Remove the (display, view) pair.

@@ -440,7 +440,7 @@ int main(int argc, const char **argv)
             {
                 std::string err("Unsupported bit-depth: ");
                 err += str;
-                throw OCIO::Exception(err.c_str());
+                throw OCIO::Exception(err);
             }
 
             return bd;

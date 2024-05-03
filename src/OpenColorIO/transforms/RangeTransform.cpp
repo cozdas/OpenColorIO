@@ -68,7 +68,7 @@ void RangeTransformImpl::validate() const
     {
         std::string errMsg("RangeTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

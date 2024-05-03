@@ -168,7 +168,7 @@ void LegacyViewingPipelineImpl::validate() const
         std::ostringstream oss;
         oss << "LegacyViewingPipeline is not valid: "
             << e.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -202,7 +202,7 @@ ConstProcessorRcPtr LegacyViewingPipelineImpl::getProcessor(const ConstConfigRcP
         {
             os << "Cannot find inputColorSpace, named '" << inputColorSpaceName << "'.";
         }
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const std::string display = m_displayViewTransform->getDisplay();
@@ -273,7 +273,7 @@ ConstProcessorRcPtr LegacyViewingPipelineImpl::getProcessor(const ConstConfigRcP
                 os << "DisplayViewTransform error:";
                 os << " LinearCC requires '" << std::string(ROLE_SCENE_LINEAR);
                 os << "' role to be defined.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             if (!skipColorSpaceConversions)
@@ -303,7 +303,7 @@ ConstProcessorRcPtr LegacyViewingPipelineImpl::getProcessor(const ConstConfigRcP
                 os << "DisplayViewTransform error:";
                 os << " ColorTimingCC requires '" << std::string(ROLE_COLOR_TIMING);
                 os << "' role to be defined.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             if (!skipColorSpaceConversions)

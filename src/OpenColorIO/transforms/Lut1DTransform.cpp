@@ -71,7 +71,7 @@ void Lut1DTransformImpl::validate() const
         std::ostringstream oss;
         oss << "Lut1DTransform validation failed: ";
         oss << ex.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -118,7 +118,7 @@ void CheckLUT1DIndex(const char * function, unsigned long index, unsigned long s
         oss << "Lut1DTransform " << function << ": index (";
         oss << index << ") should be less than the length (";
         oss << size << ").";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 }

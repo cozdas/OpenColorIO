@@ -74,7 +74,7 @@ void BuiltinTransformImpl::setStyle(const char * style)
     std::ostringstream oss;
     oss << "BuiltinTransform: invalid built-in transform style '" << style << "'.";
 
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 

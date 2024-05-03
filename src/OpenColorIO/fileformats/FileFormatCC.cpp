@@ -98,13 +98,13 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << "Error parsing .cc file. ";
         os << "Does not appear to contain a valid ASC CDL XML:";
         os << e.what();
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     if (!parser.isCC())
     {
         std::ostringstream os;
         os << "File '" << fileName << "' is not a .cc file.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return cachedFile;
@@ -145,7 +145,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .cc Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

@@ -158,7 +158,7 @@ std::string MetalShaderClassWrapper::generateClassWrapperHeader(GpuShaderText& k
     }
     if(std::isdigit(m_className[0]))
     {
-        throw Exception(("Struct name must not start with a digit. Invalid className passed in: " + m_className).c_str());
+        throw Exception(("Struct name must not start with a digit. Invalid className passed in: " + m_className));
     }
 
     kw.newLine() << "struct " << m_className;
@@ -227,7 +227,7 @@ std::string MetalShaderClassWrapper::generateClassWrapperFooter(GpuShaderText& k
     }
     if(std::isdigit(m_className[0]))
     {
-        throw Exception(("Struct name must not start with a digit. Invalid className passed in: " + m_className).c_str());
+        throw Exception(("Struct name must not start with a digit. Invalid className passed in: " + m_className));
     }
 
     kw.newLine() << "};";

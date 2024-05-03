@@ -34,7 +34,7 @@ void Transform::validate() const
         std::string err(typeid(*this).name());
         err += ": invalid direction.";
 
-        throw Exception(err.c_str());
+        throw Exception(err);
     }
 }
 
@@ -170,7 +170,7 @@ void BuildOps(OpRcPtrVec & ops,
         error << "Unknown transform type for creation: "
               << typeid(transform).name();
 
-        throw Exception(error.str().c_str());
+        throw Exception(error);
     }
 }
 
@@ -300,7 +300,7 @@ std::ostream& operator<< (std::ostream & os, const Transform & transform)
         error << "Unknown transform type for serialization: "
                 << typeid(transform).name();
 
-        throw Exception(error.str().c_str());
+        throw Exception(error);
 
     }
 
@@ -378,7 +378,7 @@ void CreateTransform(GroupTransformRcPtr & group, ConstOpRcPtr & op)
         error << "CreateTransform from op. Missing implementation for: "
                 <<  typeid(op).name();
 
-        throw Exception(error.str().c_str());
+        throw Exception(error);
     }
 }
 

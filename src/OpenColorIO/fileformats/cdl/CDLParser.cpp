@@ -238,7 +238,7 @@ void CDLParser::Impl::throwMessage(const std::string & error) const
     os << m_fileName.c_str() << "). ";
     os << "Error is: " << error.c_str();
     os << ". At line (" << m_lineNumber << ")";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void CDLParser::Impl::parse(const std::string & buffer, bool lastLine)
@@ -988,7 +988,7 @@ void CDLParser::getCDLTransforms(CDLTransformMap & transformMap,
                 os << "Error loading ccc xml. ";
                 os << "Duplicate elements with '" << id << "' found. ";
                 os << "If id is specified, it must be unique.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             transformMap[id] = pTransform;

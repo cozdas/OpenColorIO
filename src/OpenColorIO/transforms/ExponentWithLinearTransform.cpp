@@ -68,7 +68,7 @@ void ExponentWithLinearTransformImpl::validate() const
     {
         std::string errMsg("ExponentWithLinearTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

@@ -53,7 +53,7 @@ void GradingRGBCurveTransformImpl::validate() const
     {
         std::string errMsg("GradingRGBCurveTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

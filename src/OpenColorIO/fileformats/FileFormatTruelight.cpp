@@ -148,7 +148,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                         os << "Only equal grid size LUTs are supported. Found ";
                         os << "grid size: " << size3d[0] << " x ";
                         os << size3d[1] << " x " << size3d[2] << ".";
-                        throw Exception(os.str().c_str());
+                        throw Exception(os);
                     }
 
                     raw3d.reserve(3*size3d[0]*size3d[1]*size3d[2]);
@@ -212,7 +212,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << "Parse error in Truelight .cub LUT. ";
         os << "Incorrect number of lut1d entries. ";
         os << "Found " << raw1d.size()/3 << ", expected " << size1d << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if(size3d[0]*size3d[1]*size3d[2] != static_cast<int>(raw3d.size()/3))
@@ -221,7 +221,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         os << "Parse error in Truelight .cub LUT. ";
         os << "Incorrect number of 3D LUT entries. ";
         os << "Found " << raw3d.size()/3 << ", expected " << size3d[0]*size3d[1]*size3d[2] << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
 
@@ -351,7 +351,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Truelight .cub Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

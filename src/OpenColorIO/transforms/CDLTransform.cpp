@@ -81,7 +81,7 @@ CDLTransformRcPtr GetCDL(GroupTransformRcPtr & group, const std::string & cdlId)
     std::ostringstream os;
     os << "The specified CDL Id/Index '" << cdlId;
     os << "' could not be loaded from the file.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 CDLTransformRcPtr CDLTransform::CreateFromFile(const char * src, const char * cdlId_)
@@ -151,7 +151,7 @@ void CDLTransformImpl::validate() const
     {
         std::string errMsg("CDLTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

@@ -29,7 +29,7 @@ std::vector<std::string> GetChannelNames(const ChannelOrdering & chanOrder)
         {
             std::stringstream ss;
             ss << "Error: Unsupported channel ordering: " << chanOrder;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }
@@ -49,7 +49,7 @@ size_t GetNumChannels(const ChannelOrdering & chanOrder)
         {
             std::stringstream ss;
             ss << "Error: Unsupported channel ordering: " << chanOrder;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }
@@ -75,7 +75,7 @@ unsigned GetChannelSizeInBytes(BitDepth bitdepth)
         {
             std::stringstream ss;
             ss << "Error: Unsupported bitdepth: " << BitDepthToString(bitdepth);
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }

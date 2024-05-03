@@ -97,7 +97,7 @@ void Lut1DOpData::Lut3by1DArray::resize(unsigned long length, unsigned long numC
         std::ostringstream oss;
         oss << "LUT 1D: Length '" << length
             << "' must not be greater than 1024x1024 (1048576).";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     Array::resize(length, numColorComponents);
 }
@@ -405,7 +405,7 @@ void Lut1DOpData::validate() const
         oss << "1D LUT does not support interpolation algorithm: ";
         oss << InterpolationToString(getInterpolation());
         oss << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     try
@@ -418,7 +418,7 @@ void Lut1DOpData::validate() const
         oss << "1D LUT content array issue: ";
         oss << e.what();
 
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     // If isHalfDomain is set, we need to make sure we have 65536 entries.
@@ -432,7 +432,7 @@ void Lut1DOpData::validate() const
         oss << HALF_DOMAIN_REQUIRED_ENTRIES;
         oss << " required for halfDomain 1D LUT.";
 
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -462,7 +462,7 @@ unsigned long Lut1DOpData::GetLutIdealSize(BitDepth incomingBitDepth)
     {
         std::string err("Bit-depth is not supported: ");
         err += BitDepthToString(incomingBitDepth);
-        throw Exception(err.c_str());
+        throw Exception(err);
     }
 
     }

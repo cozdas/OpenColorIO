@@ -376,7 +376,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         std::ostringstream os;
         os << "File " << fileName;
         os << ": file stream empty when trying to read csp LUT.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if (!startswithU(line, "CSPLUTV100"))
@@ -384,7 +384,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         std::ostringstream os;
         os << "File " << fileName << " doesn't seem to be a csp LUT, ";
         os << "expected 'CSPLUTV100'. First line: '" << line << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Next line tells us if we are reading a 1D or 3D LUT.
@@ -394,7 +394,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
         std::ostringstream os;
         os << "Unsupported CSP LUT type. Require 1D or 3D. ";
         os << "Found, '" << line << "' in " << fileName << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     std::string csptype = line;
 
@@ -433,7 +433,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "Prelut does not specify valid dimension size on channel '";
             os << c << ": '" << line << "' in " << fileName << ".";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if(cpoints>=2)
@@ -454,7 +454,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 os << "Expected: " << cpoints << ".";
                 os << "Found: " << inputparts.size() << ", " << outputparts.size() << ".";
                 os << " In " << fileName << ".";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             if(!StringVecToFloatVec(prelut_in[c], inputparts) ||
@@ -463,7 +463,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 std::ostringstream os;
                 os << "Prelut data is malformed, cannot convert to float array.";
                 os << " In " << fileName << ".";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             useprelut[c] = (!VecsEqualWithRelError(&(prelut_in[c][0]),  static_cast<int>(prelut_in[c].size()),
@@ -497,7 +497,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "A csp 1D LUT with invalid number of entries (";
             os << points1D << "): " << line << " .";
             os << " In " << fileName << ".";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         lut1d_ptr = std::make_shared<Lut1DOpData>(points1D);
@@ -524,7 +524,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 os << "must contain three numbers. Line: '";
                 os << line << "'. File: ";
                 os << fileName << ".";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             // Store each channel.
@@ -551,7 +551,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "Malformed 3D csp in LUT file, couldn't read cube size. '";
             os << line << "'. In file: ";
             os << fileName << ".";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         // TODO: Support nonuniform cube sizes.
@@ -562,7 +562,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << "A csp 3D LUT with nonuniform cube sizes is not supported (";
             os << cubeSize[0] << ", " << cubeSize[1] << ", " << cubeSize[2];
             os << "): " << line << " .";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if (lutSize <= 0)
@@ -570,7 +570,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "A csp 3D LUT with invalid cube size (";
             os << lutSize << "): " << line << "' in " << fileName << ".";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         lut3d_ptr = std::make_shared<Lut3DOpData>(lutSize);
@@ -606,7 +606,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
                 std::ostringstream os;
                 os << "Malformed 3D csp LUT, couldn't read cube row (";
                 os << i << "): " << line << "' in " << fileName << ".";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             lutArray[arrayIdx + 0] = floatArray[0];
@@ -859,7 +859,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build CSP Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

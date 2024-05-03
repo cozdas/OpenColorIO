@@ -175,7 +175,7 @@ public:
             std::ostringstream os;
             os << "Array contains: " << m_data.size() << " values, ";
             os << "but " << getNumValues() << " are expected.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 

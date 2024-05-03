@@ -29,7 +29,7 @@ Interpolation GetInterpolation1D(const char * str)
 
         std::ostringstream oss;
         oss << "1D LUT interpolation not recongnized: '" << str << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     throw Exception("1D LUT missing interpolation value.");
@@ -71,7 +71,7 @@ Interpolation GetInterpolation3D(const char * str)
 
         std::ostringstream oss;
         oss << "3D LUT interpolation not recongnized: '" << str << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     throw Exception("3D LUT missing interpolation value.");
@@ -148,7 +148,7 @@ void ConvertStringToGradingStyleAndDir(const char * str,
             std::ostringstream os;
             os << "Unknown grading style: '" << str << "'.";
 
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         return;
     }
@@ -171,6 +171,6 @@ const char * ConvertGradingStyleAndDirToString(GradingStyle style, TransformDire
     std::ostringstream os;
     os << "Unknown grading style: " << style;
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 } // namespace OCIO_NAMESPACE

@@ -55,7 +55,7 @@ void LogAffineTransformImpl::validate() const
     {
         std::string errMsg("LogAffineTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

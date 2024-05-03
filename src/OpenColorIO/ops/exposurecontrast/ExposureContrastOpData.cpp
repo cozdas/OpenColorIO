@@ -60,7 +60,7 @@ ExposureContrastOpData::Style ExposureContrastOpData::ConvertStringToStyle(const
         std::ostringstream os;
         os << "Unknown exposure contrast style: '" << str << "'.";
 
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     throw Exception("Missing exposure contrast style.");
 }
@@ -127,7 +127,7 @@ ExposureContrastOpData::Style ExposureContrastOpData::ConvertStyle(ExposureContr
     std::stringstream ss("Unknown ExposureContrast transform style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Convert internal OpData style to Transform style.
@@ -151,7 +151,7 @@ ExposureContrastStyle ExposureContrastOpData::ConvertStyle(ExposureContrastOpDat
     std::stringstream ss("Unknown ExposureContrast style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 ExposureContrastOpData::ExposureContrastOpData()

@@ -564,7 +564,7 @@ void ColorSpaceMenuHelperImpl::refresh()
             {
                 std::ostringstream oss;
                 oss << "Element '" << name << "' is neither a color space not a named transform.";
-                throw Exception(oss.str().c_str());
+                throw Exception(oss);
             }
         }
     }
@@ -745,7 +745,7 @@ void AddColorSpace(ConfigRcPtr & config,
         errMsg += colorSpace->getName();
         errMsg += "' already exists.";
 
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     // Step 1 - Create the color transformation.
@@ -762,7 +762,7 @@ void AddColorSpace(ConfigRcPtr & config,
         errMsg += connectionColorSpaceName;
         errMsg += "' does not exist.";
 
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     ConstTransformRcPtr tr = connectionCS->getTransform(COLORSPACE_DIR_TO_REFERENCE);

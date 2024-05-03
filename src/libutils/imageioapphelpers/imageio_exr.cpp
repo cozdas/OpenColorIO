@@ -34,7 +34,7 @@ BitDepth BitDepthFromPixelType(Imf::PixelType type)
         {
             std::stringstream ss;
             ss << "Error: Unsupported pixel type: " << type;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }
@@ -56,7 +56,7 @@ Imf::PixelType BitDepthToPixelType(BitDepth bitdepth)
         {
             std::stringstream ss;
             ss << "Error: Unsupported bitdepth: " << BitDepthToString(bitdepth);
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }

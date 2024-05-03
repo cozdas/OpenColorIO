@@ -102,7 +102,7 @@ CDLOpData::Style CDLOpData::ConvertStyle(CDLStyle style, TransformDirection dir)
     std::stringstream ss("Unknown CDL transform style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Convert internal OpData style to Transform style.
@@ -121,7 +121,7 @@ CDLStyle CDLOpData::ConvertStyle(CDLOpData::Style style)
     std::stringstream ss("Unknown CDL style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 CDLOpData::CDLOpData()
@@ -231,7 +231,7 @@ void validateGreaterEqual(const char * name,
         oss << "' " << value;
         oss << " should be greater than ";
         oss << threshold << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -248,7 +248,7 @@ void validateGreaterThan(const char * name,
         oss << "' " << value;
         oss << " should be greater than ";
         oss << threshold << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 

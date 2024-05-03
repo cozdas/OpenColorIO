@@ -71,7 +71,7 @@ void GradingBSplineCurveImpl::validateIndex(size_t index) const
     {
         std::ostringstream oss;
         oss << "There are '"<< numPoints << "' control points. '" << index << "' is invalid.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -134,7 +134,7 @@ void GradingBSplineCurveImpl::validate() const
             std::ostringstream oss;
             oss << "Control point at index " << i << " has a x coordinate '" << x << "' that is ";
             oss << "less from previous control point x cooordinate '" << lastX << "'.";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         lastX = x;
     }

@@ -149,7 +149,7 @@ void Op::combineWith(OpRcPtrVec & /*ops*/, ConstOpRcPtr & /*secondOp*/) const
     std::ostringstream os;
     os << "Op: " << getInfo() << " cannot be combined. ";
     os << "A type-specific combining function is not defined.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void Op::validate() const
@@ -193,7 +193,7 @@ OpRcPtr Op::getIdentityReplacement() const
         std::ostringstream oss;
         oss << "Unexpected type in getIdentityReplacement. Expecting Matrix or Range, got :"
             << std::string(GetTypeName(opData->getType())) << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     return ops[0];
 }

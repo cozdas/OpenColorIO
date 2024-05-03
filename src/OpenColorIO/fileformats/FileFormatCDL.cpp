@@ -139,7 +139,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & /*config*/,
     {
         std::ostringstream os;
         os << "Write to " << formatName << ": there should be at least one CDL.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     for (int i = 0; i < numCDL; ++i)
     {
@@ -148,7 +148,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & /*config*/,
         {
             std::ostringstream os;
             os << "Write to " << formatName << ": only CDL can be written.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -199,7 +199,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .cdl Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

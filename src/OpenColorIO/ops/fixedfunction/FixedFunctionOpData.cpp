@@ -99,7 +99,7 @@ const char * FixedFunctionOpData::ConvertStyleToString(Style style, bool detaile
     std::stringstream ss("Unknown FixedFunction style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Convert CTF attribute string into OpData style enum.
@@ -201,7 +201,7 @@ FixedFunctionOpData::Style FixedFunctionOpData::GetStyle(const char * name)
     std::string st("Unknown FixedFunction style: ");
     st += name;
 
-    throw Exception(st.c_str());
+    throw Exception(st);
 }
 
 // Combine the Transform style and direction into the internal OpData style.
@@ -275,7 +275,7 @@ FixedFunctionOpData::Style FixedFunctionOpData::ConvertStyle(FixedFunctionStyle 
     std::stringstream ss("Unknown FixedFunction transform style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Convert internal OpData style to Transform style.
@@ -331,7 +331,7 @@ FixedFunctionStyle FixedFunctionOpData::ConvertStyle(FixedFunctionOpData::Style 
     std::stringstream ss("Unknown FixedFunction style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 FixedFunctionOpData::FixedFunctionOpData(Style style)
@@ -370,7 +370,7 @@ void FixedFunctionOpData::validate() const
             ss  << "The style '" << ConvertStyleToString(m_style, true)
                 << "' must have seven parameters but "
                 << m_params.size() << " found.";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const double lim_cyan    = m_params[0];
@@ -387,7 +387,7 @@ void FixedFunctionOpData::validate() const
             {
                 std::stringstream ss;
                 ss << "Parameter " << val << " (" << name << ") is outside valid range [" << low << "," << high << "]";
-                throw Exception(ss.str().c_str());
+                throw Exception(ss);
             }
         };
 
@@ -417,7 +417,7 @@ void FixedFunctionOpData::validate() const
             ss  << "The style '" << ConvertStyleToString(m_style, true)
                 << "' must have one parameter but "
                 << m_params.size() << " found.";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const double p = m_params[0];
@@ -428,13 +428,13 @@ void FixedFunctionOpData::validate() const
         {
             std::stringstream ss;
             ss << "Parameter " << p << " is less than lower bound " << low_bound;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
         else if (p > hi_bound)
         {
             std::stringstream ss;
             ss << "Parameter " << p << " is greater than upper bound " << hi_bound;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
     else
@@ -445,7 +445,7 @@ void FixedFunctionOpData::validate() const
             ss  << "The style '" << ConvertStyleToString(m_style, true)
                 << "' must have zero parameters but "
                 << m_params.size() << " found.";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }

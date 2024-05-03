@@ -48,7 +48,7 @@ void MatrixTransformImpl::validate() const
     {
         std::string errMsg("MatrixTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 
@@ -179,7 +179,7 @@ void MatrixTransform::Fit(double * m44, double * offset4,
             os << "Max value equals min value '";
             os << oldmax4[i] << "' in channel index ";
             os << i << ".";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if(m44) m44[5*i] = (newmax4[i]-newmin4[i]) / denom;

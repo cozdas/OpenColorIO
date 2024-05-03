@@ -37,7 +37,7 @@ BitDepth BitDepthFromTypeDesc(OIIO::TypeDesc type)
         {
             std::stringstream ss;
             ss << "Error: Unsupported type desc: " << type;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }
@@ -59,7 +59,7 @@ OIIO::TypeDesc BitDepthToTypeDesc(BitDepth bitdepth)
         {
             std::stringstream ss;
             ss << "Error: Unsupported bitdepth: " << BitDepthToString(bitdepth);
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }
@@ -249,7 +249,7 @@ public:
         {
             std::stringstream ss;
             ss << "Error: Could not read image: " << m_buffer.geterror();
-            throw Exception(ss.str().c_str());
+            throw Exception();
         }
     }
 
@@ -261,7 +261,7 @@ public:
         {
             std::stringstream ss;
             ss << "Error: Could not write image: " << m_buffer.geterror();
-            throw Exception(ss.str().c_str());
+            throw Exception();
         }
     }
 

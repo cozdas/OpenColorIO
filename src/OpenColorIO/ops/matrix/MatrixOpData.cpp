@@ -492,7 +492,7 @@ void MatrixOpData::validate() const
         oss << "Matrix array content issue: ";
         oss << e.what();
 
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     if (m_direction == TRANSFORM_DIR_INVERSE)
     {
@@ -633,7 +633,7 @@ double MatrixOpData::getOffsetValue(unsigned long index) const
         oss << index;
         oss << "'. ";
 
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     return m_offsets[index];
@@ -652,7 +652,7 @@ void MatrixOpData::setOffsetValue(unsigned long index, double value)
         oss << index;
         oss << "'. ";
 
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     m_offsets[index] = value;

@@ -201,7 +201,7 @@ public:
             os << m_fileName.c_str() << "). ";
             os << "Number of characters in 'data' must be multiple of 8. ";
             os << m_lutString.size() << " elements found.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         lutSize = m_lutSize;
@@ -219,7 +219,7 @@ public:
                 os << m_fileName.c_str() << "). ";
                 os << "Non-hex characters found in 'data' block ";
                 os << "at index '" << (8 * i) << "'.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
             lut.push_back(fval);
         }
@@ -231,7 +231,7 @@ public:
             os << m_fileName.c_str() << "). ";
             os << "Incorrect number of lut3d entries. ";
             os << "Found " << lut.size() << " values, expected " << expactedVectorSize << ".";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
     }
@@ -245,7 +245,7 @@ private:
         os << m_fileName.c_str() << "). ";
         os << "Error is: " << error.c_str();
         os << ". At line (" << m_lineNumber << ")";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Start the parsing of one element
@@ -557,7 +557,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Iridas .look Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());

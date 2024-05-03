@@ -53,7 +53,7 @@ void ThrowInvalidRegex(const char * globPattern, const char * what)
     std::ostringstream oss;
     oss << "File rules: invalid regular expression '" << std::string(globPattern)
         << "' with '" << std::string(what) << "'.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 std::string ConvertToRegularExpression(const char * globPattern, bool ignoreCase)
@@ -255,7 +255,7 @@ std::string BuildRegularExpression(const char * filePathPattern, const char * fi
             << " and extension '" << fileNameExtension << "': '"
             << ex.what()
             << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     return res;
 }
@@ -280,7 +280,7 @@ void ValidateRegularExpression(const char * regex)
             << "': '"
             << ex.what() 
             << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -516,7 +516,7 @@ public:
                     oss << "File rules: rule named '" << m_name << "' is referencing '"
                         << m_colorSpace << "' that is neither a color space nor a named "
                                            "transform.";
-                    throw Exception(oss.str().c_str());
+                    throw Exception(oss);
                 }
             }
         }
@@ -592,13 +592,13 @@ void FileRules::Impl::validatePosition(size_t ruleIndex, DefaultAllowed allowDef
         std::ostringstream oss;
         oss << "File rules: rule index '" << ruleIndex << "' invalid."
             << " There are only '" << numRules << "' rules.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     if (allowDefault == DEFAULT_NOT_ALLOWED && ruleIndex + 1 == numRules)
     {
         std::ostringstream oss;
         oss << "File rules: rule index '" << ruleIndex << "' is the default rule.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -617,7 +617,7 @@ void FileRules::Impl::validateNewRule(size_t ruleIndex, const char * name) const
     {
         std::ostringstream oss;
         oss << "File rules: A rule named '" << name << "' already exists.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     validatePosition(ruleIndex, DEFAULT_ALLOWED);
     if (0==Platform::Strcasecmp(name, FileRules::DefaultRuleName))
@@ -625,7 +625,7 @@ void FileRules::Impl::validateNewRule(size_t ruleIndex, const char * name) const
         std::ostringstream oss;
         oss << "File rules: Default rule already exists at index "
             << " '" << m_rules.size() - 1 << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -654,7 +654,7 @@ void FileRules::Impl::moveRule(size_t ruleIndex, int offset)
         std::ostringstream oss;
         oss << "File rules: rule at index '" << ruleIndex << "' may not be moved to index '"
             << newIndex << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     auto rule = m_rules[ruleIndex];
     m_rules.erase(m_rules.begin() + ruleIndex);
@@ -702,7 +702,7 @@ size_t FileRules::getIndexForRule(const char * ruleName) const
 
     std::ostringstream oss;
     oss << "File rules: rule name '" << ruleName << "' not found.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 const char * FileRules::getName(size_t ruleIndex) const
@@ -779,7 +779,7 @@ const char * FileRules::getCustomKeyName(size_t ruleIndex, size_t key) const
         oss << "File rules: the custom key access for file rule '"
             << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' failed: " << e.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -796,7 +796,7 @@ const char * FileRules::getCustomKeyValue(size_t ruleIndex, size_t key) const
         oss << "File rules: the custom key access for file rule '"
             << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' failed: " << e.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -812,7 +812,7 @@ void FileRules::setCustomKey(size_t ruleIndex, const char * key, const char * va
         std::ostringstream oss;
         oss << "File rules: rule named '" << std::string(m_impl->m_rules[ruleIndex]->getName())
             << "' error: " << e.what();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 

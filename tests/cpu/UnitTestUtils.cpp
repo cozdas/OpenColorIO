@@ -90,7 +90,7 @@ std::string CreateTemporaryDirectory(const std::string & name)
         std::ostringstream error;
         error << "Could not create a temporary directory." << " Make sure that the directory do "
         << "not already exist or sufficient permissions are set";
-        throw Exception(error.str().c_str());
+        throw Exception(error);
     }
 
     return directory;
