@@ -399,6 +399,12 @@ void FormatMetadataImpl::setName(const char * name) noexcept
     addAttribute(attrib);
 }
 
+void FormatMetadataImpl::setName(const std::string& name) noexcept
+{
+	addAttribute(Attribute(METADATA_NAME, name));
+}
+
+
 const char * FormatMetadataImpl::getID() const noexcept
 {
     return getAttributeValueString(METADATA_ID).c_str();

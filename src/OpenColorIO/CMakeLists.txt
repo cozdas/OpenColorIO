@@ -221,6 +221,14 @@ if(OCIO_USE_SIMD AND (OCIO_ARCH_X86 OR OCIO_USE_SSE2NEON))
     set_property(SOURCE ops/lut3d/Lut3DOpCPU_AVX512.cpp APPEND PROPERTY COMPILE_OPTIONS ${OCIO_AVX512_ARGS})
 endif()
 
+if(NOT OCIO_USE_HALF_LOOKUP_TABLE)
+    add_compile_definitions(IMATH_HALF_NO_LOOKUP_TABLE)
+endif()
+if(OCIO_HAS_STUDIO_CONFIG)
+    add_compile_definitions(OCIO_HAS_STUDIO_CONFIG)
+endif()
+
+
 configure_file(CPUInfoConfig.h.in CPUInfoConfig.h)
 
 add_library(OpenColorIO ${SOURCES})
@@ -379,6 +387,15 @@ if(WIN32)
 endif()
 
 set(CUSTOM_LINK_FLAGS ${PLATFORM_LINK_OPTIONS})
+set(CUSTOM_COMPILE_FLAGS ${PLATFORM_COMPILE_OPTIONS})
+
+if(MSVC)
+    # enable source level parallel build, use those cores!
+    add_compile_options("/MP")
+    target_compile_options(OpenColorIO PRIVATE "/MP")
+    set(CUSTOM_COMPILE_OPTIONS "${CUSTOM_COMPILE_OPTIONS} /MP")
+
+endif()
 
 if(UNIX AND NOT APPLE)
     # Also hide all the symbols of dependent libraries to prevent clashes if
@@ -426,7 +443,7 @@ endif()
 
 set_target_properties(OpenColorIO PROPERTIES
     OUTPUT_NAME   ${PROJECT_NAME}${OCIO_LIBNAME_SUFFIX}
-    COMPILE_OPTIONS "${PLATFORM_COMPILE_OPTIONS}"
+    COMPILE_OPTIONS "${CUSTOM_COMPILE_OPTIONS}"
     LINK_OPTIONS "${CUSTOM_LINK_FLAGS}"
     PUBLIC_HEADER "${INSTALL_HEADERS}"
 )

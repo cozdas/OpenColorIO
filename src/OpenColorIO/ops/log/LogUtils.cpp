@@ -55,7 +55,7 @@ LogStyle ConvertStringToStyle(const char * str)
         {
             std::stringstream ss("Unknown Log style: '");
             ss << str << "'.";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 
@@ -87,7 +87,7 @@ const char * ConvertStyleToString(LogStyle style)
     std::stringstream ss("Unknown Log style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 
@@ -143,7 +143,7 @@ void ValidateLegacyParams(const CTFParams::Params & ctfParams)
         oss << "Log: Invalid gamma value '";
         oss << gamma;
         oss << "', gamma should be greater than 0.01.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     // refWhite > refBlack.
@@ -153,7 +153,7 @@ void ValidateLegacyParams(const CTFParams::Params & ctfParams)
         oss << "Log: Invalid refWhite '" << refWhite;
         oss << "' and refBlack '" << refBlack;
         oss << "', refWhite should be greater than refBlack.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     // highlight > shadow.
@@ -163,7 +163,7 @@ void ValidateLegacyParams(const CTFParams::Params & ctfParams)
         oss << "Log: Invalid highlight '" << highlight;
         oss << "' and shadow '" << shadow;
         oss << "', highlight should be greater than shadow.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 

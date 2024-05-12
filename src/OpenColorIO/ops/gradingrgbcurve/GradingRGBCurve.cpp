@@ -102,7 +102,7 @@ void GradingRGBCurveImpl::validate() const
             std::ostringstream oss;
             oss << "GradingRGBCurve validation failed for '" << CurveType(c) << "' curve "
                 << "with: " << e.what();
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
 }

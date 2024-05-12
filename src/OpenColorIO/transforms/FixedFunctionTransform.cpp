@@ -87,7 +87,7 @@ void FixedFunctionTransformImpl::validate() const
     {
         std::string errMsg("FixedFunctionTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
+
 
 #include <sstream>
 #include <fstream>
 
 #include <pystring.h>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "Logging.h"
 #include "fileformats/FileFormatUtils.h"
@@ -124,7 +126,7 @@ void LocalFileFormat::ThrowErrorMessage(const std::string & error,
     os << ").  ";
     os << error;
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 LocalCachedFileRcPtr LocalFileFormat::ReadInfo(std::istream & istream, 
@@ -754,7 +756,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -891,7 +893,7 @@ std::string GetProfileDescriptionFromICCProfile(const char * ICCProfileFilepath)
         os << "The specified file '";
         os << ICCProfileFilepath << "' could not be opened. ";
         os << "Please confirm the file exists with appropriate read permissions.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     SampleICC::IccContent icc;
@@ -910,3 +912,4 @@ std::string GetProfileDescriptionFromICCProfile(const char * ICCProfileFilepath)
 }
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

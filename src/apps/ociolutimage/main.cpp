@@ -80,7 +80,7 @@ void Generate(int cubesize, int maxwidth,
             std::ostringstream os;
             os << "You must specify an OCIO configuration ";
             os << "(either with --config or $OCIO).";
-            throw OCIO::Exception(os.str().c_str());
+            throw OCIO::Exception(os);
         }
 
         OCIO::ConstCPUProcessorRcPtr processor =
@@ -112,7 +112,7 @@ void Extract(int cubesize, int maxwidth,
         os << "Image does not have expected dimensions. ";
         os << "Expected " << width << "x" << height << ", ";
         os << "Found " << img.getWidth() << "x" << img.getHeight();
-        throw OCIO::Exception(os.str().c_str());
+        throw OCIO::Exception(os);
     }
 
     if (img.getNumChannels() != 3)
@@ -287,7 +287,7 @@ void WriteLut3D(const std::string & filename, const float* lutdata, int edgeLen)
         os << "Only .spi3d writing is currently supported. ";
         os << "As a work around, please write a .spi3d file, and then use ";
         os << "ociobakelut for transcoding.";
-        throw OCIO::Exception(os.str().c_str());
+        throw OCIO::Exception(os);
     }
 
     std::ofstream output;
@@ -296,7 +296,7 @@ void WriteLut3D(const std::string & filename, const float* lutdata, int edgeLen)
     {
         std::ostringstream os;
         os <<  "Error opening " << filename << " for writing.";
-        throw OCIO::Exception(os.str().c_str());
+        throw OCIO::Exception(os);
     }
 
     output << "SPILUT 1.0\n";

@@ -187,7 +187,7 @@ void GpuShaderCreator::addDynamicProperty(DynamicPropertyRcPtr & prop)
         // Dynamic property is already there.
         std::ostringstream oss;
         oss << "Dynamic property already here: " << prop->getType() << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     getImpl()->m_dynamicProperties.push_back(prop);
@@ -205,7 +205,7 @@ DynamicPropertyRcPtr GpuShaderCreator::getDynamicProperty(unsigned index) const
         std::ostringstream oss;
         oss << "Dynamic properties access error: index = " << index
             << " where size = " << getImpl()->m_dynamicProperties.size();
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     return getImpl()->m_dynamicProperties[index];
 }

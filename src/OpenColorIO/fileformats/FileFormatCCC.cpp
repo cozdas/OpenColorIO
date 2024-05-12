@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
-#include <map>
+#include "transforms/FileTransform.h"
 
-#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
+
+#include <map>
 
 #include "fileformats/cdl/CDLParser.h"
 #include "fileformats/cdl/CDLWriter.h"
@@ -11,7 +13,6 @@
 #include "fileformats/xmlutils/XMLWriterUtils.h"
 #include "fileformats/FormatMetadata.h"
 #include "transforms/CDLTransform.h"
-#include "transforms/FileTransform.h"
 #include "OpBuilders.h"
 #include "ParseUtils.h"
 
@@ -115,7 +116,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & /*config*/,
     {
         std::ostringstream os;
         os << "Write to " << formatName << ": there should be at least one CDL.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     for (int i = 0; i < numCDL; ++i)
     {
@@ -124,7 +125,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & /*config*/,
         {
             std::ostringstream os;
             os << "Write to " << formatName << ": only CDL can be written.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -169,7 +170,7 @@ void LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .ccc Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -257,3 +258,4 @@ FileFormat * CreateFileFormatCCC()
     return new LocalFileFormat();
 }
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

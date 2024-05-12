@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
+#include "transforms/CDLTransform.h"
+
+#if OCIO_LUT_SUPPORT
+
 #include <sstream>
 
 #include "expat.h"
@@ -8,7 +12,6 @@
 #include "fileformats/cdl/CDLReaderHelper.h"
 #include "fileformats/xmlutils/XMLReaderHelper.h"
 #include "fileformats/xmlutils/XMLReaderUtils.h"
-#include "transforms/CDLTransform.h"
 #include "Platform.h"
 
 namespace OCIO_NAMESPACE
@@ -235,7 +238,7 @@ void CDLParser::Impl::throwMessage(const std::string & error) const
     os << m_fileName.c_str() << "). ";
     os << "Error is: " << error.c_str();
     os << ". At line (" << m_lineNumber << ")";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void CDLParser::Impl::parse(const std::string & buffer, bool lastLine)
@@ -985,7 +988,7 @@ void CDLParser::getCDLTransforms(CDLTransformMap & transformMap,
                 os << "Error loading ccc xml. ";
                 os << "Duplicate elements with '" << id << "' found. ";
                 os << "If id is specified, it must be unique.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
 
             transformMap[id] = pTransform;
@@ -1015,3 +1018,5 @@ bool CDLParser::isCCC() const
 }
 
 } // namespace OCIO_NAMESPACE
+
+#endif //OCIO_LUT_SUPPORT

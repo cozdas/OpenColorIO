@@ -96,6 +96,8 @@ public:
 
     const char * getName() const noexcept override;
     void setName(const char * name) noexcept override;
+	void setName(const std::string& name) noexcept override;
+
     const char * getID() const noexcept override;
     void setID(const char * id) noexcept override;
 

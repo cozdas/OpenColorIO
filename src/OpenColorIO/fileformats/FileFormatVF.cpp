@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
+
 
 #include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <iterator>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "fileformats/FileFormatUtils.h"
 #include "ops/lut3d/Lut3DOp.h"
@@ -77,7 +79,7 @@ void LocalFileFormat::ThrowErrorMessage(const std::string & error,
     }
     os << error;
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void LocalFileFormat::getFormatInfo(FormatInfoVec & formatInfoVec) const
@@ -265,7 +267,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .vf Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -320,3 +322,4 @@ FileFormat * CreateFileFormatVF()
 
 } // namespace OCIO_NAMESPACE
 
+#endif //OCIO_LUT_SUPPORT

@@ -73,7 +73,7 @@ void CreateOutputLutFile(const std::string & outLutFilepath, OCIO::ConstGroupTra
             << outLutFilepath
             << "'."
             << std::endl;
-        throw OCIO::Exception(oss.str().c_str());
+        throw OCIO::Exception(oss);
     }
 }
 

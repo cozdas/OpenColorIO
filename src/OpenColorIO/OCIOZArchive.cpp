@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_ARCHIVE_SUPPORT
 
 #include <sstream>
 #include <fstream>
@@ -10,7 +12,6 @@
 
 #include <pystring.h>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "Mutex.h"
 #include "Platform.h"
@@ -148,6 +149,7 @@ struct MinizipNgMemStreamGuard
  */
 void addSupportedFiles(void * archiver, const char * path, const char * configWorkingDirectory)
 {
+#if OCIO_LUT_SUPPORT
     DIR *dir = mz_os_open_dir(path);
     if (dir != NULL)
     {
@@ -192,13 +194,15 @@ void addSupportedFiles(void * archiver, const char * path, const char * configWo
 
                         std::ostringstream os;
                         os << "Could not write LUT file " << absPath << " to in-memory archive.";
-                        throw Exception(os.str().c_str());
+                        throw Exception(os);
                     }
                 }
             }
         }
         mz_os_close_dir(dir);
     }
+#endif //OCIO_LUT_SUPPORT
+
 }
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -214,7 +218,7 @@ void archiveConfig(std::ostream & ostream, const Config & config, const char * c
     {
         std::ostringstream os;
         os << "Config is not archivable.";
-        throw Exception(os.str().c_str());  
+        throw Exception(os);  
     }
 
     // Initialize.
@@ -288,7 +292,7 @@ void archiveConfig(std::ostream & ostream, const Config & config, const char * c
             {
                 std::ostringstream os;
                 os << "Could not write config to in-memory archive.";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
             // Close the entry.
             mz_zip_writer_entry_close(archiver);
@@ -297,7 +301,7 @@ void archiveConfig(std::ostream & ostream, const Config & config, const char * c
         {
             std::ostringstream os;
             os << "Could not prepare an entry for writing.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         ///////////////////////
@@ -354,7 +358,7 @@ void ExtractOCIOZArchive(const char * archivePath, const char * destination)
     {
         std::ostringstream os;
         os << "Could not open " << archivePath << " for reading.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     } 
     else 
     {
@@ -365,13 +369,13 @@ void ExtractOCIOZArchive(const char * archivePath, const char * destination)
             // The archive has no files.
             std::ostringstream os;
             os << "No files in archive.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         } 
         else if (err != MZ_OK) 
         {
             std::ostringstream os;
             os << "Could not extract: " << archivePath;
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -380,7 +384,7 @@ void ExtractOCIOZArchive(const char * archivePath, const char * destination)
     {
         std::ostringstream os;
         os << "Could not close " << archivePath << " after reading.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Clean up.
@@ -478,7 +482,7 @@ std::vector<uint8_t> getFileStringFromArchiveFile(const std::string & filepath,
         std::ostringstream os;
         os << "Could not open " << archivePath.c_str() 
            << " in order to get the file: " << filepath;
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     else
     {
@@ -541,7 +545,7 @@ void getEntriesMappingFromArchiveFile(const std::string & archivePath,
     {
         std::ostringstream os;
         os << "Could not open " << archivePath.c_str() << " in order to get the entries.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     else
     {
@@ -652,3 +656,5 @@ void CIOPOciozArchive::buildEntries()
 }
 
 } // namespace OCIO_NAMESPACE
+
+#endif //OCIO_ARCHIVE_SUPPORT

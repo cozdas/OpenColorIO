@@ -17,6 +17,9 @@
         - Add support for 'Sampling' tag
 
 */
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
+
 
 #include <algorithm>
 #include <cmath>
@@ -27,7 +30,6 @@
 #include <string>
 #include <vector>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "fileformats/FileFormatUtils.h"
 #include "MathUtils.h"
@@ -95,7 +97,7 @@ findHeaderItem(StringToStringVecMap& headers,
     {
         std::ostringstream os;
         os << "'" << key << "' line not found";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Error if incorrect number of values is found
@@ -115,7 +117,7 @@ findHeaderItem(StringToStringVecMap& headers,
             os << "between " << min_vals << " and " << max_vals;
         }
 
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return iter->second;
@@ -172,7 +174,7 @@ readLuts(std::istream& istream,
                     os << "Malformed LUT - Unknown word '";
                     os << word << "' after LUT name '";
                     os << nextword << "'";
-                    throw Exception(os.str().c_str());
+                    throw Exception(os);
                 }
             }
         }
@@ -198,7 +200,7 @@ readLuts(std::istream& istream,
                 std::ostringstream os;
                 os << "Invalid float value in " << lutname;
                 os << " LUT, '" << word << "'";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
         }
         else
@@ -206,7 +208,7 @@ readLuts(std::istream& istream,
             std::ostringstream os;
             os << "Unexpected word, possibly a value outside";
             os <<" a LUT {} block. Word was '" << word << "'";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
 
         }
     }
@@ -351,7 +353,7 @@ LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "Invalid float value(s) on 'From' line, '";
             os << value[0] << "' and '"  << value[1] << "'";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         cachedFile->from_min = from_min;
         cachedFile->from_max = from_max;
@@ -371,7 +373,7 @@ LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "Invalid float value(s) on 'To' line, '";
             os << value[0] << "' and '"  << value[1] << "'";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         cachedFile->to_min = to_min;
         cachedFile->to_max = to_max;
@@ -390,7 +392,7 @@ LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "Invalid float value on 'Black' line, '";
             os << value[0] << "'";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         cachedFile->hdlblack = black;
     }
@@ -405,7 +407,7 @@ LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "Invalid float value on 'White' line, '";
             os << value[0] << "'";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         cachedFile->hdlwhite = white;
     }
@@ -419,7 +421,7 @@ LocalFileFormat::read(std::istream & istream,
         {
             std::ostringstream os;
             os << "Unsupported Houdini LUT type: '" << ltype << "'";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -442,7 +444,7 @@ LocalFileFormat::read(std::istream & istream,
                 std::ostringstream os;
                 os << "Invalid integer on 'Length' line: ";
                 os << "'" << value[0] << "'";
-                throw Exception(os.str().c_str());
+                throw Exception(os);
             }
             lut_sizes.push_back(tmpsize);
         }
@@ -486,7 +488,7 @@ LocalFileFormat::read(std::istream & istream,
         {
             std::ostringstream os;
             os << "3D+1D LUT should contain Pre{} LUT section";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if(size_prelut != static_cast<int>(lut_iter->second.size()))
@@ -494,7 +496,7 @@ LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "Pre{} LUT was " << lut_iter->second.size();
             os << " values long, expected " << size_prelut << " values";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         cachedFile->setLUT1D(lut_iter->second, interp);
@@ -511,7 +513,7 @@ LocalFileFormat::read(std::istream & istream,
         {
             std::ostringstream os;
             os << "3D LUT section not found";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         int size_3d_cubed = size_3d * size_3d * size_3d;
@@ -527,7 +529,7 @@ LocalFileFormat::read(std::istream & istream,
             os << "(" << foundlines << " lines), ";
             os << "expected " << (size_3d_cubed*3) << " values ";
             os << "(" << size_3d_cubed << " lines)";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         lut3d_ptr->setArrayFromRedFastestOrder(lut_iter->second);
@@ -544,7 +546,7 @@ LocalFileFormat::read(std::istream & istream,
         {
             std::ostringstream os;
             os << "3D+1D LUT should contain Pre{} LUT section";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if(size_1d != static_cast<int>(lut_iter->second.size()))
@@ -552,7 +554,7 @@ LocalFileFormat::read(std::istream & istream,
             std::ostringstream os;
             os << "RGB{} LUT was " << lut_iter->second.size();
             os << " values long, expected " << size_1d << " values";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         cachedFile->setLUT1D(lut_iter->second, interp);
@@ -571,7 +573,7 @@ void LocalFileFormat::bake(const Baker & baker,
         std::ostringstream os;
         os << "Unknown hdl format name, '";
         os << formatName << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // setup the floating point precision
@@ -812,7 +814,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Houdini Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -886,3 +888,4 @@ FileFormat * CreateFileFormatHDL()
 }
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

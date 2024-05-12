@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
+#include <OpenColorIO/OpenColorIO.h>
+
+#if OCIO_LUT_SUPPORT
+
 #include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <sstream>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "fileformats/FileFormatUtils.h"
 #include "ops/lut1d/Lut1DOp.h"
@@ -319,7 +322,7 @@ void LocalFileFormat::bake(const Baker & baker,
         std::ostringstream os;
         os << "Unknown spi format name, '";
         os << formatName << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     //
@@ -398,7 +401,7 @@ void LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Spi1D Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -449,7 +452,7 @@ void LocalFileFormat::ThrowErrorMessage(const std::string & error,
         os << " (" << lineContent << ")";
     }
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 }
 
@@ -459,3 +462,4 @@ FileFormat * CreateFileFormatSpi1D()
 }
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

@@ -92,7 +92,7 @@ void LookTransform::validate() const
     {
         std::string errMsg("LookTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     if (getImpl()->m_src.empty())
@@ -237,7 +237,7 @@ void RunLookTokens(OpRcPtrVec & ops,                         // [in/out]
                 os << ").";
             }
 
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         OpRcPtrVec tmpOps;
@@ -280,7 +280,7 @@ void RunLookTokens(OpRcPtrVec & ops,                         // [in/out]
             os << "The specified look, '" << lookTokens[i].name;
             os << "', requires processing in the ColorSpace, '";
             os << look->getProcessSpace() << "' which is not defined.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
 
         if (!currentColorSpace)
@@ -319,7 +319,7 @@ void BuildLookOps(OpRcPtrVec & ops,
         os << "BuildLookOps error.";
         os << "The specified lookTransform specifies a src colorspace, '";
         os <<  lookTransform.getSrc() << "', which is not defined.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     ConstColorSpaceRcPtr dst = config.getColorSpace(lookTransform.getDst());
@@ -329,7 +329,7 @@ void BuildLookOps(OpRcPtrVec & ops,
         os << "BuildLookOps error.";
         os << "The specified lookTransform specifies a dst colorspace, '";
         os <<  lookTransform.getDst() << "', which is not defined.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     LookParseResult looks;

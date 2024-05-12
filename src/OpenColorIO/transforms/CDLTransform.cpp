@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
 
 #include <fstream>
 #include <sstream>
 #include <string.h>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "fileformats/cdl/CDLParser.h"
 #include "Logging.h"
@@ -80,7 +81,7 @@ CDLTransformRcPtr GetCDL(GroupTransformRcPtr & group, const std::string & cdlId)
     std::ostringstream os;
     os << "The specified CDL Id/Index '" << cdlId;
     os << "' could not be loaded from the file.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 CDLTransformRcPtr CDLTransform::CreateFromFile(const char * src, const char * cdlId_)
@@ -150,7 +151,7 @@ void CDLTransformImpl::validate() const
     {
         std::string errMsg("CDLTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 
@@ -387,3 +388,4 @@ std::ostream & operator<< (std::ostream & os, const CDLTransform & t)
 
 } // namespace OCIO_NAMESPACE
 
+#endif //OCIO_LUT_SUPPORT

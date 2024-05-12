@@ -40,7 +40,7 @@ double GetBitDepthMaxValue(BitDepth in)
             std::string err(errBDNotSupported);
             err += BitDepthToString(in);
             err += ".";
-            throw Exception(err.c_str());
+            throw Exception(err);
         }
     }
 }
@@ -112,7 +112,7 @@ bool IsFloatBitDepth(BitDepth in)
             std::string err(errBDNotSupported);
             err += BitDepthToString(in);
             err += ".";
-            throw Exception(err.c_str());
+            throw Exception(err);
         }
     }
 }
@@ -142,7 +142,7 @@ unsigned GetChannelSizeInBytes(BitDepth in)
             std::string err(errBDNotSupported);
             err += BitDepthToString(in);
             err += ".";
-            throw Exception(err.c_str());
+            throw Exception(err);
         }
     }
 }

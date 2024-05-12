@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
+
 
 #include <algorithm>
 #include <cmath>
@@ -10,7 +13,6 @@
 
 #include <pystring.h>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "BitDepthUtils.h"
 #include "fileformats/FileFormatUtils.h"
@@ -694,7 +696,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
             os << " At line (" << errline << "): '";
             os << errorLine << "'.";
         }
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const BitDepth inputBD = Lut1dUtils::GetBitDepth(discreetLut1d->srcBitDepth);
@@ -748,7 +750,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .lut Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -772,3 +774,4 @@ FileFormat * CreateFileFormatDiscreet1DL()
 }
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

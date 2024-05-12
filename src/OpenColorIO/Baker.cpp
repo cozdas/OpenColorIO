@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
 
 
 #include <iostream>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "transforms/FileTransform.h"
 #include "BakingUtils.h"
@@ -135,7 +136,7 @@ void Baker::setFormat(const char * formatName)
     std::ostringstream os;
     os << "File format " << formatName;
     os << " does not support baking.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 const char * Baker::getFormat() const
@@ -243,7 +244,7 @@ void Baker::bake(std::ostream & os) const
         std::ostringstream err;
         err << "The format named '" << getImpl()->m_formatName;
         err << "' could not be found. ";
-        throw Exception(err.str().c_str());
+        throw Exception(err);
     }
 
     FormatInfoVec fmtInfoVec;
@@ -284,14 +285,14 @@ void Baker::bake(std::ostream & os) const
     {
         std::ostringstream os;
         os << "Could not find input colorspace '" << inputSpace << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if(colorSpaceMode && !getConfig()->getColorSpace(targetSpace.c_str()))
     {
         std::ostringstream os;
         os << "Could not find target colorspace '" << targetSpace << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if(displayViewMode)
@@ -332,13 +333,13 @@ void Baker::bake(std::ostream & os) const
         {
             std::ostringstream os;
             os << "Could not find display '" << display << "'.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
         else if (!foundView)
         {
             std::ostringstream os;
             os << "Could not find view '" << view << "'.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -348,7 +349,7 @@ void Baker::bake(std::ostream & os) const
         std::ostringstream os;
         os << "The format '" << getImpl()->m_formatName << "' does not support";
         os << " transformations with channel crosstalk.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if(getCubeSize() != -1 && getCubeSize() < 2)
@@ -363,7 +364,7 @@ void Baker::bake(std::ostream & os) const
     {
         std::ostringstream os;
         os << "The format '" << getImpl()->m_formatName << "' does not support shaper space.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if(!shaperSpace.empty() && getShaperSize() != -1 && getShaperSize() < 2)
@@ -371,7 +372,7 @@ void Baker::bake(std::ostream & os) const
         std::ostringstream os;
         os << "A shaper space '" << getShaperSpace() << "' has";
         os << " been specified, so the shaper size must be 2 or larger.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     if(!shaperSpace.empty())
@@ -386,7 +387,7 @@ void Baker::bake(std::ostream & os) const
             os << "' has channel crosstalk, which is not appropriate for";
             os << " shapers. Please select an alternate shaper space or";
             os << " omit this option.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -399,7 +400,7 @@ void Baker::bake(std::ostream & os) const
         std::ostringstream err;
         err << "Error baking " << getImpl()->m_formatName << ":";
         err << e.what();
-        throw Exception(err.str().c_str());
+        throw Exception(err);
     }
 
     // 
@@ -414,3 +415,4 @@ void Baker::bake(std::ostream & os) const
 }
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

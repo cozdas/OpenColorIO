@@ -92,7 +92,7 @@ void AllocationTransform::validate() const
     {
         std::string errMsg("AllocationTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     if (getImpl()->m_allocation == ALLOCATION_UNIFORM)

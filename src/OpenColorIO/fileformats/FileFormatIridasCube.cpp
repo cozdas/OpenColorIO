@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
+#include <OpenColorIO/OpenColorIO.h>
+
+#if OCIO_LUT_SUPPORT
+
 
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <iterator>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "fileformats/FileFormatUtils.h"
 #include "ops/lut1d/Lut1DOp.h"
@@ -134,7 +137,7 @@ void LocalFileFormat::ThrowErrorMessage(const std::string & error,
     }
     os << error;
 
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 void LocalFileFormat::getFormatInfo(FormatInfoVec & formatInfoVec) const
@@ -451,7 +454,7 @@ void LocalFileFormat::bake(const Baker & baker,
         std::ostringstream os;
         os << "Unknown cube format name, '";
         os << formatName << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     ConstConfigRcPtr config = baker.getConfig();
@@ -507,7 +510,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build Iridas .cube Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -564,3 +567,5 @@ FileFormat * CreateFileFormatIridasCube()
 }
 
 } // namespace OCIO_NAMESPACE
+
+#endif //OCIO_LUT_SUPPORT

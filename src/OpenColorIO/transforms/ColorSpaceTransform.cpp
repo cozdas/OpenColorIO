@@ -91,7 +91,7 @@ void ColorSpaceTransform::validate() const
     {
         std::string errMsg("ColorSpaceTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     if (getImpl()->m_src.empty())
@@ -158,7 +158,7 @@ void ThrowMissingCS(const char * cs)
 {
     std::ostringstream os;
     os << "Color space '" << cs << "' could not be found.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 }
 

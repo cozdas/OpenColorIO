@@ -62,7 +62,7 @@ void LogCameraTransformImpl::validate() const
     {
         std::string errMsg("LogCameraTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

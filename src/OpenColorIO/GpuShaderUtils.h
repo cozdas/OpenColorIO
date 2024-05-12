@@ -50,7 +50,10 @@ public:
     explicit GpuShaderText(GpuLanguage lang);
 
     // Create a new GpuShaderLine instance and associate it with the GpuShaderText object.
-    GpuShaderLine newLine();
+    //GpuShaderLine newLine();
+    std::ostringstream& newLine() {
+        return m_ossText;
+    }
 
     // Get the shader string produced so far
     std::string string() const;

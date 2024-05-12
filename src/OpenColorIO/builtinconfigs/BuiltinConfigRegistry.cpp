@@ -86,7 +86,9 @@ void BuiltinConfigRegistryImpl::init() noexcept
         m_builtinConfigs.clear();
         
         CGCONFIG::Register(*this);
+#if OCIO_HAS_STUDIO_CONFIG
         STUDIOCONFIG::Register(*this);
+#endif //OCIO_HAS_STUDIO_CONFIG
     }
 }
 
@@ -155,7 +157,7 @@ const char * BuiltinConfigRegistryImpl::getBuiltinConfigByName(const char * conf
 
     std::ostringstream os;
     os << "Could not find '" << configName << "' in the built-in configurations.";
-    throw Exception(os.str().c_str());
+    throw Exception(os);
 }
 
 bool BuiltinConfigRegistryImpl::isBuiltinConfigRecommended(size_t configIndex) const

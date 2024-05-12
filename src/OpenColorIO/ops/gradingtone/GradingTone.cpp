@@ -72,14 +72,14 @@ void GradingTone::validate() const
         {
             std::ostringstream oss;
             oss << "GradingTone blacks '" << bd << "' are below lower bound (" << MinBMW << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (bd.m_width < MinWSCTol)
         {
             std::ostringstream oss;
             oss << "GradingTone blacks width '" << bd.m_width << "' is below lower bound ("
                 << MinWSC << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (bd.m_red    > MaxBMWTol ||
             bd.m_green  > MaxBMWTol ||
@@ -88,7 +88,7 @@ void GradingTone::validate() const
         {
             std::ostringstream oss;
             oss << "GradingTone blacks '" << bd << "' are above upper bound (" << MaxBMW << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
     {
@@ -102,14 +102,14 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone midtones '" << midtones << "' are below lower bound ("
                 << MinBMW << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (midtones.m_width < MinWSCTol)
         {
             std::ostringstream oss;
             oss << "GradingTone midtones width '" << midtones.m_width << "' is below lower bound ("
                 << MinWSC << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (midtones.m_red    > MaxBMWTol ||
             midtones.m_green  > MaxBMWTol ||
@@ -119,7 +119,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone midtones '" << midtones << "' are above upper bound ("
                 << MaxBMW << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
     {
@@ -133,14 +133,14 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone whites '" << dw << "' are below lower bound ("
                 << MinBMW << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (dw.m_width < MinWSCTol)
         {
             std::ostringstream oss;
             oss << "GradingTone whites width '" << dw.m_width << "' is below lower bound ("
                 << MinWSC << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (dw.m_red    > MaxBMWTol ||
             dw.m_green  > MaxBMWTol ||
@@ -150,7 +150,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone white '" << dw << "' are above upper bound ("
                 << MaxBMW << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
     {
@@ -164,7 +164,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone shadows '" << shadows << "' are below lower bound ("
                 << MinSH << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         // Check that pivot is not overlapping start.
         if (shadows.m_start < shadows.m_width + MinWSCTol)
@@ -172,7 +172,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone shadows start '" << shadows.m_start << "' is less than pivot ('"
                 << shadows.m_width << "' + " << MinWSC << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (shadows.m_red    > MaxSHTol ||
             shadows.m_green  > MaxSHTol ||
@@ -182,7 +182,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone shadows '" << shadows << "' are above upper bound ("
                 << MaxSH << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
     {
@@ -196,7 +196,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone highlights '" << hl << "' are below lower bound ("
                 << MinSH << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         // Check that pivot is not overlapping start.
         if (hl.m_start > hl.m_width - MinWSCTol)
@@ -204,7 +204,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone highlights start '" << hl.m_start << "' is greater than pivot ('"
                 << hl.m_width << "' - " << MinWSC << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (hl.m_red    > MaxSHTol ||
             hl.m_green  > MaxSHTol ||
@@ -214,7 +214,7 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone highlights '" << hl << "' are above upper bound ("
                 << MaxSH << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
     {
@@ -223,14 +223,14 @@ void GradingTone::validate() const
             std::ostringstream oss;
             oss << "GradingTone s-contrast '" << m_scontrast << "' is below lower bound ("
                 << MinWSC << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
         if (m_scontrast > MaxSCTol)
         {
             std::ostringstream oss;
             oss << "GradingTone s-contrast '" << m_scontrast << "' is above upper bound ("
                 << MaxSC << ").";
-            throw Exception(oss.str().c_str());
+            throw Exception(oss);
         }
     }
 }

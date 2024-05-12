@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
-#include <sstream>
-
 #include <OpenColorIO/OpenColorIO.h>
+
+#if OCIO_LUT_SUPPORT
+
+#include <sstream>
 
 #include "BitDepthUtils.h"
 #include "HashUtils.h"
@@ -201,7 +203,7 @@ void Lut3DOpData::Lut3DArray::resize(unsigned long length, unsigned long numColo
         std::ostringstream oss;
         oss << "LUT 3D: Grid size '" << length
             << "' must not be greater than '" << maxSupportedLength << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     Array::resize(length, numColorComponents);
 }
@@ -320,7 +322,7 @@ void Lut3DOpData::setArrayFromRedFastestOrder(const std::vector<float> & lut)
         std::ostringstream oss;
         oss << "Lut3D length '" << lutSize << " * " << lutSize << " * " << lutSize << " * 3";
         oss << "' does not match the vector size '"<< lut.size()  <<"'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     for (unsigned long b = 0; b < lutSize; ++b)
@@ -368,7 +370,7 @@ void Lut3DOpData::validate() const
         oss << "Lut3D does not support interpolation algorithm: ";
         oss << InterpolationToString(getInterpolation());
         oss << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     try
@@ -381,7 +383,7 @@ void Lut3DOpData::validate() const
         oss << "Lut3D content array issue: ";
         oss << e.what();
 
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     if (getArray().getNumColorComponents() != 3)
@@ -396,7 +398,7 @@ void Lut3DOpData::validate() const
         oss << "Lut3D length: " << getArray().getLength();
         oss << " is not supported. ";
 
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -500,3 +502,5 @@ bool operator==(const Lut3DOpData & lhs, const Lut3DOpData & rhs)
 }
 
 } // namespace OCIO_NAMESPACE
+
+#endif //OCIO_LUT_SUPPORT

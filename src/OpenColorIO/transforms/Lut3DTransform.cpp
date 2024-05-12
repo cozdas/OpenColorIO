@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
+#include <OpenColorIO/OpenColorIO.h>
+
+#if OCIO_LUT_SUPPORT
+
 #include <algorithm>
 #include <cstring>
 #include <sstream>
 #include <vector>
-
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "transforms/Lut3DTransform.h"
 
@@ -65,7 +67,7 @@ void Lut3DTransformImpl::validate() const
     {
         std::string errMsg("Lut3DTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 
@@ -121,7 +123,7 @@ void CheckLUT3DIndex(const char * function,
         oss << "Lut3DTransform " << function << ": " << component << " index (";
         oss << index << ") should be less than the grid size (";
         oss << size << ").";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 }
@@ -219,3 +221,4 @@ std::ostream & operator<< (std::ostream & os, const Lut3DTransform & t)
 
 } // namespace OCIO_NAMESPACE
 
+#endif //OCIO_LUT_SUPPORT

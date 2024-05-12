@@ -63,7 +63,7 @@ void GroupTransformImpl::validate() const
     {
         std::string errMsg("GroupTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     for(const auto & val : m_vec)
@@ -83,7 +83,7 @@ ConstTransformRcPtr GroupTransformImpl::getTransform(int index) const
     {
         std::ostringstream os;
         os << "Invalid transform index " << index << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return m_vec[index];
@@ -95,7 +95,7 @@ TransformRcPtr & GroupTransformImpl::getTransform(int index)
     {
         std::ostringstream os;
         os << "Invalid transform index " << index << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return m_vec[index];
@@ -111,6 +111,7 @@ void GroupTransformImpl::prependTransform(TransformRcPtr transform) noexcept
     m_vec.insert(m_vec.begin(), transform);
 }
 
+#if OCIO_LUT_SUPPORT
 void GroupTransformImpl::write(const ConstConfigRcPtr & config,
                                const char * formatName,
                                std::ostream & os) const
@@ -122,7 +123,7 @@ void GroupTransformImpl::write(const ConstConfigRcPtr & config,
         std::ostringstream err;
         err << "The format named '" << formatName;
         err << "' could not be found. ";
-        throw Exception(err.str().c_str());
+        throw Exception(err);
     }
 
     try
@@ -134,7 +135,7 @@ void GroupTransformImpl::write(const ConstConfigRcPtr & config,
         std::ostringstream err;
         err << "Error writing format '" << formatName << "': ";
         err << e.what();
-        throw Exception(err.str().c_str());
+        throw Exception(err);
     }
 }
 
@@ -152,6 +153,29 @@ const char * GroupTransform::GetFormatExtensionByIndex(int index) noexcept
 {
     return FormatRegistry::GetInstance().getFormatExtensionByIndex(FORMAT_CAPABILITY_WRITE, index);
 }
+#else
+void GroupTransformImpl::write(const ConstConfigRcPtr& config,
+	const char* formatName,
+	std::ostream& os) const
+{
+	throw Exception("LUT support is OFF.");
+}
+
+int GroupTransform::GetNumWriteFormats() noexcept
+{
+    return 0;
+}
+
+const char* GroupTransform::GetFormatNameByIndex(int index) noexcept
+{
+	return nullptr;
+}
+
+const char* GroupTransform::GetFormatExtensionByIndex(int index) noexcept
+{
+	return nullptr;
+}
+#endif //OCIO_LUT_SUPPORT
 
 std::ostream & operator<< (std::ostream & os, const GroupTransform & groupTransform)
 {

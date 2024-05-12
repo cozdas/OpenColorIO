@@ -49,7 +49,7 @@ void IndexMapping::validateIndex(size_t index) const
         oss << "IndexMapping: Index ";
         oss << index << " is invalid. Should be less than ";
         oss << m_indices[0].size() << ".";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 

@@ -19,7 +19,7 @@ namespace OCIO_NAMESPACE
 
 namespace
 {
-
+#if OCIO_LUT_SUPPORT
 static void  CreateArray(const float * buf,
                          unsigned w, unsigned h, unsigned d,
                          GpuShaderDesc::TextureType type,
@@ -35,6 +35,8 @@ static void  CreateArray(const float * buf,
     res.resize(size);
     std::memcpy(&res[0], buf, size * sizeof(float));
 }
+#endif //OCIO_LUT_SUPPORT
+
 }
 
 namespace GPUShaderImpl
@@ -43,6 +45,7 @@ namespace GPUShaderImpl
 class PrivateImpl
 {
 public:
+#if OCIO_LUT_SUPPORT
     struct Texture
     {
         Texture(const char * textureName,
@@ -77,7 +80,7 @@ public:
                 ss << "The texture buffer size is invalid: ["
                    << w << " x " << h << " x " << d << "].";
 
-                throw Exception(ss.str().c_str());
+                throw Exception(ss);
             }
 
             // An unfortunate copy is mandatory to allow the creation of a GPU shader cache.
@@ -101,6 +104,7 @@ public:
     };
 
     typedef std::vector<Texture> Textures;
+#endif //OCIO_LUT_SUPPORT
 
     struct Uniform
     {
@@ -167,6 +171,7 @@ public:
 
     virtual ~PrivateImpl() {}
 
+#if OCIO_LUT_SUPPORT
     inline unsigned get3dLutMaxLength() const { return Lut3DOpData::maxSupportedLength; }
 
     inline unsigned get1dLutMaxWidth() const { return m_max1DLUTWidth; }
@@ -188,7 +193,7 @@ public:
             std::stringstream ss;
             ss  << "1D LUT size exceeds the maximum: "
                 << width << " > " << get1dLutMaxWidth();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         unsigned numDimensions = static_cast<unsigned>(dimensions);
@@ -209,7 +214,7 @@ public:
             std::ostringstream ss;
             ss << "1D LUT access error: index = " << index
                << " where size = " << m_textures.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures[index];
@@ -223,7 +228,7 @@ public:
             std::stringstream ss;
             ss << "1D LUT cannot have more than two dimensions: "
                 << t.m_dimensions << " > 2";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
         dimensions = static_cast<GpuShaderDesc::TextureDimensions>(t.m_dimensions);
         interpolation = t.m_interp;
@@ -236,7 +241,7 @@ public:
             std::ostringstream ss;
             ss << "1D LUT access error: index = " << index
                << " where size = " << m_textures.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures[index];
@@ -254,7 +259,7 @@ public:
             std::stringstream ss;
             ss  << "3D LUT edge length exceeds the maximum: "
                 << edgelen << " > " << get3dLutMaxLength();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         Texture t(textureName, samplerName, edgelen, edgelen, edgelen,
@@ -274,7 +279,7 @@ public:
             std::ostringstream ss;
             ss << "3D LUT access error: index = " << index
                << " where size = " << m_textures3D.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures3D[index];
@@ -291,12 +296,13 @@ public:
             std::ostringstream ss;
             ss << "3D LUT access error: index = " << index
                << " where size = " << m_textures3D.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const Texture & t = m_textures3D[index];
         values = &t.m_values[0];
     }
+#endif //OCIO_LUT_SUPPORT
 
     unsigned getNumUniforms() const
     {
@@ -310,7 +316,7 @@ public:
             std::ostringstream ss;
             ss << "Uniforms access error: index = " << index
                << " where size = " << m_uniforms.size();
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
         data        = m_uniforms[index].m_data;
         return m_uniforms[index].m_name.c_str();
@@ -374,8 +380,10 @@ public:
         m_uniforms.emplace_back(name, getSize, getVectorInt);
         return true;
     }
+#if OCIO_LUT_SUPPORT
     Textures m_textures;
     Textures m_textures3D;
+#endif //OCIO_LUT_SUPPORT
     Uniforms m_uniforms;
 
 private:
@@ -459,7 +467,7 @@ bool GenericGpuShaderDesc::addUniform(const char * name,
     return getImplGeneric()->addUniform(name, getSize, getVectorInt);
 }
 
-
+#if OCIO_LUT_SUPPORT
 unsigned GenericGpuShaderDesc::getTextureMaxWidth() const noexcept
 {
     return getImplGeneric()->get1dLutMaxWidth();
@@ -539,6 +547,8 @@ void GenericGpuShaderDesc::get3DTextureValues(unsigned index, const float *& val
 {
     getImplGeneric()->get3DTextureValues(index, values);
 }
+#endif //OCIO_LUT_SUPPORT
+
 
 void GenericGpuShaderDesc::Deleter(GenericGpuShaderDesc* c)
 {

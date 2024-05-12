@@ -4,13 +4,15 @@
 #ifndef INCLUDED_OCIO_FILEFORMATS_XML_XMLREADERUTILS_H
 #define INCLUDED_OCIO_FILEFORMATS_XML_XMLREADERUTILS_H
 
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
+
 
 #include <type_traits>
 #include <string>
 #include <sstream>
 #include <vector>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "MathUtils.h"
 #include "utils/StringUtils.h"
@@ -177,7 +179,7 @@ void ParseNumber(const char * str, size_t startPos, size_t endPos, T & value)
             << parsedStr
             << "' can not be parsed to numbers in '"
             << TruncateString(fullStr.c_str(), endPos, 100) << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     else if (!IsValid(value, val))
     {
@@ -188,7 +190,7 @@ void ParseNumber(const char * str, size_t startPos, size_t endPos, T & value)
             << parsedStr
             << "' are illegal in '"
             << TruncateString(fullStr.c_str(), endPos, 100) << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     else if (result.ptr != str + endPos)
     {
@@ -200,7 +202,7 @@ void ParseNumber(const char * str, size_t startPos, size_t endPos, T & value)
             << parsedStr
             << "' number is followed by unexpected characters in '"
             << TruncateString(fullStr.c_str(), endPos, 100) << "'.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 
@@ -244,5 +246,6 @@ std::vector<T> GetNumbers(const char * str, size_t len)
 }
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT
 
 #endif

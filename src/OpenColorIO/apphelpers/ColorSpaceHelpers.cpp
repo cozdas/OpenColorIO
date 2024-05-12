@@ -564,7 +564,7 @@ void ColorSpaceMenuHelperImpl::refresh()
             {
                 std::ostringstream oss;
                 oss << "Element '" << name << "' is neither a color space not a named transform.";
-                throw Exception(oss.str().c_str());
+                throw Exception(oss);
             }
         }
     }
@@ -723,8 +723,10 @@ std::ostream & operator<<(std::ostream & os, const ColorSpaceMenuHelper & menu)
 namespace ColorSpaceHelpers
 {
 
+#if OCIO_LUT_SUPPORT
 namespace
 {
+
 void AddColorSpace(ConfigRcPtr & config,
                    ColorSpaceRcPtr & colorSpace,
                    FileTransformRcPtr & userTransform,
@@ -743,7 +745,7 @@ void AddColorSpace(ConfigRcPtr & config,
         errMsg += colorSpace->getName();
         errMsg += "' already exists.";
 
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     // Step 1 - Create the color transformation.
@@ -760,7 +762,7 @@ void AddColorSpace(ConfigRcPtr & config,
         errMsg += connectionColorSpaceName;
         errMsg += "' does not exist.";
 
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 
     ConstTransformRcPtr tr = connectionCS->getTransform(COLORSPACE_DIR_TO_REFERENCE);
@@ -833,6 +835,7 @@ void AddColorSpace(ConfigRcPtr & config,
 
     AddColorSpace(config, *info, file, categories, connectionColorSpaceName);
 }
+#endif //OCIO_LUT_SUPPORT
 
 } // ColorSpaceHelpers
 

@@ -48,7 +48,7 @@ void ValidateParams(const LogOpData::Params & params, TransformDirection /* dire
         oss << "Log: Invalid linear side slope value '";
         oss << params[LIN_SIDE_SLOPE];
         oss << "', linear side slope cannot be 0.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     if (IsScalarEqualToZero(params[LOG_SIDE_SLOPE]))
     {
@@ -56,7 +56,7 @@ void ValidateParams(const LogOpData::Params & params, TransformDirection /* dire
         oss << "Log: Invalid log side slope value '";
         oss << params[LOG_SIDE_SLOPE];
         oss << "', log side slope cannot be 0.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 }
@@ -217,7 +217,7 @@ void LogOpData::validate() const
         oss << "Log: Invalid base value '";
         oss << m_base;
         oss << "', base cannot be 1.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
     else if (m_base <= 0.0)
     {
@@ -225,7 +225,7 @@ void LogOpData::validate() const
         oss << "Log: Invalid base value '";
         oss << m_base;
         oss << "', base must be greater than 0.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 }
 

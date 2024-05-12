@@ -48,7 +48,7 @@ void ExponentTransformImpl::validate() const
     {
         std::string errMsg("ExponentTransform validation failed: ");
         errMsg += ex.what();
-        throw Exception(errMsg.c_str());
+        throw Exception(errMsg);
     }
 }
 

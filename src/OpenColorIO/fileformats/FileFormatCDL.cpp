@@ -25,10 +25,11 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
 
 #include <map>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "fileformats/cdl/CDLParser.h"
 #include "fileformats/cdl/CDLWriter.h"
@@ -138,7 +139,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & /*config*/,
     {
         std::ostringstream os;
         os << "Write to " << formatName << ": there should be at least one CDL.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
     for (int i = 0; i < numCDL; ++i)
     {
@@ -147,7 +148,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & /*config*/,
         {
             std::ostringstream os;
             os << "Write to " << formatName << ": only CDL can be written.";
-            throw Exception(os.str().c_str());
+            throw Exception(os);
         }
     }
 
@@ -198,7 +199,7 @@ LocalFileFormat::buildFileOps(OpRcPtrVec & ops,
     {
         std::ostringstream os;
         os << "Cannot build .cdl Op. Invalid cache type.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     const auto newDir = CombineTransformDirections(dir, fileTransform.getDirection());
@@ -290,3 +291,4 @@ FileFormat * CreateFileFormatCDL()
 
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

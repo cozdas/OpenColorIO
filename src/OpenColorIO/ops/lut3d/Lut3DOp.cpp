@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
+#include <OpenColorIO/OpenColorIO.h>
+
+#if OCIO_LUT_SUPPORT
+
 #include <algorithm>
 #include <cmath>
 #include <limits>
 #include <sstream>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "BitDepthUtils.h"
 #include "GpuShaderUtils.h"
@@ -67,7 +70,7 @@ int Get3DLutEdgeLenFromNumPixels(int numPixels)
         os << numPixels << " element(s) does not correspond to a ";
         os << "unform cube edge length. (nearest edge length is ";
         os << dim << ").";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     return dim;
@@ -261,3 +264,4 @@ void BuildLut3DOp(OpRcPtrVec & ops,
 
 } // namespace OCIO_NAMESPACE
 
+#endif //OCIO_LUT_SUPPORT

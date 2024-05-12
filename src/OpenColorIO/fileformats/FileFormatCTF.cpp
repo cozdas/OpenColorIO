@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright Contributors to the OpenColorIO Project.
 
+#include <OpenColorIO/OpenColorIO.h>
+#if OCIO_LUT_SUPPORT
+
+
 #include <cstdio>
 #include <iostream>
 #include <fstream>
@@ -8,7 +12,6 @@
 
 #include <pystring.h>
 
-#include <OpenColorIO/OpenColorIO.h>
 
 #include "expat.h"
 #include "fileformats/ctf/CTFTransform.h"
@@ -329,7 +332,7 @@ private:
         os << m_fileName.c_str() << "). ";
         os << "Error is: " << error.c_str();
         os << ". At line (" << m_lineNumber << ")";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     // Determines if the element name is supported in the current context.
@@ -1178,7 +1181,7 @@ CachedFileRcPtr LocalFileFormat::read(std::istream & istream,
     {
         std::ostringstream oss;
         oss << "Parsing error: '" << filePath << "' is not a CTF/CLF file.";
-        throw Exception(oss.str().c_str());
+        throw Exception(oss);
     }
 
     XMLParserHelper parser(filePath);
@@ -1338,7 +1341,7 @@ void LocalFileFormat::bake(const Baker & baker,
         std::ostringstream os;
         os << "Unknown CLF/CTF file format name, '";
         os << formatName << "'.";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     //
@@ -1546,7 +1549,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & config,
         // Neither a clf nor a ctf.
         std::ostringstream os;
         os << "Error: CLF/CTF writer does not also write format " << formatName << ".";
-        throw Exception(os.str().c_str());
+        throw Exception(os);
     }
 
     OpRcPtrVec ops;
@@ -1578,3 +1581,4 @@ FileFormat * CreateFileFormatCLF()
 
 
 } // namespace OCIO_NAMESPACE
+#endif //OCIO_LUT_SUPPORT

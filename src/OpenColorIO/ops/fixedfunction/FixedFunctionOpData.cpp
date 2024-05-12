@@ -16,29 +16,29 @@ namespace DefaultValues
 const int FLOAT_DECIMALS = 7;
 }
 
-constexpr char ACES_RED_MOD_03_FWD_STR[]   = "RedMod03Fwd";
-constexpr char ACES_RED_MOD_03_REV_STR[]   = "RedMod03Rev";
-constexpr char ACES_RED_MOD_10_FWD_STR[]   = "RedMod10Fwd";
-constexpr char ACES_RED_MOD_10_REV_STR[]   = "RedMod10Rev";
-constexpr char ACES_GLOW_03_FWD_STR[]      = "Glow03Fwd";
-constexpr char ACES_GLOW_03_REV_STR[]      = "Glow03Rev";
-constexpr char ACES_GLOW_10_FWD_STR[]      = "Glow10Fwd";
-constexpr char ACES_GLOW_10_REV_STR[]      = "Glow10Rev";
-constexpr char ACES_DARK_TO_DIM_10_STR[]   = "DarkToDim10";
-constexpr char ACES_DIM_TO_DARK_10_STR[]   = "DimToDark10";
-constexpr char ACES_GAMUT_COMP_13_FWD_STR[]= "GamutComp13Fwd";
-constexpr char ACES_GAMUT_COMP_13_REV_STR[]= "GamutComp13Rev";
-constexpr char SURROUND_STR[]              = "Surround"; // Old name for Rec2100SurroundFwd
-constexpr char REC_2100_SURROUND_FWD_STR[] = "Rec2100SurroundFwd";
-constexpr char REC_2100_SURROUND_REV_STR[] = "Rec2100SurroundRev";
-constexpr char RGB_TO_HSV_STR[]            = "RGB_TO_HSV";
-constexpr char HSV_TO_RGB_STR[]            = "HSV_TO_RGB";
-constexpr char XYZ_TO_xyY_STR[]            = "XYZ_TO_xyY";
-constexpr char xyY_TO_XYZ_STR[]            = "xyY_TO_XYZ";
-constexpr char XYZ_TO_uvY_STR[]            = "XYZ_TO_uvY";
-constexpr char uvY_TO_XYZ_STR[]            = "uvY_TO_XYZ";
-constexpr char XYZ_TO_LUV_STR[]            = "XYZ_TO_LUV";
-constexpr char LUV_TO_XYZ_STR[]            = "LUV_TO_XYZ";
+constexpr const char ACES_RED_MOD_03_FWD_STR[]   = "RedMod03Fwd";
+constexpr const char ACES_RED_MOD_03_REV_STR[]   = "RedMod03Rev";
+constexpr const char ACES_RED_MOD_10_FWD_STR[]   = "RedMod10Fwd";
+constexpr const char ACES_RED_MOD_10_REV_STR[]   = "RedMod10Rev";
+constexpr const char ACES_GLOW_03_FWD_STR[]      = "Glow03Fwd";
+constexpr const char ACES_GLOW_03_REV_STR[]      = "Glow03Rev";
+constexpr const char ACES_GLOW_10_FWD_STR[]      = "Glow10Fwd";
+constexpr const char ACES_GLOW_10_REV_STR[]      = "Glow10Rev";
+constexpr const char ACES_DARK_TO_DIM_10_STR[]   = "DarkToDim10";
+constexpr const char ACES_DIM_TO_DARK_10_STR[]   = "DimToDark10";
+constexpr const char ACES_GAMUT_COMP_13_FWD_STR[]= "GamutComp13Fwd";
+constexpr const char ACES_GAMUT_COMP_13_REV_STR[]= "GamutComp13Rev";
+constexpr const char SURROUND_STR[]              = "Surround"; // Old name for Rec2100SurroundFwd
+constexpr const char REC_2100_SURROUND_FWD_STR[] = "Rec2100SurroundFwd";
+constexpr const char REC_2100_SURROUND_REV_STR[] = "Rec2100SurroundRev";
+constexpr const char RGB_TO_HSV_STR[]            = "RGB_TO_HSV";
+constexpr const char HSV_TO_RGB_STR[]            = "HSV_TO_RGB";
+constexpr const char XYZ_TO_xyY_STR[]            = "XYZ_TO_xyY";
+constexpr const char xyY_TO_XYZ_STR[]            = "xyY_TO_XYZ";
+constexpr const char XYZ_TO_uvY_STR[]            = "XYZ_TO_uvY";
+constexpr const char uvY_TO_XYZ_STR[]            = "uvY_TO_XYZ";
+constexpr const char XYZ_TO_LUV_STR[]            = "XYZ_TO_LUV";
+constexpr const char LUV_TO_XYZ_STR[]            = "LUV_TO_XYZ";
 
 
 // NOTE: Converts the enumeration value to its string representation (i.e. CLF reader).
@@ -99,7 +99,7 @@ const char * FixedFunctionOpData::ConvertStyleToString(Style style, bool detaile
     std::stringstream ss("Unknown FixedFunction style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Convert CTF attribute string into OpData style enum.
@@ -201,7 +201,7 @@ FixedFunctionOpData::Style FixedFunctionOpData::GetStyle(const char * name)
     std::string st("Unknown FixedFunction style: ");
     st += name;
 
-    throw Exception(st.c_str());
+    throw Exception(st);
 }
 
 // Combine the Transform style and direction into the internal OpData style.
@@ -275,7 +275,7 @@ FixedFunctionOpData::Style FixedFunctionOpData::ConvertStyle(FixedFunctionStyle 
     std::stringstream ss("Unknown FixedFunction transform style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Convert internal OpData style to Transform style.
@@ -331,7 +331,7 @@ FixedFunctionStyle FixedFunctionOpData::ConvertStyle(FixedFunctionOpData::Style 
     std::stringstream ss("Unknown FixedFunction style: ");
     ss << style;
 
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 FixedFunctionOpData::FixedFunctionOpData(Style style)
@@ -370,7 +370,7 @@ void FixedFunctionOpData::validate() const
             ss  << "The style '" << ConvertStyleToString(m_style, true)
                 << "' must have seven parameters but "
                 << m_params.size() << " found.";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const double lim_cyan    = m_params[0];
@@ -387,7 +387,7 @@ void FixedFunctionOpData::validate() const
             {
                 std::stringstream ss;
                 ss << "Parameter " << val << " (" << name << ") is outside valid range [" << low << "," << high << "]";
-                throw Exception(ss.str().c_str());
+                throw Exception(ss);
             }
         };
 
@@ -417,7 +417,7 @@ void FixedFunctionOpData::validate() const
             ss  << "The style '" << ConvertStyleToString(m_style, true)
                 << "' must have one parameter but "
                 << m_params.size() << " found.";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
 
         const double p = m_params[0];
@@ -428,13 +428,13 @@ void FixedFunctionOpData::validate() const
         {
             std::stringstream ss;
             ss << "Parameter " << p << " is less than lower bound " << low_bound;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
         else if (p > hi_bound)
         {
             std::stringstream ss;
             ss << "Parameter " << p << " is greater than upper bound " << hi_bound;
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
     else
@@ -445,7 +445,7 @@ void FixedFunctionOpData::validate() const
             ss  << "The style '" << ConvertStyleToString(m_style, true)
                 << "' must have zero parameters but "
                 << m_params.size() << " found.";
-            throw Exception(ss.str().c_str());
+            throw Exception(ss);
         }
     }
 }

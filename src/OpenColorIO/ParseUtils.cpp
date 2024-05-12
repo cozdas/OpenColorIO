@@ -84,7 +84,7 @@ std::string ConvertXmlTokenToSpecialChar(const std::string & str)
             {
                 std::ostringstream oss;
                 oss << "Unknown XML tag:" << std::string(&(*it));
-                throw Exception(oss.str().c_str());
+                throw Exception(oss);
             }
             break;
         }
@@ -147,7 +147,7 @@ TransformDirection TransformDirectionFromString(const char * s)
 
     std::ostringstream oss;
     oss << "Unrecognized transform direction: '" << p << "'.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 TransformDirection CombineTransformDirections(TransformDirection d1, TransformDirection d2)
@@ -290,7 +290,7 @@ GpuLanguage GpuLanguageFromString(const char * s)
 
     std::ostringstream oss;
     oss << "Unsupported GPU shader language: '" << p << "'.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 const char * EnvironmentModeToString(EnvironmentMode mode)
@@ -326,7 +326,7 @@ CDLStyle CDLStyleFromString(const char * style)
 
     std::ostringstream oss;
     oss << "Wrong CDL style: '" << p << "'.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 const char * RangeStyleToString(RangeStyle style)
@@ -346,7 +346,7 @@ RangeStyle RangeStyleFromString(const char * style)
 
     std::ostringstream oss;
     oss << "Wrong Range style '" << p << "'.";
-    throw Exception(oss.str().c_str());
+    throw Exception(oss);
 }
 
 const char * FixedFunctionStyleToString(FixedFunctionStyle style)
@@ -395,7 +395,7 @@ FixedFunctionStyle FixedFunctionStyleFromString(const char * style)
     // Default style is meaningless.
     std::stringstream ss;
     ss << "Unknown Fixed FunctionOp style: '" << p << "'.";
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 namespace
@@ -430,7 +430,7 @@ GradingStyle GradingStyleFromString(const char * style)
     // Default style is meaningless.
     std::stringstream ss;
     ss << "Unknown grading style: '" << p << "'.";
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 namespace
@@ -465,7 +465,7 @@ ExposureContrastStyle ExposureContrastStyleFromString(const char * style)
     // Default style is meaningless.
     std::stringstream ss;
     ss << "Unknown exposure contrast style: '" << p << "'.";
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 
@@ -502,7 +502,7 @@ NegativeStyle NegativeStyleFromString(const char * style)
 
     std::stringstream ss;
     ss << "Unknown exponent style: '" << p << "'.";
-    throw Exception(ss.str().c_str());
+    throw Exception(ss);
 }
 
 // Define variables declared in OpenColorTypes.h.

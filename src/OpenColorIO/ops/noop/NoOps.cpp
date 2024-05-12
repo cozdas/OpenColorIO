@@ -172,6 +172,7 @@ bool GetGpuAllocation(AllocationData & allocation,
 }
 }
 
+#if OCIO_LUT_SUPPORT
 OpRcPtrVec Create3DLut(const OpRcPtrVec & ops, unsigned edgelen)
 {
     if(ops.size()==0) return OpRcPtrVec();
@@ -204,6 +205,7 @@ OpRcPtrVec Create3DLut(const OpRcPtrVec & ops, unsigned edgelen)
     CreateLut3DOp(newOps, lut, TRANSFORM_DIR_FORWARD);
     return newOps;
 }
+#endif //OCIO_LUT_SUPPORT
 
 void PartitionGPUOps(OpRcPtrVec & gpuPreOps,
                         OpRcPtrVec & gpuLatticeOps,
@@ -260,7 +262,7 @@ void PartitionGPUOps(OpRcPtrVec & gpuPreOps,
             error << "gpuLut3DOpStartIndex: " << gpuLut3DOpStartIndex << " ";
             error << "gpuLut3DOpEndIndex: " << gpuLut3DOpEndIndex << " ";
             error << "cpuOps.size: " << ops.size();
-            throw Exception(error.str().c_str());
+            throw Exception(error);
         }
 
         // If the specified location defines an allocation, use it.
