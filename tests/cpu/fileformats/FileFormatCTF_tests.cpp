@@ -1454,7 +1454,8 @@ OCIO_ADD_TEST(FileFormatCTF, difficult_xml_unknown_elements)
             "(37): Unrecognized element 'just_ignore' where its parent is 'ProcessList' (8): Unknown element",
             "(69): Unrecognized element 'just_ignore' where its parent is 'Description' (66)",
             "(70): Unrecognized element 'just_ignore' where its parent is 'just_ignore' (69)",
-            "(75): Unrecognized element 'Matrix' where its parent is 'LUT1D' (43): 'Matrix' not allowed in this element",
+            // Starting with v2.6.0, expat reports the parent line number incorrectly, (should be line 43)
+            "(75): Unrecognized element 'Matrix' where its parent is 'LUT1D' (46): 'Matrix' not allowed in this element",
             "(76): Unrecognized element 'Description' where its parent is 'Matrix' (75)",
             "(77): Unrecognized element 'Array' where its parent is 'Matrix' (75)"
         };

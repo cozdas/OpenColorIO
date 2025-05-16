@@ -56,8 +56,8 @@ message(STATUS "Checking for mandatory dependencies...")
 # https://github.com/libexpat/libexpat
 ocio_handle_dependency(  expat REQUIRED ALLOW_INSTALL
                          MIN_VERSION 2.6.0
-                         RECOMMENDED_VERSION 2.6.0
-                         RECOMMENDED_VERSION_REASON "Compatible with CMake 3.5+")
+                         RECOMMENDED_VERSION 2.7.1
+                         RECOMMENDED_VERSION_REASON "Latest version tested with OCIO")
 
 # yaml-cpp
 # https://github.com/jbeder/yaml-cpp
