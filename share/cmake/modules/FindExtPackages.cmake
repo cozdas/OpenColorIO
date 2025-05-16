@@ -55,9 +55,9 @@ message(STATUS "Checking for mandatory dependencies...")
 # expat
 # https://github.com/libexpat/libexpat
 ocio_handle_dependency(  expat REQUIRED ALLOW_INSTALL
-                         MIN_VERSION 2.4.1
-                         RECOMMENDED_VERSION 2.5.0
-                         RECOMMENDED_VERSION_REASON "CVE fixes and fix issue with symbol leakage when built as a static library")
+                         MIN_VERSION 2.6.0
+                         RECOMMENDED_VERSION 2.6.0
+                         RECOMMENDED_VERSION_REASON "Compatible with CMake 3.5+")
 
 # yaml-cpp
 # https://github.com/jbeder/yaml-cpp
