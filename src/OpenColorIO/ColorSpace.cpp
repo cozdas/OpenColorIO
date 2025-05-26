@@ -24,6 +24,7 @@ public:
     std::string m_equalityGroup;
     std::string m_description;
     std::string m_encoding;
+    std::string m_interopID;
     StringUtils::StringVec m_aliases;
 
     BitDepth m_bitDepth{ BIT_DEPTH_UNKNOWN };
@@ -62,6 +63,7 @@ public:
             m_equalityGroup = rhs.m_equalityGroup;
             m_description = rhs.m_description;
             m_encoding = rhs.m_encoding;
+            m_interopID = rhs.m_interopID;
             m_bitDepth = rhs.m_bitDepth;
             m_isData = rhs.m_isData;
             m_referenceSpaceType = rhs.m_referenceSpaceType;
@@ -216,6 +218,16 @@ const char * ColorSpace::getDescription() const noexcept
 void ColorSpace::setDescription(const char * description)
 {
     getImpl()->m_description = description;
+}
+
+const char * ColorSpace::getInteropID() const noexcept
+{
+    return getImpl()->m_interopID.c_str();
+}
+
+void ColorSpace::setInteropID(const char * interopID)
+{
+    getImpl()->m_interopID = interopID;
 }
 
 BitDepth ColorSpace::getBitDepth() const noexcept

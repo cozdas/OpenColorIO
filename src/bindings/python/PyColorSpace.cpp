@@ -193,6 +193,10 @@ void bindPyColorSpace(py::module & m)
              DOC(ColorSpace, getDescription))
         .def("setDescription", &ColorSpace::setDescription, "description"_a, 
              DOC(ColorSpace, setDescription))
+        .def("getInteropID", &ColorSpace::getInteropID,
+             DOC(ColorSpace, getInteropID))
+        .def("setInteropID", &ColorSpace::setInteropID, "interopID"_a,
+             DOC(ColorSpace, setInteropID))
         .def("getBitDepth", &ColorSpace::getBitDepth, 
              DOC(ColorSpace, getBitDepth))
         .def("setBitDepth", &ColorSpace::setBitDepth, "bitDepth"_a, 

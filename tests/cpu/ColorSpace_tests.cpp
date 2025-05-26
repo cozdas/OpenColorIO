@@ -619,6 +619,97 @@ active_views: []
 
         OCIO_CHECK_EQUAL(cfgRes, os.str());
     }
+/*
+    {
+        constexpr char End[]{ R"(colorspaces:
+  - !<ColorSpace>
+    name: raw
+    family: raw
+    equalitygroup: ""
+    bitdepth: 32f
+    description: Some text.
+    interop_id: srgb_texture
+    isdata: true
+    allocation: uniform
+
+  - !<ColorSpace>
+    name: raw2
+    family: raw
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      One line.
+
+      Other line.
+    interop_id: acescg_texture
+    isdata: true
+    allocation: uniform
+)" };
+        std::string cfgString{ Start };
+        cfgString += End;
+
+        // Load config.
+
+        std::istringstream is;
+        is.str(cfgString);
+        OCIO::ConstConfigRcPtr config;
+        OCIO_CHECK_NO_THROW(config = OCIO::Config::CreateFromStream(is));
+        OCIO_REQUIRE_ASSERT(config);
+        OCIO_CHECK_NO_THROW(config->validate());
+
+        // Check colorspace.
+
+        OCIO_CHECK_EQUAL(config->getNumColorSpaces(), 2);
+        OCIO::ConstColorSpaceRcPtr cs = config->getColorSpace(config->getColorSpaceNameByIndex(0));
+        OCIO_REQUIRE_ASSERT(cs);
+        // Description has no trailing \n.
+        OCIO_CHECK_EQUAL(std::string(cs->getDescription()), "Some text.");
+        OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "srgb_texture");
+
+        cs = config->getColorSpace(config->getColorSpaceNameByIndex(1));
+        OCIO_REQUIRE_ASSERT(cs);
+        // Description has no trailing \n.
+        OCIO_CHECK_EQUAL(std::string(cs->getDescription()), "One line.\n\nOther line.");
+        OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "acescg_texture");
+
+        // Save and compare output with input.
+
+        std::ostringstream os;
+        os << *config;
+
+        OCIO_CHECK_EQUAL(cfgString, os.str());
+    }
+
+    // Test the serialize/deserialize process using interop_id.
+    auto cfg = OCIO::Config::Create();
+    auto cs = OCIO::ColorSpace::Create();
+    cs->setName("testing");
+    const std::string interopID{ "linear_srgb" };
+    cs->setInteropID(interopID.c_str());
+    cfg->addColorSpace(cs);
+
+    // Serialize the Config.
+    std::ostringstream os;
+    cfg->serialize(os);
+
+    // Deserialize and compare.
+    std::istringstream is;
+    is.str(os.str());
+    auto cfg2 = OCIO::Config::CreateFromStream(is);
+    OCIO_CHECK_EQUAL(cfg2->getNumColorSpaces(), 1);
+    auto cs2 = cfg2->getColorSpace("testing");
+    OCIO_CHECK_EQUAL(std::string(cs2->getInteropID()), interopID);
+
+    // Test another valid interop ID.
+    cs->setInteropID("linear_display_p3");
+    cfg->addColorSpace(cs);
+    os.str("");
+    cfg->serialize(os);
+    is.str(os.str());
+    cfg2 = OCIO::Config::CreateFromStream(is);
+    cs2 = cfg2->getColorSpace("testing");
+    OCIO_CHECK_EQUAL(std::string(cs2->getInteropID()), "linear_display_p3");
+    */
 }
 
 OCIO_ADD_TEST(Config, use_alias)
@@ -1702,3 +1793,23 @@ colorspaces:
         );
     }
 }
+
+/*
+OCIO_ADD_TEST(ColorSpace, interop_id)
+{
+    auto cs = OCIO::ColorSpace::Create();
+    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "");
+
+    const std::string interopID{ "srgb_texture" };
+    cs->setInteropID(interopID.c_str());
+    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), interopID);
+
+    // Test another valid interop ID
+    const std::string interopID2{ "acescg_texture" };
+    cs->setInteropID(interopID2.c_str());
+    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), interopID2);
+
+    cs->setInteropID(nullptr);
+    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "");
+}
+*/

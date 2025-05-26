@@ -3193,7 +3193,12 @@ inline void load(const YAML::Node& node, ColorSpaceRcPtr& cs, unsigned int major
             load(iter->second, stringval);
             cs->setName(stringval.c_str());
         }
-        else if (key == "aliases")
+        else if(key == "interop_id")
+        {
+            load(iter->second, stringval);
+            cs->setInteropID(stringval.c_str());
+        }
+        else if(key == "aliases")
         {
             StringUtils::StringVec aliases;
             load(iter->second, aliases);
@@ -3323,6 +3328,14 @@ inline void save(YAML::Emitter& out, ConstColorSpaceRcPtr cs, unsigned int major
         }
         out << YAML::Flow << YAML::Value << aliases;
     }
+    
+    const std::string interopID{ cs->getInteropID() };
+    if (!interopID.empty())
+    {
+        out << YAML::Key << "interop_id";
+        out << YAML::Value << interopID;
+    }
+
     out << YAML::Key << "family" << YAML::Value << cs->getFamily();
     out << YAML::Key << "equalitygroup" << YAML::Value << cs->getEqualityGroup();
     out << YAML::Key << "bitdepth" << YAML::Value;

@@ -1915,6 +1915,19 @@ public:
     const char * getDescription() const noexcept;
     void setDescription(const char * description);
 
+    /**
+     * \brief Get/Set the interop ID for the color space.
+     * 
+     * The interop ID is a standardized identifier for commonly used color spaces,
+     * particularly for texture assets. These IDs enable consistent color space
+     * handling across different applications and pipelines.
+     * 
+     * These IDs are defined by the Academy Software Foundation's ColorInterop project
+     * to standardize color space naming across the industry.
+     */
+    const char * getInteropID() const noexcept;
+    void setInteropID(const char * interopID);
+
     BitDepth getBitDepth() const noexcept;
     void setBitDepth(BitDepth bitDepth);
 
