@@ -235,9 +235,25 @@
       :module: PyOpenColorIO
 
       Set the AMF transform IDs for the color space.
+      Multiple transform IDs can be specified in a newline-separated string.
+
+   .. py:method:: ColorSpace.getIccProfileName(self: PyOpenColorIO.ColorSpace) -> str
+      :module: PyOpenColorIO
+
+      Get the ICC profile name for the color space.
       
-      Args:
-          amfTransformIDs (str): A newline-separated string of AMF transform IDs.
+      The ICC profile name identifies the ICC color profile associated with this color space.
+      This can be used to link OCIO color spaces with corresponding ICC profiles for
+      applications that need to work with both color management systems.
+
+   .. py:method:: ColorSpace.setIccProfileName(self: PyOpenColorIO.ColorSpace, iccProfileName: str) -> None
+      :module: PyOpenColorIO
+
+      Set the ICC profile name for the color space.
+      
+      The ICC profile name identifies the ICC color profile associated with this color space.
+      This can be used to link OCIO color spaces with corresponding ICC profiles for
+      applications that need to work with both color management systems.
 
 
 .. py:class:: ColorSpaceCategoryIterator

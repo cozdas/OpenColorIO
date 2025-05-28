@@ -1934,6 +1934,16 @@ public:
     const char * getAmfTransformIDs() const noexcept;
     void setAmfTransformIDs(const char * amfTransformIDs);
 
+    /**
+     * Get/Set the ICC profile name for the color space.
+     * 
+     * The ICC profile name identifies the ICC color profile associated with this color space.
+     * This can be used to link OCIO color spaces with corresponding ICC profiles for
+     * applications that need to work with both color management systems.
+     */
+    const char * getIccProfileName() const noexcept;
+    void setIccProfileName(const char * iccProfileName);
+
     BitDepth getBitDepth() const noexcept;
     void setBitDepth(BitDepth bitDepth);
 

@@ -3227,6 +3227,11 @@ inline void load(const YAML::Node& node, ColorSpaceRcPtr& cs, unsigned int major
             load(iter->second, stringval);
             cs->setAmfTransformIDs(stringval.c_str());
         }
+        else if (key == "iccprofilename") 
+        {
+            load(iter->second, stringval);
+            cs->setIccProfileName(stringval.c_str());
+        }
         else if(key == "bitdepth")
         {
             BitDepth ret;
@@ -3349,6 +3354,13 @@ inline void save(YAML::Emitter& out, ConstColorSpaceRcPtr cs, unsigned int major
     {
         out << YAML::Key << "amftransformids";
         out << YAML::Value << amfTransformIDs;
+    }
+
+    const std::string iccProfileName{cs->getIccProfileName()};
+    if (!iccProfileName.empty()) 
+    {
+        out << YAML::Key << "iccprofilename";
+        out << YAML::Value << iccProfileName;
     }
 
     out << YAML::Key << "bitdepth" << YAML::Value;

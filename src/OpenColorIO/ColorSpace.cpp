@@ -26,6 +26,7 @@ public:
     std::string m_encoding;
     std::string m_interopID;
     std::string m_amfTransformIDs;
+    std::string m_iccProfileName;
     StringUtils::StringVec m_aliases;
 
     BitDepth m_bitDepth{ BIT_DEPTH_UNKNOWN };
@@ -66,6 +67,7 @@ public:
             m_encoding = rhs.m_encoding;
             m_interopID = rhs.m_interopID;
             m_amfTransformIDs = rhs.m_amfTransformIDs;
+            m_iccProfileName = rhs.m_iccProfileName;
             m_bitDepth = rhs.m_bitDepth;
             m_isData = rhs.m_isData;
             m_referenceSpaceType = rhs.m_referenceSpaceType;
@@ -240,6 +242,16 @@ const char * ColorSpace::getAmfTransformIDs() const noexcept
 void ColorSpace::setAmfTransformIDs(const char * amfTransformIDs)
 {
     getImpl()->m_amfTransformIDs = amfTransformIDs ? amfTransformIDs : "";
+}
+
+const char * ColorSpace::getIccProfileName() const noexcept
+{
+    return getImpl()->m_iccProfileName.c_str();
+}
+
+void ColorSpace::setIccProfileName(const char * iccProfileName)
+{
+    getImpl()->m_iccProfileName = iccProfileName ? iccProfileName : "";
 }
 
 BitDepth ColorSpace::getBitDepth() const noexcept

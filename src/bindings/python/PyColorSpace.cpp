@@ -201,6 +201,10 @@ void bindPyColorSpace(py::module & m)
              DOC(ColorSpace, getAmfTransformIDs))
         .def("setAmfTransformIDs", &ColorSpace::setAmfTransformIDs, "amfTransformIDs"_a,
              DOC(ColorSpace, setAmfTransformIDs))
+        .def("getIccProfileName", &ColorSpace::getIccProfileName,
+             DOC(ColorSpace, getIccProfileName))
+        .def("setIccProfileName", &ColorSpace::setIccProfileName, "iccProfileName"_a,
+             DOC(ColorSpace, setIccProfileName))
         .def("getBitDepth", &ColorSpace::getBitDepth, 
              DOC(ColorSpace, getBitDepth))
         .def("setBitDepth", &ColorSpace::setBitDepth, "bitDepth"_a, 

@@ -1873,26 +1873,102 @@ OCIO_ADD_TEST(ColorSpace, amf_transform_ids_serialization)
     cfg->addColorSpace(cs);
 
     // Serialize the Config
-    std::ostringstream os;
-    cfg->serialize(os);
-    
-    // Check that the YAML contains the amftransformids field
-    const std::string yamlStr = os.str();
-    OCIO_CHECK_NE(yamlStr.find("amftransformids"), std::string::npos);
+    std::stringstream ss;
+    cfg->serialize(ss);
+    std::string yamlStr = ss.str();
 
-    // Deserialize and compare
-    std::istringstream is;
-    is.str(yamlStr);
-    auto cfg2 = OCIO::Config::CreateFromStream(is);
-    OCIO_CHECK_EQUAL(cfg2->getNumColorSpaces(), 1);
-    auto cs2 = cfg2->getColorSpace("test_colorspace");
-    OCIO_CHECK_EQUAL(std::string(cs2->getAmfTransformIDs()), amfIDs);
+    // Verify AmfTransformIDs appears in YAML
+    OCIO_CHECK_NE(yamlStr.find("amftransformids"), std::string::npos);
+    OCIO_CHECK_NE(yamlStr.find("ACEScsc.Academy.ACEScc_to_ACES"), std::string::npos);
+
+    // Deserialize and verify
+    std::istringstream iss(yamlStr);
+    OCIO::ConstConfigRcPtr deserializedCfg;
+    OCIO_CHECK_NO_THROW(deserializedCfg = OCIO::Config::CreateFromStream(iss));
+
+    // Verify AmfTransformIDs is preserved
+    OCIO::ConstColorSpaceRcPtr deserializedCs = deserializedCfg->getColorSpace("test_colorspace");
+    OCIO_CHECK_EQUAL(std::string(deserializedCs->getAmfTransformIDs()), amfIDs);
 
     // Test with empty AmfTransformIDs (should not appear in YAML)
     cs->setAmfTransformIDs("");
     cfg->addColorSpace(cs); // replace the existing CS
-    os.str("");
-    cfg->serialize(os);
-    const std::string yamlStr2 = os.str();
+    ss.str("");
+    cfg->serialize(ss);
+    std::string yamlStr2 = ss.str();
+
+    // Verify empty AmfTransformIDs does not appear in YAML
     OCIO_CHECK_EQUAL(yamlStr2.find("amftransformids"), std::string::npos);
+}
+
+OCIO_ADD_TEST(ColorSpace, icc_profile_name)
+{
+    OCIO::ColorSpaceRcPtr cs = OCIO::ColorSpace::Create();
+    
+    // Test default value
+    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), "");
+
+    // Test setting and getting single profile name
+    const char * profileName = "sRGB IEC61966-2.1";
+    cs->setIccProfileName(profileName);
+    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), profileName);
+
+    // Test setting and getting another profile name
+    const char * anotherProfile = "Adobe RGB (1998)";
+    cs->setIccProfileName(anotherProfile);
+    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), anotherProfile);
+
+    // Test setting empty string
+    cs->setIccProfileName("");
+    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), "");
+
+    // Test setting null pointer (should be safe)
+    OCIO_CHECK_NO_THROW(cs->setIccProfileName(nullptr));
+    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), "");
+
+    // Test copy constructor preserves ICC profile name
+    cs->setIccProfileName(profileName);
+    OCIO::ColorSpaceRcPtr copy = cs->createEditableCopy();
+    OCIO_CHECK_EQUAL(std::string(copy->getIccProfileName()), profileName);
+}
+
+OCIO_ADD_TEST(ColorSpace, icc_profile_name_serialization)
+{
+    // Test YAML serialization and deserialization of IccProfileName
+    auto cfg = OCIO::Config::Create();
+    auto cs = OCIO::ColorSpace::Create();
+    cs->setName("test_colorspace");
+    
+    const std::string profileName = "sRGB IEC61966-2.1";
+    
+    cs->setIccProfileName(profileName.c_str());
+    cfg->addColorSpace(cs);
+
+    // Serialize the Config
+    std::stringstream ss;
+    cfg->serialize(ss);
+    std::string yamlStr = ss.str();
+
+    // Verify IccProfileName appears in YAML
+    OCIO_CHECK_NE(yamlStr.find("iccprofilename"), std::string::npos);
+    OCIO_CHECK_NE(yamlStr.find(profileName), std::string::npos);
+
+    // Deserialize and verify
+    std::istringstream iss(yamlStr);
+    OCIO::ConstConfigRcPtr deserializedCfg;
+    OCIO_CHECK_NO_THROW(deserializedCfg = OCIO::Config::CreateFromStream(iss));
+
+    // Verify IccProfileName is preserved
+    OCIO::ConstColorSpaceRcPtr deserializedCs = deserializedCfg->getColorSpace("test_colorspace");
+    OCIO_CHECK_EQUAL(std::string(deserializedCs->getIccProfileName()), profileName);
+
+    // Test with empty IccProfileName (should not appear in YAML)
+    cs->setIccProfileName("");
+    cfg->addColorSpace(cs); // replace the existing CS
+    ss.str("");
+    cfg->serialize(ss);
+    std::string yamlStr2 = ss.str();
+
+    // Verify empty IccProfileName does not appear in YAML
+    OCIO_CHECK_EQUAL(yamlStr2.find("iccprofilename"), std::string::npos);
 }
