@@ -3193,11 +3193,6 @@ inline void load(const YAML::Node& node, ColorSpaceRcPtr& cs, unsigned int major
             load(iter->second, stringval);
             cs->setName(stringval.c_str());
         }
-        else if(key == "interop_id")
-        {
-            load(iter->second, stringval);
-            cs->setInteropID(stringval.c_str());
-        }
         else if(key == "aliases")
         {
             StringUtils::StringVec aliases;
@@ -3221,6 +3216,16 @@ inline void load(const YAML::Node& node, ColorSpaceRcPtr& cs, unsigned int major
         {
             load(iter->second, stringval);
             cs->setEqualityGroup(stringval.c_str());
+        } 
+        else if (key == "interopid") 
+        {
+            load(iter->second, stringval);
+            cs->setInteropID(stringval.c_str());
+        }
+        else if (key == "amftransformids") 
+        {
+            load(iter->second, stringval);
+            cs->setAmfTransformIDs(stringval.c_str());
         }
         else if(key == "bitdepth")
         {
@@ -3329,15 +3334,23 @@ inline void save(YAML::Emitter& out, ConstColorSpaceRcPtr cs, unsigned int major
         out << YAML::Flow << YAML::Value << aliases;
     }
     
-    const std::string interopID{ cs->getInteropID() };
-    if (!interopID.empty())
+    out << YAML::Key << "family" << YAML::Value << cs->getFamily();
+    out << YAML::Key << "equalitygroup" << YAML::Value << cs->getEqualityGroup();
+
+    const std::string interopID{cs->getInteropID()};
+    if (!interopID.empty()) 
     {
-        out << YAML::Key << "interop_id";
+        out << YAML::Key << "interopid";
         out << YAML::Value << interopID;
     }
 
-    out << YAML::Key << "family" << YAML::Value << cs->getFamily();
-    out << YAML::Key << "equalitygroup" << YAML::Value << cs->getEqualityGroup();
+    const std::string amfTransformIDs{cs->getAmfTransformIDs()};
+    if (!amfTransformIDs.empty()) 
+    {
+        out << YAML::Key << "amftransformids";
+        out << YAML::Value << amfTransformIDs;
+    }
+
     out << YAML::Key << "bitdepth" << YAML::Value;
     save(out, cs->getBitDepth());
     saveDescription(out, cs->getDescription());

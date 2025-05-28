@@ -214,6 +214,32 @@
       Specify the transform for the appropriate direction. Setting the transform to null will clear it.
 
 
+   .. py:method:: ColorSpace.getInteropID(self: PyOpenColorIO.ColorSpace) -> str
+      :module: PyOpenColorIO
+
+
+   .. py:method:: ColorSpace.setInteropID(self: PyOpenColorIO.ColorSpace, interopID: str) -> None
+      :module: PyOpenColorIO
+
+
+   .. py:method:: ColorSpace.getAmfTransformIDs(self: PyOpenColorIO.ColorSpace) -> str
+      :module: PyOpenColorIO
+
+      Get the AMF transform IDs for the color space.
+      
+      The AMF transform IDs are used to identify specific transforms in the ACES Metadata File.
+      Multiple transform IDs can be specified in a newline-separated string.
+
+
+   .. py:method:: ColorSpace.setAmfTransformIDs(self: PyOpenColorIO.ColorSpace, amfTransformIDs: str) -> None
+      :module: PyOpenColorIO
+
+      Set the AMF transform IDs for the color space.
+      
+      Args:
+          amfTransformIDs (str): A newline-separated string of AMF transform IDs.
+
+
 .. py:class:: ColorSpaceCategoryIterator
    :module: PyOpenColorIO.ColorSpace
 

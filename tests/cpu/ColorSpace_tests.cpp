@@ -39,7 +39,17 @@ OCIO_ADD_TEST(ColorSpace, basic)
     OCIO_CHECK_ASSERT(!cs->isData());
     OCIO_CHECK_EQUAL(OCIO::ALLOCATION_UNIFORM, cs->getAllocation());
     OCIO_CHECK_EQUAL(0, cs->getAllocationNumVars());
+    
+    // Check the nullptr assignment hardening.
+    OCIO_CHECK_NO_THROW(cs->setName(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setDescription(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setFamily(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setEqualityGroup(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setEncoding(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setAmfTransformIDs(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setInteropID(nullptr));
 
+    // Test set/get roundtrip.
     cs->setName("name");
     OCIO_CHECK_EQUAL(std::string("name"), cs->getName());
     cs->setFamily("family");
@@ -619,29 +629,29 @@ active_views: []
 
         OCIO_CHECK_EQUAL(cfgRes, os.str());
     }
-/*
+
     {
         constexpr char End[]{ R"(colorspaces:
   - !<ColorSpace>
     name: raw
     family: raw
     equalitygroup: ""
+    interopid: srgb_texture
     bitdepth: 32f
     description: Some text.
-    interop_id: srgb_texture
     isdata: true
     allocation: uniform
 
   - !<ColorSpace>
-    name: raw2
+    name: bar
     family: raw
     equalitygroup: ""
+    interopid: acescg_texture
     bitdepth: 32f
     description: |
       One line.
 
       Other line.
-    interop_id: acescg_texture
     isdata: true
     allocation: uniform
 )" };
@@ -709,7 +719,7 @@ active_views: []
     cfg2 = OCIO::Config::CreateFromStream(is);
     cs2 = cfg2->getColorSpace("testing");
     OCIO_CHECK_EQUAL(std::string(cs2->getInteropID()), "linear_display_p3");
-    */
+    
 }
 
 OCIO_ADD_TEST(Config, use_alias)
@@ -1813,3 +1823,76 @@ OCIO_ADD_TEST(ColorSpace, interop_id)
     OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "");
 }
 */
+
+OCIO_ADD_TEST(ColorSpace, amf_transform_ids)
+{
+    OCIO::ColorSpaceRcPtr cs = OCIO::ColorSpace::Create();
+    
+    // Test default value
+    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), "");
+
+    // Test setting and getting single ID
+    const char * singleID = "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3";
+    cs->setAmfTransformIDs(singleID);
+    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), singleID);
+
+    // Test setting and getting multiple IDs
+    const char * multipleIDs = 
+        "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3\n"
+        "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScc.a1.0.3";
+    cs->setAmfTransformIDs(multipleIDs);
+    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), multipleIDs);
+
+    // Test setting to empty string
+    cs->setAmfTransformIDs("");
+    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), "");
+
+    // Test setting to nullptr
+    cs->setDescription(nullptr);
+    cs->setAmfTransformIDs(nullptr);
+    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), "");
+
+    // Test copy constructor preserves AMF transform IDs
+    cs->setAmfTransformIDs(singleID);
+    OCIO::ColorSpaceRcPtr copy = cs->createEditableCopy();
+    OCIO_CHECK_EQUAL(std::string(copy->getAmfTransformIDs()), singleID);
+}
+
+OCIO_ADD_TEST(ColorSpace, amf_transform_ids_serialization)
+{
+    // Test YAML serialization and deserialization of AmfTransformIDs
+    auto cfg = OCIO::Config::Create();
+    auto cs = OCIO::ColorSpace::Create();
+    cs->setName("test_colorspace");
+    
+    const std::string amfIDs = 
+        "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3\n"
+        "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScc.a1.0.3";
+    
+    cs->setAmfTransformIDs(amfIDs.c_str());
+    cfg->addColorSpace(cs);
+
+    // Serialize the Config
+    std::ostringstream os;
+    cfg->serialize(os);
+    
+    // Check that the YAML contains the amftransformids field
+    const std::string yamlStr = os.str();
+    OCIO_CHECK_NE(yamlStr.find("amftransformids"), std::string::npos);
+
+    // Deserialize and compare
+    std::istringstream is;
+    is.str(yamlStr);
+    auto cfg2 = OCIO::Config::CreateFromStream(is);
+    OCIO_CHECK_EQUAL(cfg2->getNumColorSpaces(), 1);
+    auto cs2 = cfg2->getColorSpace("test_colorspace");
+    OCIO_CHECK_EQUAL(std::string(cs2->getAmfTransformIDs()), amfIDs);
+
+    // Test with empty AmfTransformIDs (should not appear in YAML)
+    cs->setAmfTransformIDs("");
+    cfg->addColorSpace(cs); // replace the existing CS
+    os.str("");
+    cfg->serialize(os);
+    const std::string yamlStr2 = os.str();
+    OCIO_CHECK_EQUAL(yamlStr2.find("amftransformids"), std::string::npos);
+}

@@ -25,6 +25,7 @@ public:
     std::string m_description;
     std::string m_encoding;
     std::string m_interopID;
+    std::string m_amfTransformIDs;
     StringUtils::StringVec m_aliases;
 
     BitDepth m_bitDepth{ BIT_DEPTH_UNKNOWN };
@@ -64,6 +65,7 @@ public:
             m_description = rhs.m_description;
             m_encoding = rhs.m_encoding;
             m_interopID = rhs.m_interopID;
+            m_amfTransformIDs = rhs.m_amfTransformIDs;
             m_bitDepth = rhs.m_bitDepth;
             m_isData = rhs.m_isData;
             m_referenceSpaceType = rhs.m_referenceSpaceType;
@@ -197,7 +199,7 @@ const char * ColorSpace::getFamily() const noexcept
 
 void ColorSpace::setFamily(const char * family)
 {
-    getImpl()->m_family = family;
+    getImpl()->m_family = family ? family : "";
 }
 
 const char * ColorSpace::getEqualityGroup() const noexcept
@@ -207,7 +209,7 @@ const char * ColorSpace::getEqualityGroup() const noexcept
 
 void ColorSpace::setEqualityGroup(const char * equalityGroup)
 {
-    getImpl()->m_equalityGroup = equalityGroup;
+    getImpl()->m_equalityGroup = equalityGroup ? equalityGroup : "";
 }
 
 const char * ColorSpace::getDescription() const noexcept
@@ -217,7 +219,7 @@ const char * ColorSpace::getDescription() const noexcept
 
 void ColorSpace::setDescription(const char * description)
 {
-    getImpl()->m_description = description;
+    getImpl()->m_description = description ? description : "";
 }
 
 const char * ColorSpace::getInteropID() const noexcept
@@ -227,7 +229,17 @@ const char * ColorSpace::getInteropID() const noexcept
 
 void ColorSpace::setInteropID(const char * interopID)
 {
-    getImpl()->m_interopID = interopID;
+    getImpl()->m_interopID = interopID ? interopID : "";
+}
+
+const char * ColorSpace::getAmfTransformIDs() const noexcept
+{
+    return getImpl()->m_amfTransformIDs.c_str();
+}
+
+void ColorSpace::setAmfTransformIDs(const char * amfTransformIDs)
+{
+    getImpl()->m_amfTransformIDs = amfTransformIDs ? amfTransformIDs : "";
 }
 
 BitDepth ColorSpace::getBitDepth() const noexcept
@@ -277,7 +289,7 @@ const char * ColorSpace::getEncoding() const noexcept
 
 void ColorSpace::setEncoding(const char * encoding)
 {
-    getImpl()->m_encoding = encoding;
+    getImpl()->m_encoding = encoding ? encoding : "";
 }
 
 bool ColorSpace::isData() const noexcept
