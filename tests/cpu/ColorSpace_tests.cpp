@@ -46,8 +46,9 @@ OCIO_ADD_TEST(ColorSpace, basic)
     OCIO_CHECK_NO_THROW(cs->setFamily(nullptr));
     OCIO_CHECK_NO_THROW(cs->setEqualityGroup(nullptr));
     OCIO_CHECK_NO_THROW(cs->setEncoding(nullptr));
-    OCIO_CHECK_NO_THROW(cs->setAmfTransformIDs(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setAMFTransformIDs(nullptr));
     OCIO_CHECK_NO_THROW(cs->setInteropID(nullptr));
+    OCIO_CHECK_NO_THROW(cs->setICCProfileName(nullptr));
 
     // Test set/get roundtrip.
     cs->setName("name");
@@ -636,7 +637,6 @@ active_views: []
     name: raw
     family: raw
     equalitygroup: ""
-    interopid: srgb_texture
     bitdepth: 32f
     description: Some text.
     isdata: true
@@ -646,7 +646,6 @@ active_views: []
     name: bar
     family: raw
     equalitygroup: ""
-    interopid: acescg_texture
     bitdepth: 32f
     description: |
       One line.
@@ -674,13 +673,11 @@ active_views: []
         OCIO_REQUIRE_ASSERT(cs);
         // Description has no trailing \n.
         OCIO_CHECK_EQUAL(std::string(cs->getDescription()), "Some text.");
-        OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "srgb_texture");
 
         cs = config->getColorSpace(config->getColorSpaceNameByIndex(1));
         OCIO_REQUIRE_ASSERT(cs);
         // Description has no trailing \n.
         OCIO_CHECK_EQUAL(std::string(cs->getDescription()), "One line.\n\nOther line.");
-        OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "acescg_texture");
 
         // Save and compare output with input.
 
@@ -689,37 +686,87 @@ active_views: []
 
         OCIO_CHECK_EQUAL(cfgString, os.str());
     }
-
-    // Test the serialize/deserialize process using interop_id.
-    auto cfg = OCIO::Config::Create();
-    auto cs = OCIO::ColorSpace::Create();
-    cs->setName("testing");
-    const std::string interopID{ "linear_srgb" };
-    cs->setInteropID(interopID.c_str());
-    cfg->addColorSpace(cs);
-
-    // Serialize the Config.
-    std::ostringstream os;
-    cfg->serialize(os);
-
-    // Deserialize and compare.
-    std::istringstream is;
-    is.str(os.str());
-    auto cfg2 = OCIO::Config::CreateFromStream(is);
-    OCIO_CHECK_EQUAL(cfg2->getNumColorSpaces(), 1);
-    auto cs2 = cfg2->getColorSpace("testing");
-    OCIO_CHECK_EQUAL(std::string(cs2->getInteropID()), interopID);
-
-    // Test another valid interop ID.
-    cs->setInteropID("linear_display_p3");
-    cfg->addColorSpace(cs);
-    os.str("");
-    cfg->serialize(os);
-    is.str(os.str());
-    cfg2 = OCIO::Config::CreateFromStream(is);
-    cs2 = cfg2->getColorSpace("testing");
-    OCIO_CHECK_EQUAL(std::string(cs2->getInteropID()), "linear_display_p3");
     
+    // Test that the interop_id can't be used in v2.0 config
+    {
+            constexpr char End[]{R"(colorspaces:
+  - !<ColorSpace>
+    name: raw
+    interop_id: data
+    family: raw
+    equalitygroup: ""
+    bitdepth: 32f
+    description: Some text.
+    isdata: true
+    allocation: uniform
+)"};
+    std::string cfgString{Start};
+    cfgString += End;
+
+    // Load config.
+
+    std::istringstream is;
+    is.str(cfgString);
+    OCIO::ConstConfigRcPtr config;
+    OCIO_CHECK_THROW_WHAT(
+        config = OCIO::Config::CreateFromStream(is),
+        OCIO::Exception, 
+        "Config failed validation. The color space 'raw' has non-empty InteropID and config version is less than 2.5.");
+    }
+
+    // Test that the amf_transform_ids can't be used in v2.0 config
+    {
+      constexpr char End[]{R"(colorspaces:
+  - !<ColorSpace>
+    name: raw
+    amf_transform_ids: this:shouldnt:be:here
+    family: raw
+    equalitygroup: ""
+    bitdepth: 32f
+    description: Some text.
+    isdata: true
+    allocation: uniform
+)"};
+      std::string cfgString{Start};
+      cfgString += End;
+
+      // Load config.
+
+      std::istringstream is;
+      is.str(cfgString);
+      OCIO::ConstConfigRcPtr config;
+      OCIO_CHECK_THROW_WHAT(
+          config = OCIO::Config::CreateFromStream(is), OCIO::Exception,
+          "Config failed validation. The color space 'raw' has non-empty "
+          "AMFTransformIDs and config version is less than 2.5.");
+    }
+
+    // Test that the icc_profile_name can't be used in v2.0 config
+    {
+      constexpr char End[]{R"(colorspaces:
+  - !<ColorSpace>
+    name: raw
+    icc_profile_name: not valid in v2.0 config
+    family: raw
+    equalitygroup: ""
+    bitdepth: 32f
+    description: Some text.
+    isdata: true
+    allocation: uniform
+)"};
+      std::string cfgString{Start};
+      cfgString += End;
+
+      // Load config.
+
+      std::istringstream is;
+      is.str(cfgString);
+      OCIO::ConstConfigRcPtr config;
+      OCIO_CHECK_THROW_WHAT(
+          config = OCIO::Config::CreateFromStream(is), OCIO::Exception,
+          "Config failed validation. The color space 'raw' has non-empty "
+          "ICCProfileName and config version is less than 2.5.");
+    }
 }
 
 OCIO_ADD_TEST(Config, use_alias)
@@ -1804,58 +1851,119 @@ colorspaces:
     }
 }
 
-/*
 OCIO_ADD_TEST(ColorSpace, interop_id)
 {
-    auto cs = OCIO::ColorSpace::Create();
+    OCIO::ColorSpaceRcPtr cs = OCIO::ColorSpace::Create();
+    
+    // Test default value
     OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "");
 
-    const std::string interopID{ "srgb_texture" };
-    cs->setInteropID(interopID.c_str());
-    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), interopID);
+    // Test setting and getting single profile name
+    const char * interop_id = "srgb_p3d65_scene";
+    cs->setInteropID(interop_id);
+    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), interop_id);
 
-    // Test another valid interop ID
-    const std::string interopID2{ "acescg_texture" };
-    cs->setInteropID(interopID2.c_str());
-    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), interopID2);
+    // Test setting empty string
+    cs->setInteropID("");
+    OCIO_CHECK_EQUAL(std::string(cs->getICCProfileName()), "");
 
-    cs->setInteropID(nullptr);
+    // Test setting and getting another value
+    const char * anotherID= "lin_rec2020_scene";
+    cs->setInteropID(anotherID);
+    OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), anotherID);
+
+    // Test setting null pointer (should be safe)
+    OCIO_CHECK_NO_THROW(cs->setInteropID(nullptr));
     OCIO_CHECK_EQUAL(std::string(cs->getInteropID()), "");
+
+    // Test copy constructor preserves ICC profile name
+    cs->setInteropID(interop_id);
+    OCIO::ColorSpaceRcPtr copy = cs->createEditableCopy();
+    OCIO_CHECK_EQUAL(std::string(copy->getInteropID()), interop_id);
 }
-*/
+
+OCIO_ADD_TEST(ColorSpace, interop_id_serialization)
+{
+    // Test YAML serialization and deserialization of InteropID
+    auto cfg = OCIO::Config::Create();
+    auto cs = OCIO::ColorSpace::Create();
+    cs->setName("test_colorspace");
+    
+    const std::string interop_id = "lin_rec709_scene";
+    
+    cs->setInteropID(interop_id.c_str());
+    cfg->addColorSpace(cs);
+
+    // Serialize the Config
+    std::stringstream ss;
+    cfg->serialize(ss);
+    std::string yamlStr = ss.str();
+
+    // Verify interop_id appears in YAML
+    OCIO_CHECK_NE(yamlStr.find("interop_id"), std::string::npos);
+    OCIO_CHECK_NE(yamlStr.find(interop_id), std::string::npos);
+
+    // Deserialize and verify
+    std::istringstream iss(yamlStr);
+    OCIO::ConstConfigRcPtr deserializedCfg;
+    OCIO_CHECK_NO_THROW(deserializedCfg = OCIO::Config::CreateFromStream(iss));
+
+    // Verify interop_id is preserved
+    OCIO::ConstColorSpaceRcPtr deserializedCs = deserializedCfg->getColorSpace("test_colorspace");
+    OCIO_CHECK_EQUAL(std::string(deserializedCs->getInteropID()), interop_id);
+
+    // verify that that earlier versions reject interop_id
+    OCIO::ConfigRcPtr cfgCopy = cfg->createEditableCopy();
+    cfgCopy->setVersion(2, 4);
+    OCIO_CHECK_THROW_WHAT(
+        cfgCopy->serialize(ss), 
+        OCIO::Exception,
+        "Config failed validation. The color space 'test_colorspace' has non-empty "
+        "InteropID and config version is less than 2.5.");
+
+    // Test with empty interop_id (should not appear in YAML)
+    cs->setInteropID(nullptr);
+    cfg->addColorSpace(cs); // replace the existing CS
+    ss.str("");
+    cfg->serialize(ss);
+    std::string yamlStr2 = ss.str();
+
+    // Verify empty imterop_id does not appear in YAML
+    OCIO_CHECK_EQUAL(yamlStr2.find("interop_id"), std::string::npos);
+}
 
 OCIO_ADD_TEST(ColorSpace, amf_transform_ids)
 {
     OCIO::ColorSpaceRcPtr cs = OCIO::ColorSpace::Create();
     
     // Test default value
-    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), "");
+    OCIO_CHECK_EQUAL(std::string(cs->getAMFTransformIDs()), "");
 
     // Test setting and getting single ID
     const char * singleID = "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3";
-    cs->setAmfTransformIDs(singleID);
-    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), singleID);
+    cs->setAMFTransformIDs(singleID);
+    OCIO_CHECK_EQUAL(std::string(cs->getAMFTransformIDs()), singleID);
 
+    // Test setting to empty string
+    cs->setAMFTransformIDs("");
+    OCIO_CHECK_EQUAL(std::string(cs->getAMFTransformIDs()), "");    
+    
     // Test setting and getting multiple IDs
     const char * multipleIDs = 
         "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3\n"
         "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScc.a1.0.3";
-    cs->setAmfTransformIDs(multipleIDs);
-    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), multipleIDs);
-
-    // Test setting to empty string
-    cs->setAmfTransformIDs("");
-    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), "");
+    cs->setAMFTransformIDs(multipleIDs);
+    OCIO_CHECK_EQUAL(std::string(cs->getAMFTransformIDs()), multipleIDs);
 
     // Test setting to nullptr
     cs->setDescription(nullptr);
-    cs->setAmfTransformIDs(nullptr);
-    OCIO_CHECK_EQUAL(std::string(cs->getAmfTransformIDs()), "");
+    cs->setAMFTransformIDs(nullptr);
+    OCIO_CHECK_EQUAL(std::string(cs->getAMFTransformIDs()), "");
 
     // Test copy constructor preserves AMF transform IDs
-    cs->setAmfTransformIDs(singleID);
+    cs->setAMFTransformIDs(singleID);
     OCIO::ColorSpaceRcPtr copy = cs->createEditableCopy();
-    OCIO_CHECK_EQUAL(std::string(copy->getAmfTransformIDs()), singleID);
+    OCIO_CHECK_EQUAL(std::string(copy->getAMFTransformIDs()), singleID);
 }
 
 OCIO_ADD_TEST(ColorSpace, amf_transform_ids_serialization)
@@ -1869,7 +1977,7 @@ OCIO_ADD_TEST(ColorSpace, amf_transform_ids_serialization)
         "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3\n"
         "urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScc.a1.0.3";
     
-    cs->setAmfTransformIDs(amfIDs.c_str());
+    cs->setAMFTransformIDs(amfIDs.c_str());
     cfg->addColorSpace(cs);
 
     // Serialize the Config
@@ -1878,7 +1986,7 @@ OCIO_ADD_TEST(ColorSpace, amf_transform_ids_serialization)
     std::string yamlStr = ss.str();
 
     // Verify AmfTransformIDs appears in YAML
-    OCIO_CHECK_NE(yamlStr.find("amftransformids"), std::string::npos);
+    OCIO_CHECK_NE(yamlStr.find("amf_transform_ids"), std::string::npos);
     OCIO_CHECK_NE(yamlStr.find("ACEScsc.Academy.ACEScc_to_ACES"), std::string::npos);
 
     // Deserialize and verify
@@ -1888,17 +1996,25 @@ OCIO_ADD_TEST(ColorSpace, amf_transform_ids_serialization)
 
     // Verify AmfTransformIDs is preserved
     OCIO::ConstColorSpaceRcPtr deserializedCs = deserializedCfg->getColorSpace("test_colorspace");
-    OCIO_CHECK_EQUAL(std::string(deserializedCs->getAmfTransformIDs()), amfIDs);
+    OCIO_CHECK_EQUAL(std::string(deserializedCs->getAMFTransformIDs()), amfIDs);
+
+    // verify that that earlier versions reject amf_transform_ids
+    OCIO::ConfigRcPtr cfgCopy = cfg->createEditableCopy();
+    cfgCopy->setVersion(2,4);
+    OCIO_CHECK_THROW_WHAT(cfgCopy->serialize(ss), 
+        OCIO::Exception,
+        "Config failed validation. The color space 'test_colorspace' has non-empty "
+        "AMFTransformIDs and config version is less than 2.5.");
 
     // Test with empty AmfTransformIDs (should not appear in YAML)
-    cs->setAmfTransformIDs("");
+    cs->setAMFTransformIDs(nullptr);
     cfg->addColorSpace(cs); // replace the existing CS
     ss.str("");
     cfg->serialize(ss);
     std::string yamlStr2 = ss.str();
 
     // Verify empty AmfTransformIDs does not appear in YAML
-    OCIO_CHECK_EQUAL(yamlStr2.find("amftransformids"), std::string::npos);
+    OCIO_CHECK_EQUAL(yamlStr2.find("amf_transform_ids"), std::string::npos);
 }
 
 OCIO_ADD_TEST(ColorSpace, icc_profile_name)
@@ -1906,30 +2022,30 @@ OCIO_ADD_TEST(ColorSpace, icc_profile_name)
     OCIO::ColorSpaceRcPtr cs = OCIO::ColorSpace::Create();
     
     // Test default value
-    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), "");
+    OCIO_CHECK_EQUAL(std::string(cs->getICCProfileName()), "");
 
     // Test setting and getting single profile name
     const char * profileName = "sRGB IEC61966-2.1";
-    cs->setIccProfileName(profileName);
-    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), profileName);
+    cs->setICCProfileName(profileName);
+    OCIO_CHECK_EQUAL(std::string(cs->getICCProfileName()), profileName);
 
     // Test setting and getting another profile name
     const char * anotherProfile = "Adobe RGB (1998)";
-    cs->setIccProfileName(anotherProfile);
-    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), anotherProfile);
+    cs->setICCProfileName(anotherProfile);
+    OCIO_CHECK_EQUAL(std::string(cs->getICCProfileName()), anotherProfile);
 
     // Test setting empty string
-    cs->setIccProfileName("");
-    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), "");
+    cs->setICCProfileName("");
+    OCIO_CHECK_EQUAL(std::string(cs->getICCProfileName()), "");
 
     // Test setting null pointer (should be safe)
-    OCIO_CHECK_NO_THROW(cs->setIccProfileName(nullptr));
-    OCIO_CHECK_EQUAL(std::string(cs->getIccProfileName()), "");
+    OCIO_CHECK_NO_THROW(cs->setICCProfileName(nullptr));
+    OCIO_CHECK_EQUAL(std::string(cs->getICCProfileName()), "");
 
     // Test copy constructor preserves ICC profile name
-    cs->setIccProfileName(profileName);
+    cs->setICCProfileName(profileName);
     OCIO::ColorSpaceRcPtr copy = cs->createEditableCopy();
-    OCIO_CHECK_EQUAL(std::string(copy->getIccProfileName()), profileName);
+    OCIO_CHECK_EQUAL(std::string(copy->getICCProfileName()), profileName);
 }
 
 OCIO_ADD_TEST(ColorSpace, icc_profile_name_serialization)
@@ -1941,7 +2057,7 @@ OCIO_ADD_TEST(ColorSpace, icc_profile_name_serialization)
     
     const std::string profileName = "sRGB IEC61966-2.1";
     
-    cs->setIccProfileName(profileName.c_str());
+    cs->setICCProfileName(profileName.c_str());
     cfg->addColorSpace(cs);
 
     // Serialize the Config
@@ -1950,7 +2066,7 @@ OCIO_ADD_TEST(ColorSpace, icc_profile_name_serialization)
     std::string yamlStr = ss.str();
 
     // Verify IccProfileName appears in YAML
-    OCIO_CHECK_NE(yamlStr.find("iccprofilename"), std::string::npos);
+    OCIO_CHECK_NE(yamlStr.find("icc_profile_name"), std::string::npos);
     OCIO_CHECK_NE(yamlStr.find(profileName), std::string::npos);
 
     // Deserialize and verify
@@ -1960,15 +2076,24 @@ OCIO_ADD_TEST(ColorSpace, icc_profile_name_serialization)
 
     // Verify IccProfileName is preserved
     OCIO::ConstColorSpaceRcPtr deserializedCs = deserializedCfg->getColorSpace("test_colorspace");
-    OCIO_CHECK_EQUAL(std::string(deserializedCs->getIccProfileName()), profileName);
+    OCIO_CHECK_EQUAL(std::string(deserializedCs->getICCProfileName()), profileName);
+
+    // verify that that earlier versions reject amf_transform_ids
+    OCIO::ConfigRcPtr cfgCopy = cfg->createEditableCopy();
+    cfgCopy->setVersion(2, 4);
+    OCIO_CHECK_THROW_WHAT(
+        cfgCopy->serialize(ss), 
+        OCIO::Exception,
+        "Config failed validation. The color space 'test_colorspace' has non-empty "
+        "ICCProfileName and config version is less than 2.5.");
 
     // Test with empty IccProfileName (should not appear in YAML)
-    cs->setIccProfileName("");
+    cs->setICCProfileName(nullptr);
     cfg->addColorSpace(cs); // replace the existing CS
     ss.str("");
     cfg->serialize(ss);
     std::string yamlStr2 = ss.str();
 
     // Verify empty IccProfileName does not appear in YAML
-    OCIO_CHECK_EQUAL(yamlStr2.find("iccprofilename"), std::string::npos);
+    OCIO_CHECK_EQUAL(yamlStr2.find("icc_profile_name"), std::string::npos);
 }

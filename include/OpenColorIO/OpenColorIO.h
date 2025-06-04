@@ -1931,8 +1931,8 @@ public:
      * The AMF transform IDs are used to identify specific transforms in the ACES Metadata File.
      * Multiple transform IDs can be specified in a newline-separated string.
      */
-    const char * getAmfTransformIDs() const noexcept;
-    void setAmfTransformIDs(const char * amfTransformIDs);
+    const char * getAMFTransformIDs() const noexcept;
+    void setAMFTransformIDs(const char * amfTransformIDs);
 
     /**
      * Get/Set the ICC profile name for the color space.
@@ -1941,8 +1941,8 @@ public:
      * This can be used to link OCIO color spaces with corresponding ICC profiles for
      * applications that need to work with both color management systems.
      */
-    const char * getIccProfileName() const noexcept;
-    void setIccProfileName(const char * iccProfileName);
+    const char * getICCProfileName() const noexcept;
+    void setICCProfileName(const char * iccProfileName);
 
     BitDepth getBitDepth() const noexcept;
     void setBitDepth(BitDepth bitDepth);

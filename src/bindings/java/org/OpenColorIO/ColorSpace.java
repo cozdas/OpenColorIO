@@ -24,8 +24,6 @@ public class ColorSpace extends LoadLibrary
     public native void setInteropID(String interopID);
     public native String getAmfTransformIDs();
     public native void setAmfTransformIDs(String amfTransformIDs);
-    public native String getIccProfileName();
-    public native void setIccProfileName(String iccProfileName);
     public native BitDepth getBitDepth();
     public native void setBitDepth(BitDepth bitDepth);
     public native boolean isData();

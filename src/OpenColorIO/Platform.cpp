@@ -156,7 +156,7 @@ int Strcasecmp(const char * str1, const char * str2)
 {
     if (!str1 || !str2) 
     {
-        throw Exception("nullptr is passed.");
+        throw Exception("String pointer for comparison must not be null.");
     }
 
 #ifdef _WIN32
@@ -170,7 +170,7 @@ int Strncasecmp(const char * str1, const char * str2, size_t n)
 {
     if (!str1 || !str2) 
     {
-        throw Exception("nullptr is passed.");
+        throw Exception("String pointer for comparison must not be null.");
     }
 
 #ifdef _WIN32
