@@ -407,7 +407,6 @@ std::ostream & operator<< (std::ostream & os, const ColorSpace & cs)
         break;
     }
     os << "name=" << cs.getName() << ", ";
-    std::string str{ cs.getFamily() };
     const auto numAliases = cs.getNumAliases();
     if (numAliases == 1)
     {
@@ -422,6 +421,15 @@ std::ostream & operator<< (std::ostream & os, const ColorSpace & cs)
         }
         os << "], ";
     }
+
+    std::string str;
+    
+    str = cs.getInteropID();
+    if (!str.empty())
+    {
+        os << "interop_id=" << str << ", ";
+    }
+    str = cs.getFamily();
     if (!str.empty())
     {
         os << "family=" << str << ", ";
@@ -464,6 +472,16 @@ std::ostream & operator<< (std::ostream & os, const ColorSpace & cs)
     if (!str.empty())
     {
         os << ", description=" << str;
+    }
+    str = cs.getAMFTransformIDs();
+    if (!str.empty())
+    {
+        os << ", amf_transform_ids=" << str;
+    }
+    str = cs.getICCProfileName();
+    if (!str.empty())
+    {
+        os << ", icc_profile_name=" << str;
     }
     if(cs.getTransform(COLORSPACE_DIR_TO_REFERENCE))
     {

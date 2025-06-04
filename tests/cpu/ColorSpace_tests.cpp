@@ -74,10 +74,17 @@ OCIO_ADD_TEST(ColorSpace, basic)
     cs->getAllocationVars(readVars);
     OCIO_CHECK_EQUAL(1.f, readVars[0]);
     OCIO_CHECK_EQUAL(2.f, readVars[1]);
+    cs->setInteropID("interop_id");
+    OCIO_CHECK_EQUAL(std::string("interop_id"), cs->getInteropID());
+    cs->setAMFTransformIDs("amf_transform_id1\namf_tranform_id2");
+    OCIO_CHECK_EQUAL(std::string("amf_transform_id1\namf_tranform_id2"),
+                     cs->getAMFTransformIDs());
+    cs->setICCProfileName("icc_profile_name");
+    OCIO_CHECK_EQUAL(std::string("icc_profile_name"), cs->getICCProfileName());
 
     std::ostringstream oss;
     oss << *cs;
-    OCIO_CHECK_EQUAL(oss.str().size(), 193);
+    OCIO_CHECK_EQUAL(oss.str().size(), 305);
 }
 
 OCIO_ADD_TEST(ColorSpace, alias)
