@@ -109,42 +109,6 @@ Java_org_OpenColorIO_ColorSpace_setDescription(JNIEnv * env, jobject self, jstri
     OCIO_JNITRY_EXIT()
 }
 
-JNIEXPORT jstring JNICALL
-Java_org_OpenColorIO_ColorSpace_getInteropID(JNIEnv * env, jobject self)
-{
-    OCIO_JNITRY_ENTER()
-    ConstColorSpaceRcPtr col = GetConstJOCIO<ConstColorSpaceRcPtr, ColorSpaceJNI>(env, self);
-    return env->NewStringUTF(col->getInteropID());
-    OCIO_JNITRY_EXIT(NULL)
-}
-
-JNIEXPORT void JNICALL
-Java_org_OpenColorIO_ColorSpace_setInteropID(JNIEnv * env, jobject self, jstring interopID)
-{
-    OCIO_JNITRY_ENTER()
-    ColorSpaceRcPtr col = GetEditableJOCIO<ColorSpaceRcPtr, ColorSpaceJNI>(env, self);
-    col->setInteropID(GetJStringValue(env, interopID)());
-    OCIO_JNITRY_EXIT()
-}
-
-JNIEXPORT jstring JNICALL
-Java_org_OpenColorIO_ColorSpace_getAmfTransformIDs(JNIEnv * env, jobject self)
-{
-    OCIO_JNITRY_ENTER()
-    ConstColorSpaceRcPtr col = GetConstJOCIO<ConstColorSpaceRcPtr, ColorSpaceJNI>(env, self);
-    return env->NewStringUTF(col->getAmfTransformIDs());
-    OCIO_JNITRY_EXIT(NULL)
-}
-
-JNIEXPORT void JNICALL
-Java_org_OpenColorIO_ColorSpace_setAmfTransformIDs(JNIEnv * env, jobject self, jstring amfTransformIDs)
-{
-    OCIO_JNITRY_ENTER()
-    ColorSpaceRcPtr col = GetEditableJOCIO<ColorSpaceRcPtr, ColorSpaceJNI>(env, self);
-    col->setAmfTransformIDs(GetJStringValue(env, amfTransformIDs)());
-    OCIO_JNITRY_EXIT()
-}
-
 JNIEXPORT jobject JNICALL
 Java_org_OpenColorIO_ColorSpace_getBitDepth(JNIEnv * env, jobject self)
 {

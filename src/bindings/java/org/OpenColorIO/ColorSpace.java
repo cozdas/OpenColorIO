@@ -20,10 +20,6 @@ public class ColorSpace extends LoadLibrary
     public native void setEqualityGroup(String equalityGroup);
     public native String getDescription();
     public native void setDescription(String description);
-    public native String getInteropID();
-    public native void setInteropID(String interopID);
-    public native String getAmfTransformIDs();
-    public native void setAmfTransformIDs(String amfTransformIDs);
     public native BitDepth getBitDepth();
     public native void setBitDepth(BitDepth bitDepth);
     public native boolean isData();
