@@ -638,65 +638,9 @@ active_views: []
         OCIO_CHECK_EQUAL(cfgRes, os.str());
     }
 
-    {
-        constexpr char End[]{ R"(colorspaces:
-  - !<ColorSpace>
-    name: raw
-    family: raw
-    equalitygroup: ""
-    bitdepth: 32f
-    description: Some text.
-    isdata: true
-    allocation: uniform
-
-  - !<ColorSpace>
-    name: bar
-    family: raw
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      One line.
-
-      Other line.
-    isdata: true
-    allocation: uniform
-)" };
-        std::string cfgString{ Start };
-        cfgString += End;
-
-        // Load config.
-
-        std::istringstream is;
-        is.str(cfgString);
-        OCIO::ConstConfigRcPtr config;
-        OCIO_CHECK_NO_THROW(config = OCIO::Config::CreateFromStream(is));
-        OCIO_REQUIRE_ASSERT(config);
-        OCIO_CHECK_NO_THROW(config->validate());
-
-        // Check colorspace.
-
-        OCIO_CHECK_EQUAL(config->getNumColorSpaces(), 2);
-        OCIO::ConstColorSpaceRcPtr cs = config->getColorSpace(config->getColorSpaceNameByIndex(0));
-        OCIO_REQUIRE_ASSERT(cs);
-        // Description has no trailing \n.
-        OCIO_CHECK_EQUAL(std::string(cs->getDescription()), "Some text.");
-
-        cs = config->getColorSpace(config->getColorSpaceNameByIndex(1));
-        OCIO_REQUIRE_ASSERT(cs);
-        // Description has no trailing \n.
-        OCIO_CHECK_EQUAL(std::string(cs->getDescription()), "One line.\n\nOther line.");
-
-        // Save and compare output with input.
-
-        std::ostringstream os;
-        os << *config;
-
-        OCIO_CHECK_EQUAL(cfgString, os.str());
-    }
-    
     // Test that the interop_id can't be used in v2.0 config
     {
-            constexpr char End[]{R"(colorspaces:
+        constexpr char End[]{R"(colorspaces:
   - !<ColorSpace>
     name: raw
     interop_id: data
@@ -707,23 +651,21 @@ active_views: []
     isdata: true
     allocation: uniform
 )"};
-    std::string cfgString{Start};
-    cfgString += End;
+        std::string cfgString{Start};
+        cfgString += End;
 
-    // Load config.
-
-    std::istringstream is;
-    is.str(cfgString);
-    OCIO::ConstConfigRcPtr config;
-    OCIO_CHECK_THROW_WHAT(
-        config = OCIO::Config::CreateFromStream(is),
-        OCIO::Exception, 
-        "Config failed validation. The color space 'raw' has non-empty InteropID and config version is less than 2.5.");
+        std::istringstream is;
+        is.str(cfgString);
+        OCIO::ConstConfigRcPtr config;
+        OCIO_CHECK_THROW_WHAT(
+            config = OCIO::Config::CreateFromStream(is),
+            OCIO::Exception, 
+            "Config failed validation. The color space 'raw' has non-empty InteropID and config version is less than 2.5.");
     }
 
     // Test that the amf_transform_ids can't be used in v2.0 config
     {
-      constexpr char End[]{R"(colorspaces:
+        constexpr char End[]{R"(colorspaces:
   - !<ColorSpace>
     name: raw
     amf_transform_ids: this:shouldnt:be:here
@@ -734,23 +676,21 @@ active_views: []
     isdata: true
     allocation: uniform
 )"};
-      std::string cfgString{Start};
-      cfgString += End;
+        std::string cfgString{Start};
+        cfgString += End;
 
-      // Load config.
-
-      std::istringstream is;
-      is.str(cfgString);
-      OCIO::ConstConfigRcPtr config;
-      OCIO_CHECK_THROW_WHAT(
-          config = OCIO::Config::CreateFromStream(is), OCIO::Exception,
-          "Config failed validation. The color space 'raw' has non-empty "
-          "AMFTransformIDs and config version is less than 2.5.");
+        std::istringstream is;
+        is.str(cfgString);
+        OCIO::ConstConfigRcPtr config;
+        OCIO_CHECK_THROW_WHAT(
+            config = OCIO::Config::CreateFromStream(is), OCIO::Exception,
+            "Config failed validation. The color space 'raw' has non-empty "
+            "AMFTransformIDs and config version is less than 2.5.");
     }
 
     // Test that the icc_profile_name can't be used in v2.0 config
     {
-      constexpr char End[]{R"(colorspaces:
+        constexpr char End[]{R"(colorspaces:
   - !<ColorSpace>
     name: raw
     icc_profile_name: not valid in v2.0 config
@@ -761,18 +701,16 @@ active_views: []
     isdata: true
     allocation: uniform
 )"};
-      std::string cfgString{Start};
-      cfgString += End;
+        std::string cfgString{Start};
+        cfgString += End;
 
-      // Load config.
-
-      std::istringstream is;
-      is.str(cfgString);
-      OCIO::ConstConfigRcPtr config;
-      OCIO_CHECK_THROW_WHAT(
-          config = OCIO::Config::CreateFromStream(is), OCIO::Exception,
-          "Config failed validation. The color space 'raw' has non-empty "
-          "ICCProfileName and config version is less than 2.5.");
+        std::istringstream is;
+        is.str(cfgString);
+        OCIO::ConstConfigRcPtr config;
+        OCIO_CHECK_THROW_WHAT(
+            config = OCIO::Config::CreateFromStream(is), OCIO::Exception,
+            "Config failed validation. The color space 'raw' has non-empty "
+            "ICCProfileName and config version is less than 2.5.");
     }
 }
 

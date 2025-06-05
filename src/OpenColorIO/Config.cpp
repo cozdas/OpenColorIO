@@ -5514,7 +5514,6 @@ void Config::Impl::checkVersionConsistency() const
 
         if (hexVersion < 0x02050000) // Version 2.5
         {
-            const std::string interopID{cs->getInteropID()};
             if (*cs->getInteropID())
             {
                 std::ostringstream os;
