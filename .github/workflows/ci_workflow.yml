@@ -61,7 +61,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        build: [7, 8, 9, 10, 11, 12]
+        build: [8, 11]
         include:
           # -------------------------------------------------------------------
           # VFX CY2024 (Python 3.11)
@@ -186,6 +186,12 @@ jobs:
                 -- -j$(nproc)
           echo "ocio_build_path=$(pwd)" >> $GITHUB_ENV
         working-directory: _build
+      - name: Upload Docs
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-documents
+          path: docs/api/python/frozen/
+        if:  matrix.build-docs == 'ON'
       - name: Test
         run: ctest -V -C ${{ matrix.build-type }}
         working-directory: _build
@@ -257,7 +263,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        build: [1, 2, 3, 4, 5, 6]
+        build: [5]
         include:
           # -------------------------------------------------------------------
           # VFX CY2022 (Python 3.9)
@@ -462,7 +468,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        build: [1, 2, 3, 4]
+        build: [3]
         include:
           - build: 5
             arch-type: "x86_64"
