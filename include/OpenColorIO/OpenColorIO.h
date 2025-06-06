@@ -1917,10 +1917,12 @@ public:
 
     /**
      * Get/Set the interop ID for the color space.
-     * 
-     * The interop ID is a standardized identifier for commonly used color spaces.
-     * These IDs are defined by the Academy Software Foundation's ColorInterop project
-     * to standardize color space naming across the industry.
+     *
+     * The interop ID is a standardized identifier to uniquely identify commonly
+     * used color spaces. These IDs are defined by the Academy Software
+     * Foundation's Color Interop Forum project. If you create your own ID, you
+     * must prefix it with unique characters that will ensure it won't conflict
+     * with future Color Interop Forum IDs.
      */
     const char * getInteropID() const noexcept;
     void setInteropID(const char * interopID);
