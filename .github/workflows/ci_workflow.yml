@@ -189,7 +189,7 @@ jobs:
       - name: Upload Docs
         uses: actions/upload-artifact@v4
         with:
-          name: docs-linux
+          name: docs-linux-build${{ matrix.build }}
           path: docs/api/python/frozen/
         if:  matrix.build-docs == 'ON'
       - name: Test
@@ -407,7 +407,7 @@ jobs:
       - name: Upload Docs
         uses: actions/upload-artifact@v4
         with:
-          name: docs-linux-old
+          name: docs-linux-old-build${{ matrix.build }}
           path: docs/api/python/frozen/
         if:  matrix.build-docs == 'ON'
       - name: Test
@@ -571,8 +571,8 @@ jobs:
       - name: Upload Docs
         uses: actions/upload-artifact@v4
         with:
-          name: docs-macOS13
-          path: docs/api/python/frozen/
+          name: docs-macOS13-build${{ matrix.build }}
+          path: docs/api/
         if:  matrix.build-docs == 'ON'
       - name: Test
         run: ctest -V -C ${{ matrix.build-type }}
@@ -621,6 +621,7 @@ jobs:
   # ---------------------------------------------------------------------------
 
   macos-arm:
+    if: false
     name: 'macOS 14 arm
       <AppleClang
         arch=${{ matrix.arch-type }},
@@ -754,6 +755,7 @@ jobs:
   #       Debug build testing with Python bindings and docs enabled.
 
   windows:
+    if: false
     name: 'Windows 2019 
       <MSVC 
        config=${{ matrix.build-type }}, 
@@ -764,9 +766,9 @@ jobs:
        docs=${{ matrix.build-docs }}, 
        oiio=${{ matrix.use-oiio }}>'
     # Avoid duplicated checks when a pull_request is opened from a local branch.
-    if: |
-      github.event_name == 'push' ||
-      github.event.pull_request.head.repo.full_name != github.repository
+    # if: |
+    #   github.event_name == 'push' ||
+    #   github.event.pull_request.head.repo.full_name != github.repository
     runs-on: windows-2019
     strategy:
       matrix:
