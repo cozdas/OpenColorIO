@@ -189,7 +189,7 @@ jobs:
       - name: Upload Docs
         uses: actions/upload-artifact@v4
         with:
-          name: docs-Linux_CY${{ matrix.vfx-cy }}_build${{ matrix.vfx-cy }}
+          name: docs-linux
           path: docs/api/python/frozen/
         if:  matrix.build-docs == 'ON'
       - name: Test
@@ -407,7 +407,7 @@ jobs:
       - name: Upload Docs
         uses: actions/upload-artifact@v4
         with:
-          name: docs-Linux_CY${{ matrix.vfx-cy }}_build${{ matrix.build }}
+          name: docs-linux-old
           path: docs/api/python/frozen/
         if:  matrix.build-docs == 'ON'
       - name: Test
@@ -571,7 +571,7 @@ jobs:
       - name: Upload Docs
         uses: actions/upload-artifact@v4
         with:
-          name: docs-MacOS13_build${{ matrix.build }}
+          name: docs-macOS13
           path: docs/api/python/frozen/
         if:  matrix.build-docs == 'ON'
       - name: Test
@@ -635,7 +635,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        build: []
+        build: [1, 2]
         include:
           - build: 1
             arch-type: "arm64"
@@ -770,7 +770,7 @@ jobs:
     runs-on: windows-2019
     strategy:
       matrix:
-        build: []
+        build: [1, 2, 3, 4]
         include:
           - build: 4
             build-type: Release
