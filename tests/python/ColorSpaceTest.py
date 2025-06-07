@@ -393,6 +393,8 @@ class ColorSpaceTest(unittest.TestCase):
         cs.addAlias('Alias2')
         aliases = cs.getAliases()
         self.assertEqual(len(aliases), 2)
+        self.assertEqual(aliases[0], 'alias1')
+        self.assertEqual(aliases[1], 'alias2')
 
         # Name might remove an alias.
 
@@ -644,28 +646,29 @@ colorspaces:
         Test the setInteropID() and getInteropID() methods.
         """
         
-        # Test default value (should be empty)
+        # Test default value (should be empty).
         self.assertEqual(self.colorspace.getInteropID(), '')
         
-        # Test setting and getting a simple interop ID
+        # Test setting and getting a simple interop ID.
         test_id = 'lin_ap0_scene'
         self.colorspace.setInteropID(test_id)
         self.assertEqual(self.colorspace.getInteropID(), test_id)
         
-        # Test setting and getting a different interop ID
+        # Test setting and getting a different interop ID.
         test_id2 = 'srgb_ap1_scene'
         self.colorspace.setInteropID(test_id2)
         self.assertEqual(self.colorspace.getInteropID(), test_id2)
         
-        # Test setting empty string
+        # Test setting empty string.
         self.colorspace.setInteropID('')
         self.assertEqual(self.colorspace.getInteropID(), '')
         
-        # Test setting None (should convert to empty string)
+        # Test setting None (should convert to empty string).
+        self.colorspace.setInteropID('something')
         self.colorspace.setInteropID(None)
         self.assertEqual(self.colorspace.getInteropID(), '')
         
-        # Test wrong type (should raise TypeError)
+        # Test wrong type (should raise TypeError).
         with self.assertRaises(TypeError):
             self.colorspace.setInteropID(123)
         
@@ -677,40 +680,41 @@ colorspaces:
         Test the setAMFTransformIDs() and getAMFTransformIDs() methods.
         """
         
-        # Test default value (should be empty)
+        # Test default value (should be empty).
         self.assertEqual(self.colorspace.getAMFTransformIDs(), '')
         
-        # Test setting and getting a single transform ID
+        # Test setting and getting a single transform ID.
         single_id = 'urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.CG_to_ACES.a1.0.3'
         self.colorspace.setAMFTransformIDs(single_id)
         self.assertEqual(self.colorspace.getAMFTransformIDs(), single_id)
         
-        # Test setting and getting multiple transform IDs (newline-separated)
+        # Test setting and getting multiple transform IDs (newline-separated).
         multiple_ids = ('urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.CG_to_ACES.a1.0.3\n'
                        'urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_CG.a1.0.3\n'
                        'urn:ampas:aces:transformId:v1.5:RRT.a1.0.3')
         self.colorspace.setAMFTransformIDs(multiple_ids)
         self.assertEqual(self.colorspace.getAMFTransformIDs(), multiple_ids)
         
-        # Test setting empty string
+        # Test setting empty string.
         self.colorspace.setAMFTransformIDs('')
         self.assertEqual(self.colorspace.getAMFTransformIDs(), '')
         
-        # Test setting None (should convert to empty string)
+        # Test setting None (should convert to empty string).
+        self.colorspace.setAMFTransformIDs('something')
         self.colorspace.setAMFTransformIDs(None)
         self.assertEqual(self.colorspace.getAMFTransformIDs(), '')
         
-        # Test with different line endings
+        # Test with different line endings.
         mixed_endings = 'id1\nid2\rid3\r\nid4'
         self.colorspace.setAMFTransformIDs(mixed_endings)
         self.assertEqual(self.colorspace.getAMFTransformIDs(), mixed_endings)
         
-        # Test with leading/trailing whitespace
+        # Test with leading/trailing whitespace.
         whitespace_ids = '  \n  id1  \n  id2  \n  '
         self.colorspace.setAMFTransformIDs(whitespace_ids)
         self.assertEqual(self.colorspace.getAMFTransformIDs(), whitespace_ids)
         
-        # Test wrong type (should raise TypeError)
+        # Test wrong type (should raise TypeError).
         with self.assertRaises(TypeError):
             self.colorspace.setAMFTransformIDs(123)
         
@@ -722,43 +726,44 @@ colorspaces:
         Test the setICCProfileName() and getICCProfileName() methods.
         """
         
-        # Test default value (should be empty)
+        # Test default value (should be empty).
         self.assertEqual(self.colorspace.getICCProfileName(), '')
         
-        # Test setting and getting a simple profile name
+        # Test setting and getting a simple profile name.
         profile_name = 'sRGB IEC61966-2.1'
         self.colorspace.setICCProfileName(profile_name)
         self.assertEqual(self.colorspace.getICCProfileName(), profile_name)
         
-        # Test setting and getting a different profile name
+        # Test setting and getting a different profile name.
         profile_name2 = 'Adobe RGB (1998)'
         self.colorspace.setICCProfileName(profile_name2)
         self.assertEqual(self.colorspace.getICCProfileName(), profile_name2)
         
-        # Test with a more complex profile name
+        # Test with a more complex profile name.
         complex_name = 'Display P3 - Apple Cinema Display (Calibrated 2023-01-15)'
         self.colorspace.setICCProfileName(complex_name)
         self.assertEqual(self.colorspace.getICCProfileName(), complex_name)
-        
-        # Test setting empty string
+
+        # Test setting empty string.
         self.colorspace.setICCProfileName('')
         self.assertEqual(self.colorspace.getICCProfileName(), '')
         
-        # Test setting None (should convert to empty string)
+        # Test setting None (should convert to empty string).
+        self.colorspace.setICCProfileName('something')
         self.colorspace.setICCProfileName(None)
         self.assertEqual(self.colorspace.getICCProfileName(), '')
         
-        # Test with special characters and numbers
+        # Test with special characters and numbers.
         special_name = 'ProPhoto RGB v2.0 (γ=1.8) [Custom Profile #123]'
         self.colorspace.setICCProfileName(special_name)
         self.assertEqual(self.colorspace.getICCProfileName(), special_name)
         
-        # Test with Unicode characters
+        # Test with Unicode characters.
         unicode_name = 'Профиль RGB γ=2.2'
         self.colorspace.setICCProfileName(unicode_name)
         self.assertEqual(self.colorspace.getICCProfileName(), unicode_name)
         
-        # Test wrong type (should raise TypeError)
+        # Test wrong type (should raise TypeError).
         with self.assertRaises(TypeError):
             self.colorspace.setICCProfileName(123)
         
