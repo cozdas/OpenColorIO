@@ -61,8 +61,50 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        build: [7, 8, 9, 10, 11, 12]
+        build: [7, 8, 9, 10, 11, 12, 13, 14, 15]
         include:
+          # -------------------------------------------------------------------
+          # VFX CY2025 (Python 3.11)
+          # -------------------------------------------------------------------
+          - build: 15
+            build-type: Debug
+            build-shared: 'ON'
+            build-docs: 'OFF'
+            build-openfx: 'ON'
+            use-simd: 'ON'
+            use-oiio: 'ON'
+            cxx-standard: 23
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            vfx-cy: 2025
+            install-ext-packages: MISSING
+          - build: 14
+            build-type: Release
+            build-shared: 'ON'
+            build-docs: 'ON'
+            build-openfx: 'ON'
+            use-simd: 'OFF'
+            use-oiio: 'OFF'
+            cxx-standard: 20
+            cxx-compiler: g++
+            cc-compiler: gcc
+            compiler-desc: GCC
+            vfx-cy: 2025
+            install-ext-packages: ALL
+          - build: 13
+            build-type: Release
+            build-shared: 'OFF'
+            build-docs: 'OFF'
+            build-openfx: 'OFF'
+            use-simd: 'ON'
+            use-oiio: 'OFF'
+            cxx-standard: 23 
+            cxx-compiler: g++
+            cc-compiler: gcc
+            compiler-desc: GCC
+            vfx-cy: 2025
+            install-ext-packages: ALL
           # -------------------------------------------------------------------
           # VFX CY2024 (Python 3.11)
           # -------------------------------------------------------------------
