@@ -49,7 +49,7 @@ if(${CMAKE_CXX_STANDARD} EQUAL 20)
         CHECK_CXX_COMPILER_FLAG("${CUSTOM_CXX_FLAGS} -std=c++20" COMPILER_SUPPORTS_CXX20)
     endif()
 
-    if(NOT COMPILER_SUPPORTS_CXX17)
+    if(NOT COMPILER_SUPPORTS_CXX20)
         message(FATAL_ERROR 
             "The compiler ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} has no C++20 support.")
     endif()
@@ -62,7 +62,7 @@ if(${CMAKE_CXX_STANDARD} EQUAL 23)
         CHECK_CXX_COMPILER_FLAG("${CUSTOM_CXX_FLAGS} -std=c++23" COMPILER_SUPPORTS_CXX23)
     endif()
 
-    if(NOT COMPILER_SUPPORTS_CXX17)
+    if(NOT COMPILER_SUPPORTS_CXX23)
         message(FATAL_ERROR 
             "The compiler ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} has no C++23 support.")
     endif()
