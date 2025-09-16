@@ -73,7 +73,7 @@ jobs:
             build-openfx: 'ON'
             use-simd: 'ON'
             use-oiio: 'ON'
-            cxx-standard: 17
+            cxx-standard: 20
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
@@ -99,7 +99,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             cxx-compiler: g++
             cc-compiler: gcc
             compiler-desc: GCC
@@ -115,7 +115,7 @@ jobs:
             build-openfx: 'ON'
             use-simd: 'ON'
             use-oiio: 'ON'
-            cxx-standard: 17
+            cxx-standard: 20
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
@@ -141,7 +141,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             cxx-compiler: g++
             cc-compiler: gcc
             compiler-desc: GCC
@@ -257,12 +257,12 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        build: [1, 2, 3, 4, 5, 6]
+        build: [1, 2, 3]
         include:
           # -------------------------------------------------------------------
           # VFX CY2022 (Python 3.9)
           # -------------------------------------------------------------------
-          - build: 6
+          - build: 1
             build-type: Debug
             build-shared: 'ON'
             build-docs: 'OFF'
@@ -275,7 +275,7 @@ jobs:
             compiler-desc: Clang
             vfx-cy: 2022
             install-ext-packages: ALL
-          - build: 5
+          - build: 2
             build-type: Release
             build-shared: 'ON'
             build-docs: 'ON'
@@ -288,60 +288,18 @@ jobs:
             compiler-desc: GCC
             vfx-cy: 2022
             install-ext-packages: MISSING
-          - build: 4
+          - build: 3
             build-type: Release
             build-shared: 'OFF'
             build-docs: 'OFF'
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             cxx-compiler: g++
             cc-compiler: gcc
             compiler-desc: GCC
             vfx-cy: 2022
-            install-ext-packages: ALL
-          # -------------------------------------------------------------------
-          # VFX CY2021 (Python 3.7)
-          # -------------------------------------------------------------------
-          - build: 3
-            build-type: Release
-            build-shared: 'ON'
-            build-docs: 'OFF'
-            build-openfx: 'OFF'
-            use-simd: 'ON'
-            use-oiio: 'ON'
-            cxx-standard: 17
-            cxx-compiler: clang++
-            cc-compiler: clang
-            compiler-desc: Clang
-            vfx-cy: 2021
-            install-ext-packages: MISSING
-          - build: 2
-            build-type: Release
-            build-shared: 'OFF'
-            build-docs: 'OFF'
-            build-openfx: 'ON'
-            use-simd: 'OFF'
-            use-oiio: 'OFF'
-            cxx-standard: 14
-            cxx-compiler: clang++
-            cc-compiler: clang
-            compiler-desc: Clang
-            vfx-cy: 2021
-            install-ext-packages: ALL
-          - build: 1
-            build-type: Debug
-            build-shared: 'ON'
-            build-docs: 'OFF'
-            build-openfx: 'OFF'
-            use-simd: 'ON'
-            use-oiio: 'OFF'
-            cxx-standard: 11
-            cxx-compiler: g++
-            cc-compiler: gcc
-            compiler-desc: GCC
-            vfx-cy: 2021
             install-ext-packages: ALL
     env:
       CXX: ${{ matrix.cxx-compiler }}
@@ -472,7 +430,7 @@ jobs:
             build-openfx: 'ON'
             use-simd: 'ON'
             use-oiio: 'ON'
-            cxx-standard: 17
+            cxx-standard: 20
             python-version: '3.11'
           # Keeping one universal build
           - build: 4
@@ -483,7 +441,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             python-version: '3.10'
           - build: 3
             arch-type: "x86_64"
@@ -493,7 +451,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'OFF'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             python-version: '3.10'
           - build: 2
             arch-type: "x86_64"
@@ -503,7 +461,7 @@ jobs:
             build-openfx: 'ON'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             python-version: '3.9'
           - build: 1
             arch-type: "x86_64"
@@ -513,7 +471,7 @@ jobs:
             build-openfx: 'ON'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 14
+            cxx-standard: 17
             python-version: '3.7'
     steps:
       - name: Setup Python
@@ -628,7 +586,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             python-version: '3.11'
           - build: 2
             arch-type: "x86_64;arm64"
@@ -639,7 +597,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             python-version: '3.11'
     steps:
       - name: Setup Python
@@ -761,7 +719,7 @@ jobs:
             build-openfx: 'ON'
             use-simd: 'OFF'
             use-oiio: 'ON'
-            cxx-standard: 17
+            cxx-standard: 20
             python-version: '3.11'
           - build: 3
             build-type: Release
@@ -770,7 +728,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             python-version: '3.9'
           - build: 2
             build-type: Debug
@@ -779,7 +737,7 @@ jobs:
             build-openfx: 'OFF'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 11
+            cxx-standard: 17
             python-version: '3.8'
           # C++14, OpenEXR, OpenFX
           - build: 1
@@ -789,7 +747,7 @@ jobs:
             build-openfx: 'ON'
             use-simd: 'ON'
             use-oiio: 'OFF'
-            cxx-standard: 14
+            cxx-standard: 17
             python-version: '3.7'
     steps:
       - name: Setup Python
