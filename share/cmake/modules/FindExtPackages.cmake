@@ -70,7 +70,7 @@ ocio_handle_dependency(  yaml-cpp REQUIRED ALLOW_INSTALL
 # https://github.com/imageworks/pystring
 ocio_handle_dependency(  pystring REQUIRED ALLOW_INSTALL
                          MIN_VERSION 1.1.3
-                         RECOMMENDED_VERSION 1.1.3
+                         RECOMMENDED_VERSION 1.1.4
                          RECOMMENDED_VERSION_REASON "Latest version tested with OCIO")
 
 # Imath (>=3.1)

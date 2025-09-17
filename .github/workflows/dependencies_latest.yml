@@ -109,7 +109,7 @@ jobs:
           share/ci/scripts/multi/install_expat.sh 2.6.0 $EXT_PATH
           share/ci/scripts/multi/install_lcms2.sh 2.2 $EXT_PATH
           share/ci/scripts/multi/install_yaml-cpp.sh 0.8.0 $EXT_PATH
-          share/ci/scripts/multi/install_pystring.sh 1.1.3 $EXT_PATH
+          share/ci/scripts/multi/install_pystring.sh 1.1.4 $EXT_PATH
           share/ci/scripts/multi/install_pybind11.sh 2.9.2 $EXT_PATH
           share/ci/scripts/multi/install_zlib.sh 1.3.1 $EXT_PATH
           share/ci/scripts/multi/install_minizip-ng.sh 3.0.6 $EXT_PATH
@@ -214,7 +214,7 @@ jobs:
           share/ci/scripts/multi/install_expat.sh 2.6.0 $EXT_PATH
           share/ci/scripts/multi/install_lcms2.sh 2.2 $EXT_PATH
           share/ci/scripts/multi/install_yaml-cpp.sh 0.8.0 $EXT_PATH
-          share/ci/scripts/multi/install_pystring.sh 1.1.3 $EXT_PATH
+          share/ci/scripts/multi/install_pystring.sh 1.1.4 $EXT_PATH
           share/ci/scripts/multi/install_pybind11.sh 2.9.2 $EXT_PATH
           share/ci/scripts/multi/install_zlib.sh 1.3.1 $EXT_PATH
           share/ci/scripts/multi/install_minizip-ng.sh 3.0.6 $EXT_PATH
@@ -337,7 +337,7 @@ jobs:
         run: |
           share/ci/scripts/multi/install_lcms2.sh 2.2 $EXT_PATH
           share/ci/scripts/multi/install_yaml-cpp.sh 0.8.0 $EXT_PATH
-          share/ci/scripts/multi/install_pystring.sh 1.1.3 $EXT_PATH
+          share/ci/scripts/multi/install_pystring.sh 1.1.4 $EXT_PATH
           share/ci/scripts/multi/install_pybind11.sh 2.9.2 $EXT_PATH
           share/ci/scripts/multi/install_expat.sh 2.6.0 $EXT_PATH
           share/ci/scripts/multi/install_zlib.sh 1.3.1 $EXT_PATH
