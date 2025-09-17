@@ -97,13 +97,10 @@ ocio_handle_dependency(  Imath REQUIRED ALLOW_INSTALL
 # ZLIB_USE_STATIC_LIBS    Set to ON if static library is prefered (CMake 3.24+)
 #
 ###############################################################################
-# ZLIB 1.2.13 is used since it fixes a critical vulnerability.
-# See https://nvd.nist.gov/vuln/detail/CVE-2022-37434
-# See https://github.com/madler/zlib/releases/tag/v1.2.13
 ocio_handle_dependency(  ZLIB REQUIRED ALLOW_INSTALL
                          MIN_VERSION 1.2.8
-                         RECOMMENDED_VERSION 1.2.13
-                         RECOMMENDED_VERSION_REASON "CVE fixes"
+                         RECOMMENDED_VERSION 1.3.1
+                         RECOMMENDED_VERSION_REASON "Latest version tested with OCIO"
                          VERSION_VARS ZLIB_VERSION_STRING ZLIB_VERSION )
 
 ###############################################################################
