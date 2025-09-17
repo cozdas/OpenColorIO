@@ -181,7 +181,6 @@ if(OCIO_BUILD_PYTHON OR OCIO_BUILD_DOCS)
 endif()
 
 # Set OpenEXR Minimum version as a variable since it it used at multiple places.
-set(OpenEXR_MININUM_VERSION "3.0.5")
 if((OCIO_BUILD_APPS AND OCIO_USE_OIIO_FOR_APPS) OR OCIO_BUILD_TESTS)
     # OpenImageIO is required for OSL unit test and optional for apps.
 
@@ -256,7 +255,7 @@ if(OCIO_BUILD_APPS)
         ###############################################################################
         # Calling find_package in CONFIG mode using PREFER_CONFIG option.
         ocio_handle_dependency(  OpenEXR PREFER_CONFIG ALLOW_INSTALL
-                                 MIN_VERSION ${OpenEXR_MININUM_VERSION}
+                                 MIN_VERSION 3.0.5
                                  RECOMMENDED_VERSION 3.1.5
                                  RECOMMENDED_VERSION_REASON "Latest version tested with OCIO"
                                  PROMOTE_TARGET OpenEXR::OpenEXR)
