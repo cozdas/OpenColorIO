@@ -55,29 +55,29 @@ message(STATUS "Checking for mandatory dependencies...")
 # expat
 # https://github.com/libexpat/libexpat
 ocio_handle_dependency(  expat REQUIRED ALLOW_INSTALL
-                         MIN_VERSION 2.4.1
-                         RECOMMENDED_VERSION 2.5.0
-                         RECOMMENDED_VERSION_REASON "CVE fixes and fix issue with symbol leakage when built as a static library")
+                         MIN_VERSION 2.6.0             # CMAKE 4.0 compatible
+                         RECOMMENDED_VERSION 2.7.2
+                         RECOMMENDED_VERSION_REASON "CVE fixes and Latest version tested with OCIO")
 
 # yaml-cpp
 # https://github.com/jbeder/yaml-cpp
 ocio_handle_dependency(  yaml-cpp REQUIRED ALLOW_INSTALL
-                         MIN_VERSION 0.6.3
-                         RECOMMENDED_VERSION 0.7.0
+                         MIN_VERSION 0.8.0
+                         RECOMMENDED_VERSION 0.8.0
                          RECOMMENDED_VERSION_REASON "Latest version tested with OCIO")
 
 # pystring
 # https://github.com/imageworks/pystring
 ocio_handle_dependency(  pystring REQUIRED ALLOW_INSTALL
                          MIN_VERSION 1.1.3
-                         RECOMMENDED_VERSION 1.1.3
+                         RECOMMENDED_VERSION 1.1.4
                          RECOMMENDED_VERSION_REASON "Latest version tested with OCIO")
 
-# Imath (>=3.1)
+# Imath (>=3.1.1)
 # https://github.com/AcademySoftwareFoundation/Imath
 ocio_handle_dependency(  Imath REQUIRED ALLOW_INSTALL
                          MIN_VERSION 3.1.1
-                         RECOMMENDED_VERSION 3.1.12
+                         RECOMMENDED_VERSION 3.2.1
                          RECOMMENDED_VERSION_REASON "Latest version tested with OCIO")
 
 ###############################################################################
@@ -97,13 +97,10 @@ ocio_handle_dependency(  Imath REQUIRED ALLOW_INSTALL
 # ZLIB_USE_STATIC_LIBS    Set to ON if static library is prefered (CMake 3.24+)
 #
 ###############################################################################
-# ZLIB 1.2.13 is used since it fixes a critical vulnerability.
-# See https://nvd.nist.gov/vuln/detail/CVE-2022-37434
-# See https://github.com/madler/zlib/releases/tag/v1.2.13
 ocio_handle_dependency(  ZLIB REQUIRED ALLOW_INSTALL
                          MIN_VERSION 1.2.8
-                         RECOMMENDED_VERSION 1.2.13
-                         RECOMMENDED_VERSION_REASON "CVE fixes"
+                         RECOMMENDED_VERSION 1.3.1
+                         RECOMMENDED_VERSION_REASON "Latest version tested with OCIO"
                          VERSION_VARS ZLIB_VERSION_STRING ZLIB_VERSION )
 
 ###############################################################################
@@ -184,7 +181,6 @@ if(OCIO_BUILD_PYTHON OR OCIO_BUILD_DOCS)
 endif()
 
 # Set OpenEXR Minimum version as a variable since it it used at multiple places.
-set(OpenEXR_MININUM_VERSION "3.0.5")
 if((OCIO_BUILD_APPS AND OCIO_USE_OIIO_FOR_APPS) OR OCIO_BUILD_TESTS)
     # OpenImageIO is required for OSL unit test and optional for apps.
 
@@ -259,7 +255,7 @@ if(OCIO_BUILD_APPS)
         ###############################################################################
         # Calling find_package in CONFIG mode using PREFER_CONFIG option.
         ocio_handle_dependency(  OpenEXR PREFER_CONFIG ALLOW_INSTALL
-                                 MIN_VERSION ${OpenEXR_MININUM_VERSION}
+                                 MIN_VERSION 3.0.5
                                  RECOMMENDED_VERSION 3.1.5
                                  RECOMMENDED_VERSION_REASON "Latest version tested with OCIO"
                                  PROMOTE_TARGET OpenEXR::OpenEXR)

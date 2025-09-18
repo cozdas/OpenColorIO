@@ -12,11 +12,6 @@
 # Global targets defined by this module:
 #   yaml-cpp::yaml-cpp         
 #
-# For compatibility with the upstream CMake package, the following variables and targets are defined:
-#   yaml-cpp::yaml-cpp      - Alias of the yaml-cpp target
-#   YAML_CPP_LIBRARIES      - Libraries to link against yaml-cpp
-#   YAML_CPP_INCLUDE_DIR    - Include directory
-#
 
 ###############################################################################
 ### Create target (if previous 'find_package' call hasn't) ###
@@ -118,7 +113,9 @@ if(NOT yaml-cpp_FOUND AND OCIO_INSTALL_EXT_PACKAGES AND NOT OCIO_INSTALL_EXT_PAC
                 -DANDROID_STL=${ANDROID_STL})
         endif()
 
-        set(yaml-cpp_GIT_TAG "yaml-cpp-${yaml-cpp_VERSION}")
+        # in v0.8.0 yaml switched from "yaml-cpp-vA.B.C" to "vA.B.C" format for tags.
+        set(yaml-cpp_GIT_TAG "${yaml-cpp_VERSION}")
+        # set(yaml-cpp_GIT_TAG "yaml-cpp-${yaml-cpp_VERSION}")
 
         # Hack to let imported target be built from ExternalProject_Add
         file(MAKE_DIRECTORY ${yaml-cpp_INCLUDE_DIR})
@@ -154,10 +151,9 @@ if(_yaml-cpp_TARGET_CREATE)
     set_target_properties(yaml-cpp::yaml-cpp PROPERTIES
         IMPORTED_LOCATION ${yaml-cpp_LIBRARY}
         INTERFACE_INCLUDE_DIRECTORIES ${yaml-cpp_INCLUDE_DIR}
+        # https://github.com/jbeder/yaml-cpp/issues/1339
+        INTERFACE_COMPILE_DEFINITIONS YAML_CPP_STATIC_DEFINE
     )
 
     mark_as_advanced(yaml-cpp_INCLUDE_DIR yaml-cpp_LIBRARY yaml-cpp_VERSION)
 endif()
-
-set(YAML_CPP_INCLUDE_DIR "${yaml-cpp_INCLUDE_DIR}")
-set(YAML_CPP_LIBRARIES yaml-cpp::yaml-cpp)
