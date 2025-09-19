@@ -15,6 +15,12 @@
 #   ${Python_PRE_COMMAND} ${Python_EXECUTABLE} [args]
 #
 
+# For Makefiles
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
+# For MSBuild (Visual Studio)
+set(CMAKE_MSBUILD_FLAGS "/verbosity:detailed")
+
 macro(get_python_pre_command)
 
     # Override PYTHONPATH to make the PyOpenColorIO build and additional paths
@@ -51,7 +57,24 @@ macro(get_python_pre_command)
             file(TO_NATIVE_PATH ${_PATH} _WIN_PATH)
             list(APPEND _WIN_PATHS ${_WIN_PATH})
         endforeach()
-        list(APPEND _WIN_PATHS "%PYTHONPATH%")
+        
+        # I think this supposed to add a literal %PYTHONPATH% at the end of the
+        # list but instead somehow it's adding an empty entry which results
+        # double semicolons at the end and that seems to crash the conversion to
+        # absolute path at one point in Python 3.11+.  
+        # I'm not sure who converts %PYTHONPATH% to empty string, this is a
+        # python script launched by a cmd.exe command that's defined as a custom
+        # build step in vcxproj file which is created by CMake ' but the command
+        # and that cmd.exe is launched by MSBuild. :-o 
+
+        # ... in src/bindings/python/CMakeList.txt:23 the command is:
+
+        # set;PYTHONPATH=D:\a\OpenColorIO\OpenColorIO\build\temp.win-amd64-cpython-311\Release\src\bindings\python\Release\;D:\a\OpenColorIO\OpenColorIO\share\docs\;;	;call C:\Users\runneradmin\AppData\Local\Temp\build-env-q0vk6lfr\Scripts\python.exe D:/a/OpenColorIO/OpenColorIO/share/docs/extract_docstrings.py xml docstrings.h 
+        
+        # This may be related to https://www.cve.news/cve-2023-41105/  
+        # Commenting out the below line seems to fix the Windows Wheels builds.  
+        # Trying with %%PYTHONPATH%% ...  
+        list(APPEND _WIN_PATHS "%%PYTHONPATH%%")
 
         string(JOIN "\\\\;" _PYTHONPATH_VALUE ${_WIN_PATHS})
         string(CONCAT _PYTHONPATH_SET "PYTHONPATH=${_PYTHONPATH_VALUE}")
