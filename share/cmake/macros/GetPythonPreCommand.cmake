@@ -16,10 +16,9 @@
 #
 
 # For Makefiles
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 # For MSBuild (Visual Studio)
-set(CMAKE_MSBUILD_FLAGS "/verbosity:detailed")
+# set(CMAKE_MSBUILD_FLAGS "/verbosity:detailed")
 
 macro(get_python_pre_command)
 
@@ -59,21 +58,23 @@ macro(get_python_pre_command)
         endforeach()
         
         # I think this supposed to add a literal %PYTHONPATH% at the end of the
-        # list but instead somehow it's adding an empty entry which results
+        # list but instead, somehow, it's adding an empty entry which results
         # double semicolons at the end and that seems to crash the conversion to
         # absolute path at one point in Python 3.11+.  
         # I'm not sure who converts %PYTHONPATH% to empty string, this is a
         # python script launched by a cmd.exe command that's defined as a custom
-        # build step in vcxproj file which is created by CMake ' but the command
-        # and that cmd.exe is launched by MSBuild. :-o 
-
-        # ... in src/bindings/python/CMakeList.txt:23 the command is:
+        # build step in vcxproj file which is created by CMake, and that cmd.exe
+        # is launched by MSBuild. :-o It's either CMake expanding it or the
+        # vcxproj generator expanding it. I can't verify easily as it's hard to
+        # see the generated vcxproj file. But the resulting string is this at
+        # src/bindings/python/CMakeList.txt:23 :
 
         # set;PYTHONPATH=D:\a\OpenColorIO\OpenColorIO\build\temp.win-amd64-cpython-311\Release\src\bindings\python\Release\;D:\a\OpenColorIO\OpenColorIO\share\docs\;;	;call C:\Users\runneradmin\AppData\Local\Temp\build-env-q0vk6lfr\Scripts\python.exe D:/a/OpenColorIO/OpenColorIO/share/docs/extract_docstrings.py xml docstrings.h 
         
-        # This may be related to https://www.cve.news/cve-2023-41105/  
-        # Commenting out the below line seems to fix the Windows Wheels builds.  
-        # Trying with %%PYTHONPATH%% ...  
+        # The python issue with empty path may be related to
+        # https://www.cve.news/cve-2023-41105/  
+        # Escaping it with %% as %%PYTHONPATH%% seems to wok fine, I think
+        # cmd.exe will take it as %PYTHONPATH%.
         list(APPEND _WIN_PATHS "%%PYTHONPATH%%")
 
         string(JOIN "\\\\;" _PYTHONPATH_VALUE ${_WIN_PATHS})
