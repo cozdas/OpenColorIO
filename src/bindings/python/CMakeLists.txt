@@ -22,6 +22,7 @@ if(OCIO_BUILD_DOCS)
 	# Run docstring extraction if docstrings.h is behind doxygen XML
 	add_custom_command(OUTPUT ${PYOCIO_DOCSTRINGS_H}
 		COMMAND
+			# ${Python_PRE_CMD} "${Python_EXECUTABLE}" -v -u -X dev "${EXTRACT_DOCSTRINGS_PY}" xml docstrings.h
 			${Python_PRE_CMD} "${Python_EXECUTABLE}" "${EXTRACT_DOCSTRINGS_PY}" xml docstrings.h
 		WORKING_DIRECTORY
 			${PYOCIO_DOCSTRINGS_DIR}
@@ -29,7 +30,7 @@ if(OCIO_BUILD_DOCS)
 			doxygen_extraction
             ${DOXYGEN_INDEX_XML}
 			${EXTRACT_DOCSTRINGS_PY}
-		COMMENT "Extracting Python docstrings from C++ headers"
+		COMMENT "Extracting Python docstrings from C++ headers\n    COMMAND: ${Python_PRE_CMD} ${Python_EXECUTABLE} ${EXTRACT_DOCSTRINGS_PY} xml docstrings.h\n    WORKING_DIRECTORY: ${PYOCIO_DOCSTRINGS_DIR}"
 	)
 
 	add_custom_target(docstring_extraction

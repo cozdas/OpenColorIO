@@ -1,6 +1,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright Contributors to the OpenColorIO Project.
 
+# For Makefiles
+# set(CMAKE_VERBOSE_MAKEFILE ON)
+# For MSBuild (Visual Studio)
+#set(CMAKE_MSBUILD_FLAGS "/verbosity:detailed")
+
 ###############################################################################
 ### Python ###
 
