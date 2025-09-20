@@ -57,9 +57,9 @@ jobs:
     container:
       # DockerHub: https://hub.docker.com/u/aswf
       # Source: https://github.com/AcademySoftwareFoundation/aswf-docker
-      image: aswf/ci-ocio:${{ matrix.vfx-cy }}.1
+      image: aswf/ci-ocio:${{ matrix.vfx-cy }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         build: [7, 8, 9, 10, 11, 12, 13, 14, 15]
         include:
@@ -207,6 +207,7 @@ jobs:
       - name: Configure
         run: |
           cmake ../. \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_INSTALL_PREFIX=../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} \
@@ -251,6 +252,7 @@ jobs:
         # the static version of the package.
         run: |
           cmake . \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_PREFIX_PATH=../../../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -Dexpat_ROOT=${{ env.ocio_build_path }}/ext/dist \
@@ -297,7 +299,7 @@ jobs:
         - /node20217:/node20217:rw,rshared
         - /node20217:/__e/node20:ro,rshared
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         build: [1, 2, 3]
         include:
@@ -377,6 +379,7 @@ jobs:
       - name: Configure
         run: |
           cmake ../. \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_INSTALL_PREFIX=../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} \
@@ -421,6 +424,7 @@ jobs:
         # the static version of the package.
         run: |
           cmake . \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_PREFIX_PATH=../../../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -Dexpat_ROOT=${{ env.ocio_build_path }}/ext/dist \
@@ -461,6 +465,7 @@ jobs:
       github.event.pull_request.head.repo.full_name != github.repository
     runs-on: macos-13
     strategy:
+      fail-fast: false
       matrix:
         build: [1, 2, 3, 4, 5]
         include:
@@ -534,6 +539,7 @@ jobs:
       - name: Configure
         run: |
           cmake ../. \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_INSTALL_PREFIX=../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} \
@@ -579,6 +585,7 @@ jobs:
         # the static version of the package.
         run: |
           cmake . \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_PREFIX_PATH=../../../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -Dexpat_ROOT=${{ env.ocio_build_path }}/ext/dist \
@@ -616,6 +623,7 @@ jobs:
 
     runs-on: macos-14
     strategy:
+      fail-fast: false
       matrix:
         build: [1, 2]
         include:
@@ -660,6 +668,7 @@ jobs:
       - name: Configure
         run: |
           cmake ../. \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_INSTALL_PREFIX=../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} \
@@ -710,6 +719,7 @@ jobs:
         # the static version of the package.
         run: |
           cmake . \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_PREFIX_PATH=../../../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -Dexpat_ROOT=${{ env.ocio_build_path }}/ext/dist \
@@ -751,6 +761,7 @@ jobs:
       github.event.pull_request.head.repo.full_name != github.repository
     runs-on: windows-2022
     strategy:
+      fail-fast: false
       matrix:
         build: [1, 2, 3, 4]
         include:
@@ -816,6 +827,7 @@ jobs:
       - name: Configure
         run: |
           cmake ../. \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_INSTALL_PREFIX=../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} \
@@ -865,6 +877,7 @@ jobs:
         # the static version of the package.
         run: |
           cmake . \
+                -DOCIO_VERBOSE=ON \
                 -DCMAKE_PREFIX_PATH=../../../_install \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -Dexpat_ROOT=${{ env.ocio_build_path }}/ext/dist \
