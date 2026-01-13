@@ -45,7 +45,7 @@ jobs:
         with:
           fetch-depth: 50
       - name: Install build-wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v4
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v6
       - name: Install docs env
         run: share/ci/scripts/linux/dnf/install_docs_env.sh
       - name: Install tests env
@@ -78,7 +78,11 @@ jobs:
       - name: Generate code coverage report
         run: share/ci/scripts/linux/run_gcov.sh
       - name: Run sonar-scanner
-        uses: SonarSource/sonarqube-scan-action@v4
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.cfamily.build-wrapper-output=_build/bw_output
