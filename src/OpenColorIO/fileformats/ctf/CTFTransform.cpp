@@ -39,8 +39,17 @@ namespace OCIO_NAMESPACE
 static constexpr unsigned DOUBLE_PRECISION = 15;
 
 
-void CTFVersion::ReadVersion(const std::string & versionString, CTFVersion & versionOut)
+CTFVersion::CTFVersion(const std::string & versionString) 
+    : m_major(0), m_minor(0), m_revision(0) 
 {
+    // Check if matches the SMPTE 2136-1:2024 namespace URI
+    if(0 == Platform::Strcasecmp(versionString.c_str(), "http://www.smpte-ra.org/ns/2136-1/2024")) 
+    {
+        m_version_string = versionString;
+        return;
+    }
+
+    // For non-SMPTE namespace versions, parse as MAJOR[.MINOR[.REVISION]]
     unsigned int numDot = 0;
     unsigned int numInt = 0;
     bool canBeDot = false;
@@ -78,14 +87,14 @@ void CTFVersion::ReadVersion(const std::string & versionString, CTFVersion & ver
         throw Exception(os.str().c_str());
     }
 
-    versionOut.m_major = 0;
-    versionOut.m_minor = 0;
-    versionOut.m_revision = 0;
+    m_major = 0;
+    m_minor = 0;
+    m_revision = 0;
 
     sscanf(versionString.c_str(), "%d.%d.%d",
-           &versionOut.m_major,
-           &versionOut.m_minor,
-           &versionOut.m_revision);
+           &m_major,
+           &m_minor,
+           &m_revision);
 }
 
 CTFVersion & CTFVersion::operator=(const CTFVersion & rhs)
@@ -95,6 +104,7 @@ CTFVersion & CTFVersion::operator=(const CTFVersion & rhs)
         m_major = rhs.m_major;
         m_minor = rhs.m_minor;
         m_revision = rhs.m_revision;
+        m_version_string = rhs.m_version_string;
     }
     return *this;
 }
@@ -105,7 +115,8 @@ bool CTFVersion::operator==(const CTFVersion & rhs) const
 
     return m_major == rhs.m_major
         && m_minor == rhs.m_minor
-        && m_revision == rhs.m_revision;
+        && m_revision == rhs.m_revision
+        && !Platform::Strcasecmp(m_version_string.c_str(), rhs.m_version_string.c_str());
 }
 
 bool CTFVersion::operator<=(const CTFVersion & rhs) const
@@ -125,6 +136,20 @@ bool CTFVersion::operator>=(const CTFVersion & rhs) const
 bool CTFVersion::operator<(const CTFVersion & rhs) const
 {
     if (this == &rhs) return false;
+
+    // SMPTE version handling
+    if(!m_version_string.empty()) 
+    {
+        // Any SMPTE version is greater than non-SMPTE
+        if(rhs.m_version_string.empty()) 
+        {
+          return false;
+        }
+
+        // TODO: This needs to be more sophisticated probably.
+        return Platform::Strcasecmp(m_version_string.c_str(),
+                                    rhs.m_version_string.c_str()) < 0;
+    }
 
     if (m_major < rhs.m_major)
     {

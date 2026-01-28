@@ -717,6 +717,18 @@ private:
                             pImpl->getXmLineNumber(),
                             pImpl->getXmlFilename()));
                 }
+                else if (SupportedElement(name, pElt, TAG_ID, "", recognizedName)) 
+                {
+                    pImpl->m_elms.push_back(
+                        std::make_shared<CTFReaderIdElt>(
+                            name,
+                            pContainer,
+                            pImpl->getXmLineNumber(),
+                            pImpl->getXmlFilename()));
+                    // TODO: do we enforce the ID (tag for SMPTE or attribute otherwise)?
+                    // TODO: do we want to restrict Id tag to SMPTE only?
+                }
+
                 // Dynamic Property is valid under any operator parent. First
                 // test if the tag is supported to set the recognizedName 
                 // accordingly, without testing for parents. Test for the
