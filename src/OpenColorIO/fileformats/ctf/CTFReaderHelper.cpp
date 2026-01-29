@@ -84,15 +84,16 @@ void CTFReaderTransformElt::start(const char ** atts)
             {
                 throwMessage("Attribute 'xmlns' does not have a value.");
             }
-            if (isVersionFound)
-            {
-                throwMessage("SMPTE 'xmlns' version and 'Version' attribute cannot both be present.");
-            }
 
             try
             {
                 auto version = CTFVersion(atts[i + 1]);
                 
+                if (isVersionFound)
+                {
+                    throwMessage("SMPTE 'xmlns' version and 'Version' attribute cannot both be present.");
+                }
+
                 requestedVersion = CTF_PROCESS_LIST_VERSION_2_0;
                 requestedSMPTEVersion = version;
                 isVersionFound = true;
