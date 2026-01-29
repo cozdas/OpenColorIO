@@ -275,14 +275,23 @@ typedef OCIO_SHARED_PTR<const CTFReaderTransform> ConstCTFReaderTransformPtr;
 
 class TransformWriter : public XmlElementWriter
 {
-public:
+ public:
+     enum class SubFormat : uint8_t
+     {
+         eUNKNOWN,
+         eCLF_AMPAS, 
+         eCLF_SMPTE, 
+         eCTF
+     };
+
+ public:
     TransformWriter() = delete;
     TransformWriter(const TransformWriter &) = delete;
     TransformWriter& operator=(const TransformWriter &) = delete;
 
     TransformWriter(XmlFormatter & formatter,
                     ConstCTFReaderTransformPtr transform,
-                    bool isCLF);
+                    SubFormat SubFormat);
 
     virtual ~TransformWriter();
 
@@ -294,8 +303,8 @@ private:
     void writeOps(const CTFVersion & version) const;
 
 private:
-    ConstCTFReaderTransformPtr m_transform;
-    bool                       m_isCLF;
+    ConstCTFReaderTransformPtr  m_transform;
+    SubFormat                   m_subFormat = SubFormat::eUNKNOWN;
 };
 
 

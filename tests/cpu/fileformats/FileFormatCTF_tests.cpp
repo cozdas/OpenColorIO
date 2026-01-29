@@ -92,7 +92,6 @@ OCIO_ADD_TEST(FileFormatCTF, smpte_clf_basic)
         OCIO_CHECK_EQUAL(opList[2]->getType(), OCIO::OpData::MatrixType);
         OCIO_CHECK_EQUAL(opList[2]->getName(), "");
         OCIO_CHECK_EQUAL(opList[2]->getID(), "");
-
     }
 }
 
