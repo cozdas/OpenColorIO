@@ -154,6 +154,6 @@ END METADATA
         self.assert_lut_match(output, self.EXPECTED_LUT)
 
         fmts = bake.getFormats()
-        self.assertEqual(len(fmts), 12)
-        self.assertEqual("cinespace", fmts[4][0])
+        self.assertEqual(len(fmts), 13)
+        self.assertEqual("cinespace", fmts[5][0])
         self.assertEqual("3dl", fmts[1][1])

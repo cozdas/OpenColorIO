@@ -21,6 +21,7 @@ class FileTransformTest(unittest.TestCase, TransformsBaseTest):
                        ('ColorCorrectionCollection', 'ccc'),
                        ('ColorDecisionList', 'cdl'),
                        ('Academy/ASC Common LUT Format', 'clf'),
+					   ('SMPTE Common LUT Format', 'clf'),
                        ('Color Transform Format', 'ctf'),
                        ('cinespace', 'csp'),
                        ('Discreet 1D LUT', 'lut'),
@@ -111,7 +112,7 @@ class FileTransformTest(unittest.TestCase, TransformsBaseTest):
             self.assertEqual(format_name, name)
             self.assertEqual(format_ext, ext)
 
-        self.assertEqual(format_iterator.__len__(), 24)
+        self.assertEqual(format_iterator.__len__(), 25)
 
     def test_interpolation(self):
         """
