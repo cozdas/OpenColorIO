@@ -308,6 +308,23 @@ bool CTFReaderTransformElt::isCLF() const
 }
 
 //////////////////////////////////////////////////////////
+void CTFReaderIdElt::end() 
+{
+    if(!ValidateSMPTEId(m_id))
+    {
+        std::ostringstream ss;
+        ss << "'" << m_id << "' is not a ST2136-1:2024 complaint Id value.";
+        throwMessage(ss.str());
+    }
+
+    auto* pTransformnElt = dynamic_cast<CTFReaderTransformElt*>(getParent().get());
+    if (pTransformnElt)
+    {
+        pTransformnElt->setID(m_id);
+    }
+}
+
+//////////////////////////////////////////////////////////
 
 CTFReaderArrayElt::CTFReaderArrayElt(const std::string & name,
                                      ContainerEltRcPtr pParent,

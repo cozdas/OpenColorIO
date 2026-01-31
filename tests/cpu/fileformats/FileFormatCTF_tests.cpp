@@ -1948,6 +1948,14 @@ OCIO_ADD_TEST(FileFormatCTF, transform_id_empty)
                           "Attribute 'id' does not have a value");
 }
 
+OCIO_ADD_TEST(FileFormatCTF, transform_id_invalid)
+{
+    const std::string ctfFile("clf/smpte/transform_id_invalid.clf");
+    OCIO_CHECK_THROW_WHAT(LoadCLFFile(ctfFile),
+                          OCIO::Exception,
+                          "'Some Random Text' is not a ST2136-1:2024 complaint Id value.");
+}
+
 OCIO_ADD_TEST(FileFormatCTF, transform_with_bitdepth_mismatch)
 {
     // Even though we normalize the bit-depths after reading, any mismatches in
@@ -3856,10 +3864,16 @@ void WriteGroupCTF(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & ou
     group->write(cfg, OCIO::FILEFORMAT_CTF, outputTransform);
 }
 
-void WriteGroupCLF(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & outputTransform)
+void WriteGroupCLF_Academy(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & outputTransform)
 {
     OCIO::ConstConfigRcPtr cfg = OCIO::Config::CreateRaw();
-    group->write(cfg, OCIO::FILEFORMAT_CLF, outputTransform);
+    group->write(cfg, OCIO::FILEFORMAT_CLF_ACADEMY, outputTransform);
+}
+
+void WriteGroupCLF_SMPTE(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & outputTransform)
+{
+    OCIO::ConstConfigRcPtr cfg = OCIO::Config::CreateRaw();
+    group->write(cfg, OCIO::FILEFORMAT_CLF_SMPTE, outputTransform);
 }
 
 void ValidateFixedFunctionStyle(OCIO::FixedFunctionOpData::Style style,
@@ -5453,7 +5467,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     {
         const std::string result = outputTransform.str();
@@ -5468,7 +5482,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
     lut->setInterpolation(OCIO::INTERP_BEST);
 
     group->appendTransform(lut);
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     {
         const std::string result = outputTransform.str();
@@ -5483,7 +5497,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
     lut->setInterpolation(OCIO::INTERP_LINEAR);
 
     group->appendTransform(lut);
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     {
         const std::string result = outputTransform.str();
@@ -5497,7 +5511,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
 
     lut->setInterpolation(OCIO::INTERP_CUBIC);
     group->appendTransform(lut);
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform), OCIO::Exception,
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform), OCIO::Exception,
                           "1D LUT does not support interpolation algorithm: cubic");
 }
 
@@ -5653,11 +5667,13 @@ OCIO_ADD_TEST(CTFTransform, load_edit_save_matrix_clf)
     const double offset[] = { 0.1, 1.2, 2.3, 0.0 };
     matTrans->setOffset(offset);
 
-    std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    // CLF Academy
+    {
+        std::ostringstream outputTransform;
+        OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
-    const std::string expectedCLF{
-R"(<?xml version="1.0" encoding="UTF-8"?>
+        const std::string expectedCLF_Academy{
+            R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="b5cc7aed-d405-4d8b-b64b-382b2341a378" name="matrix example">
     <Description>Basic matrix example using CLF v2 dim syntax</Description>
     <InputDescriptor>RGB</InputDescriptor>
@@ -5673,20 +5689,60 @@ R"(<?xml version="1.0" encoding="UTF-8"?>
         </Array>
     </Matrix>
 </ProcessList>
-)" };
+)"};
 
-    OCIO_CHECK_EQUAL(expectedCLF.size(), outputTransform.str().size());
-    OCIO_CHECK_EQUAL(expectedCLF, outputTransform.str());
+        OCIO_CHECK_EQUAL(expectedCLF_Academy.size(), outputTransform.str().size());
+        OCIO_CHECK_EQUAL(expectedCLF_Academy, outputTransform.str());
+    }
 
-    const double offsetAlpha[] = { 0.1, 1.2, 2.3, 0.9 };
-    matTrans->setOffset(offsetAlpha);
+    // CLF SMPTE
+    {
+        // The ID is not SMPTE compliant.
+        std::ostringstream outputTransform;
+        OCIO_CHECK_THROW_WHAT(WriteGroupCLF_SMPTE(group, outputTransform), OCIO::Exception, 
+        "'b5cc7aed-d405-4d8b-b64b-382b2341a378' is not a ST2136-1:2024 compliant Id value.");
 
-    std::ostringstream outputTransformCTF;
-    OCIO_CHECK_NO_THROW(WriteGroupCTF(group, outputTransformCTF));
+        // Fix the ID to be SMPTE compliant.
+        group->getFormatMetadata().setID("urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378");
+        
+        outputTransform.str("");
+        OCIO_CHECK_NO_THROW(WriteGroupCLF_SMPTE(group, outputTransform));
 
-    const std::string expectedCTF{
-R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList version="1.3" id="b5cc7aed-d405-4d8b-b64b-382b2341a378" name="matrix example">
+        const std::string expectedCLF_SMPTE{
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+<ProcessList xmlns="http://www.smpte-ra.org/ns/2136-1/2024" compCLFversion="ST2136-1:2024" name="matrix example">
+    <Id>urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378</Id>
+    <Description>Basic matrix example using CLF v2 dim syntax</Description>
+    <InputDescriptor>RGB</InputDescriptor>
+    <OutputDescriptor>XYZ</OutputDescriptor>
+    <Matrix id="c61daf06-539f-4254-81fc-9800e6d02a37" inBitDepth="32f" outBitDepth="32f">
+        <Description>Legacy matrix</Description>
+        <Description>Note that dim=&quot;3 3 3&quot; should be supported for CLF v2 compatibility</Description>
+        <Description>Added description</Description>
+        <Array dim="3 4">
+          0.4123908          0.35758434          0.18048079                 0.1
+         0.21263901          0.71516868          0.07219232                 1.2
+         0.01933082          0.01191948          0.95053215                 2.3
+        </Array>
+    </Matrix>
+</ProcessList>
+)"};
+
+        OCIO_CHECK_EQUAL(expectedCLF_SMPTE.size(), outputTransform.str().size());
+        OCIO_CHECK_EQUAL(expectedCLF_SMPTE, outputTransform.str());
+    }
+
+    // CTF
+    {
+        const double offsetAlpha[] = { 0.1, 1.2, 2.3, 0.9 };
+        matTrans->setOffset(offsetAlpha);
+
+        std::ostringstream outputTransformCTF;
+        OCIO_CHECK_NO_THROW(WriteGroupCTF(group, outputTransformCTF));
+
+        const std::string expectedCTF{
+            R"(<?xml version="1.0" encoding="UTF-8"?>
+<ProcessList version="1.3" id="urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378" name="matrix example">
     <Description>Basic matrix example using CLF v2 dim syntax</Description>
     <InputDescriptor>RGB</InputDescriptor>
     <OutputDescriptor>XYZ</OutputDescriptor>
@@ -5702,10 +5758,13 @@ R"(<?xml version="1.0" encoding="UTF-8"?>
         </Array>
     </Matrix>
 </ProcessList>
-)" };
+)"};
 
-    OCIO_CHECK_EQUAL(expectedCTF.size(), outputTransformCTF.str().size());
-    OCIO_CHECK_EQUAL(expectedCTF, outputTransformCTF.str());
+        OCIO_CHECK_EQUAL(expectedCTF.size(), outputTransformCTF.str().size());
+        OCIO_CHECK_EQUAL(expectedCTF, outputTransformCTF.str());
+    }
+
+
 }
 
 OCIO_ADD_TEST(CTFTransform, matrix3x3_clf)
@@ -5725,7 +5784,7 @@ OCIO_ADD_TEST(CTFTransform, matrix3x3_clf)
     group->appendTransform(mat);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     // In/out bit-depth equal, matrix not scaled.
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
@@ -5781,7 +5840,7 @@ OCIO_ADD_TEST(CTFTransform, matrix_offset_alpha_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     // Alpha not handled by CLF.
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform),
                           OCIO::Exception, 
                           "Transform uses the 'Matrix with alpha component' op which cannot be written as CLF");
 }
@@ -5974,7 +6033,7 @@ OCIO_ADD_TEST(CTFTransform, cdl_clf)
     subSub3.addAttribute("LastName", "Lean");
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="cdl1">
@@ -6138,7 +6197,7 @@ OCIO_ADD_TEST(CTFTransform, range1_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     const std::string expected{
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -6173,7 +6232,7 @@ OCIO_ADD_TEST(CTFTransform, range2_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     const std::string expected{
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -6205,7 +6264,7 @@ OCIO_ADD_TEST(CTFTransform, range3_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="UID42">
@@ -6239,7 +6298,7 @@ OCIO_ADD_TEST(CTFTransform, range4_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     // Range is saved in the forward direction.
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
@@ -6314,7 +6373,7 @@ OCIO_ADD_TEST(CTFTransform, gamma1_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="UID42">
@@ -6357,7 +6416,7 @@ OCIO_ADD_TEST(CTFTransform, gamma1_mirror_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="UID42">
@@ -6400,7 +6459,7 @@ OCIO_ADD_TEST(CTFTransform, gamma1_pass_thru_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="UID42">
@@ -6449,7 +6508,7 @@ OCIO_ADD_TEST(CTFTransform, gamma2_ctf)
 
     // CLF does not allow alpha channel.
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransformCLF),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransformCLF),
                           OCIO::Exception,
                           "Transform uses the 'Gamma with alpha component' op which cannot be written as CLF");
 }
@@ -6485,7 +6544,7 @@ OCIO_ADD_TEST(CTFTransform, gamma3_ctf)
 
     // CLF does not allow alpha channel.
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="UID42">
@@ -7735,7 +7794,7 @@ OCIO_ADD_TEST(CTFTransform, lut1d_clf)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
 
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
 <ProcessList compCLFversion="3" id="UIDLUT42">
@@ -7762,7 +7821,7 @@ OCIO_ADD_TEST(CTFTransform, lut1d_inverse_clf)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform),
                           OCIO::Exception,
                           "Transform uses the 'InverseLUT1D' op which cannot be written as CLF");
 }
@@ -8140,7 +8199,7 @@ OCIO_ADD_TEST(CTFTransform, lut3d_inverse_clf)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform),
                           OCIO::Exception,
                           "Transform uses the 'InverseLUT3D' op which cannot be written as CLF");
 }

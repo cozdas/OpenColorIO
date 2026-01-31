@@ -2,6 +2,7 @@
 // Copyright Contributors to the OpenColorIO Project.
 
 #include <sstream>
+#include <regex>
 
 #include "BitDepthUtils.h"
 #include "fileformats/ctf/CTFReaderUtils.h"
@@ -42,8 +43,20 @@ static constexpr unsigned DOUBLE_PRECISION = 15;
 CTFVersion::CTFVersion(const std::string & versionString) 
     : m_major(0), m_minor(0), m_revision(0) 
 {
-    // Check if matches the SMPTE 2136-1:2024 namespace URI
+    // Check if matches the SMPTE 2136-1:2024 namespace URI 
+    // TODO: To make this future-proof, we may want to exclude the year in these
+    // tests. /coz
     if(0 == Platform::Strcasecmp(versionString.c_str(), "http://www.smpte-ra.org/ns/2136-1/2024")) 
+    {
+        m_version_string = versionString;
+        return;
+    }
+
+    // We also allow "ST2136-1:2024" for CLF version.
+    // TODO: I'm not sure if this is a good idea or not, keeping the CLF version
+    // numeric-only feels much cleaner and would avoid complications (such as
+    // version comparison). /coz
+    if(0 == Platform::Strcasecmp(versionString.c_str(), "ST2136-1:2024")) 
     {
         m_version_string = versionString;
         return;
@@ -2596,14 +2609,14 @@ void TransformWriter::write() const
     std::string id = m_transform->getID();
     if (id.empty())
     {
-        auto & ops = m_transform->getOps();
-        for (auto op : ops)
-        {
-            id += op->getCacheID();
-        }
+        id = generateID();
+    }
 
-        // TODO: make this hash (optionally?) match the format of SMPTE Id field.
-        id = CacheIDHash(id.c_str(), id.size());
+    if(m_subFormat == SubFormat::eCLF_SMPTE && !ValidateSMPTEId(id))
+    {
+        std::ostringstream ss;
+        ss << "'" << id << "' is not a ST2136-1:2024 compliant Id value.";
+        throw Exception(ss.str().c_str());
     }
     
     // SMPTE variant will use an Id tag. Others will use an attribute in
@@ -2692,6 +2705,29 @@ void TransformWriter::writeProcessListMetadata(const FormatMetadataImpl& m) cons
 
         m_formatter.writeEndTag(m.getElementName());
     }
+}
+
+std::string TransformWriter::generateID() const
+{
+    std::string id;
+    auto & ops = m_transform->getOps();
+    for (auto op : ops)
+    {
+        id += op->getCacheID();
+    }
+
+    // If this is smpte, format the id to match the requirements Otherwise use
+    // the original cache ID for backward compatibility.
+    if(m_subFormat == SubFormat::eCLF_SMPTE)
+    {
+        id = "urn:uuid:" + CacheIDHashUUID(id.c_str(), id.size());
+    }
+    else
+    {
+        id = CacheIDHash(id.c_str(), id.size());
+    }
+
+    return id;
 }
 
 namespace

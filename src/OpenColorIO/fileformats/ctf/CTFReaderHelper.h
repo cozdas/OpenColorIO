@@ -102,14 +102,7 @@ public:
         m_changed = false;
     }
 
-    void end() override 
-    {
-        auto* pTransformnElt = dynamic_cast<CTFReaderTransformElt*>(getParent().get());
-        if (pTransformnElt)
-        {
-            pTransformnElt->setID(m_id);
-        }
-    }
+    void end() override;
 
     void setRawData(const char * str, size_t len, unsigned int /* xmlLine */) override
     {

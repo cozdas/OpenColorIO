@@ -18,6 +18,7 @@ void ConvertStringToGradingStyleAndDir(const char * str,
                                        TransformDirection & dir);
 const char * ConvertGradingStyleAndDirToString(GradingStyle style, TransformDirection dir);
 
+bool ValidateSMPTEId(const std::string& id);
 
 static constexpr char TAG_ACES[] = "ACES";
 static constexpr char TAG_ACES_PARAMS[] = "ACESParams";
