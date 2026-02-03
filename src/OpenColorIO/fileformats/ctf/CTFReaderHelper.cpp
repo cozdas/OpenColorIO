@@ -85,6 +85,7 @@ void CTFReaderTransformElt::start(const char ** atts)
                 throwMessage("Attribute 'xmlns' does not have a value.");
             }
 
+            // Check if xmlns atrribute holds a SMPTE version string.
             try
             {
                 auto version = CTFVersion(atts[i + 1]);
@@ -94,13 +95,15 @@ void CTFReaderTransformElt::start(const char ** atts)
                     throwMessage("SMPTE 'xmlns' version and 'Version' attribute cannot both be present.");
                 }
 
+                // Note that compCLFversion can appear together with xmlns for
+                // SMPTE CLF
+
                 requestedVersion = CTF_PROCESS_LIST_VERSION_2_0;
+                requestedCLFVersion = CTFVersion(3, 0);  // SMPTE format implies CLF 3.0
                 requestedSMPTEVersion = version;
-                isVersionFound = true;
                 isSMPTEVersionFound = true;
                 m_isCLF = true;
                 m_isSMPTE = true;
-                // TODO: do we set the requestedCLFVersion? which value, ST2136-1:2024?
             }
             catch (Exception& /*e*/)
             {
@@ -169,8 +172,8 @@ void CTFReaderTransformElt::start(const char ** atts)
                 throwMessage("'compCLFversion' and 'Version' cannot be both present.");
             }
 
-            // TODO: do we allow both the SMPTE version and the compCLFversion?
-            // Do we expect and enforce the value to be "ST2136-1:2024" for example?
+            // Note: compCLFversion can appear together with xmlns for SMPTE CLF
+            // files.
 
             const char* pVer = atts[i + 1];
             if (!pVer || !*pVer)
@@ -206,7 +209,6 @@ void CTFReaderTransformElt::start(const char ** atts)
                 requestedVersion = CTF_PROCESS_LIST_VERSION_2_0;
             }
 
-            isVersionFound = true;
             isCLFVersionFound = true;
             // Handle as CLF.
             m_isCLF = true;
@@ -232,11 +234,12 @@ void CTFReaderTransformElt::start(const char ** atts)
 
     // Transform file format with no version means that
     // the CTF format is 1.2.
-    if (!isVersionFound)
+    if (!(isVersionFound || isCLFVersionFound || isSMPTEVersionFound ))
     {
         if (m_isCLF)
         {
-            throwMessage("Neither 'compCLFversion' nor 'xmlns' was found; one of them is required.");
+            throwMessage("None of the 'version', 'compCLFversion', or 'xmlns' attributes were found;"
+                "at least one of them is required.");
         }
         setVersion(CTF_PROCESS_LIST_VERSION_1_2);
     }

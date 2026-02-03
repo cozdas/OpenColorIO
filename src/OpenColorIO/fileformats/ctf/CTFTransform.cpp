@@ -56,11 +56,11 @@ CTFVersion::CTFVersion(const std::string & versionString)
     // TODO: I'm not sure if this is a good idea or not, keeping the CLF version
     // numeric-only feels much cleaner and would avoid complications (such as
     // version comparison). /coz
-    if(0 == Platform::Strcasecmp(versionString.c_str(), "ST2136-1:2024")) 
-    {
-        m_version_string = versionString;
-        return;
-    }
+//     if(0 == Platform::Strcasecmp(versionString.c_str(), "ST2136-1:2024")) 
+//     {
+//         m_version_string = versionString;
+//         return;
+//     }
 
     // For non-SMPTE namespace versions, parse as MAJOR[.MINOR[.REVISION]]
     unsigned int numDot = 0;
