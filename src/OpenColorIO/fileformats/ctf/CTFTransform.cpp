@@ -43,24 +43,34 @@ static constexpr unsigned DOUBLE_PRECISION = 15;
 CTFVersion::CTFVersion(const std::string & versionString) 
     : m_major(0), m_minor(0), m_revision(0) 
 {
-    // Check if matches the SMPTE 2136-1:2024 namespace URI 
-    // TODO: To make this future-proof, we may want to exclude the year in these
-    // tests. /coz
-    if(0 == Platform::Strcasecmp(versionString.c_str(), "http://www.smpte-ra.org/ns/2136-1/2024")) 
+    // Parse the version string to see if that matches the SMPTE namespace/version
+    // patterns. If so store the version string and consider equivalent to v3.0.
     {
-        m_version_string = versionString;
-        return;
-    }
+        std::regex smpteRegexFull(
+            "^http://www\\.smpte-ra\\.org/ns/2136-1/(\\d{4})$",
+            std::regex::icase);  // Do we really want to ignore case here?
 
-    // We also allow "ST2136-1:2024" for CLF version.
-    // TODO: I'm not sure if this is a good idea or not, keeping the CLF version
-    // numeric-only feels much cleaner and would avoid complications (such as
-    // version comparison). /coz
-//     if(0 == Platform::Strcasecmp(versionString.c_str(), "ST2136-1:2024")) 
-//     {
-//         m_version_string = versionString;
-//         return;
-//     }
+        std::regex smpteRegexShort(
+            "^ST2136-1:(\\d{4})$", 
+            std::regex::icase);
+
+        std::smatch match;
+        bool res = std::regex_match(versionString, match, smpteRegexFull);
+        if(!res) 
+        {
+            res = std::regex_match(versionString, match, smpteRegexShort);
+        }
+
+        if (res)
+        {
+            if (match.size() == 2) 
+            {
+                m_version_string = versionString;
+                m_major = 3;
+            }
+            return;
+        };
+    }
 
     // For non-SMPTE namespace versions, parse as MAJOR[.MINOR[.REVISION]]
     unsigned int numDot = 0;
@@ -128,8 +138,7 @@ bool CTFVersion::operator==(const CTFVersion & rhs) const
 
     return m_major == rhs.m_major
         && m_minor == rhs.m_minor
-        && m_revision == rhs.m_revision
-        && !Platform::Strcasecmp(m_version_string.c_str(), rhs.m_version_string.c_str());
+        && m_revision == rhs.m_revision;
 }
 
 bool CTFVersion::operator<=(const CTFVersion & rhs) const
@@ -149,20 +158,6 @@ bool CTFVersion::operator>=(const CTFVersion & rhs) const
 bool CTFVersion::operator<(const CTFVersion & rhs) const
 {
     if (this == &rhs) return false;
-
-    // SMPTE version handling
-    if(!m_version_string.empty()) 
-    {
-        // Any SMPTE version is greater than non-SMPTE
-        if(rhs.m_version_string.empty()) 
-        {
-          return false;
-        }
-
-        // TODO: This needs to be more sophisticated probably.
-        return Platform::Strcasecmp(m_version_string.c_str(),
-                                    rhs.m_version_string.c_str()) < 0;
-    }
 
     if (m_major < rhs.m_major)
     {
@@ -523,10 +518,14 @@ void AddNonEmptyAttribute(FormatMetadataImpl & metadata, const char * name, cons
 void CTFReaderTransform::toMetadata(FormatMetadataImpl & metadata) const
 {
     // Put CTF processList information into the FormatMetadata.
+
+    // Attributes
     AddNonEmptyAttribute(metadata, METADATA_NAME, getName());
     AddNonEmptyAttribute(metadata, METADATA_ID, getID());
     AddNonEmptyAttribute(metadata, ATTR_INVERSE_OF, getInverseOfId());
 
+    // Child Elements
+    AddNonEmptyElement(metadata, METADATA_ID_ELEMENT, getIDElement());
     AddNonEmptyElement(metadata, METADATA_INPUT_DESCRIPTOR, getInputDescriptor());
     AddNonEmptyElement(metadata, METADATA_OUTPUT_DESCRIPTOR, getOutputDescriptor());
     for (auto & desc : m_descriptions)

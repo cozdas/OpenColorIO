@@ -167,6 +167,14 @@ public:
     {
         m_id = id;
     }
+    const std::string & getIDElement() const
+    {
+        return m_id_element;
+    }
+    void setIDElement(const char * id)
+    {
+        m_id_element = id;
+    }
     const std::string & getName() const
     {
         return m_name;
@@ -249,7 +257,8 @@ public:
     }
 
 private:
-    std::string m_id;
+    std::string m_id;         // id attribute
+    std::string m_id_element; // id tag value
     std::string m_name;
     std::string m_inverseOfId;
     std::string m_inDescriptor;

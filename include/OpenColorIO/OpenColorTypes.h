@@ -977,6 +977,9 @@ extern OCIOEXPORT const char * METADATA_NAME;
  */
 extern OCIOEXPORT const char * METADATA_ID;
 
+// TODO: add export for METADATA_ID_ELEMENT ?
+extern OCIOEXPORT const char * METADATA_ID_ELEMENT;
+
 /*!rst::
 Caches
 ******

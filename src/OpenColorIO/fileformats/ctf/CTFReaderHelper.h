@@ -54,8 +54,8 @@ public:
 
     const char * getTypeName() const override;
 
-    // Sets the ID (if the ID tag is used).
-    void setID(const std::string& idStr);
+    // Set the ID element (when SMPTE id tag is used)
+    void setIDElement(const std::string& idStr);
 
     // Set the current transform CTF version.
     void setVersion(const CTFVersion & ver);
@@ -75,7 +75,6 @@ private:
     CTFReaderTransformPtr m_transform;
     // Is it a clf file? Or is a clf parser requested.
     bool m_isCLF = false;
-    bool m_isSMPTE = false;
 };
 
 // Class for the Id element.
@@ -119,6 +118,8 @@ private:
 
 typedef OCIO_SHARED_PTR<CTFReaderTransformElt> CTFReaderTransformEltRcPtr;
 
+// Note: This class is used only for adding metadata to other info metadata
+// elements, not to the transform.
 class CTFReaderMetadataElt : public XmlReaderComplexElt
 {
 public:

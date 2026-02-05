@@ -63,7 +63,6 @@ void CTFReaderTransformElt::start(const char ** atts)
     bool isSMPTEVersionFound = false;
     CTFVersion requestedVersion(0, 0);
     CTFVersion requestedCLFVersion(0, 0);
-    CTFVersion requestedSMPTEVersion(0, 0);
 
     unsigned i = 0;
     while (atts[i])
@@ -99,11 +98,9 @@ void CTFReaderTransformElt::start(const char ** atts)
                 // SMPTE CLF
 
                 requestedVersion = CTF_PROCESS_LIST_VERSION_2_0;
-                requestedCLFVersion = CTFVersion(3, 0);  // SMPTE format implies CLF 3.0
-                requestedSMPTEVersion = version;
+                requestedCLFVersion = version;
                 isSMPTEVersionFound = true;
                 m_isCLF = true;
-                m_isSMPTE = true;
             }
             catch (Exception& /*e*/)
             {
@@ -226,7 +223,7 @@ void CTFReaderTransformElt::start(const char ** atts)
     }
 
     // Check mandatory id keyword for non-SMPTE variants.
-    if (!isIdFound && !m_isSMPTE)
+    if (!isIdFound && !isSMPTEVersionFound)
     {
         // FIXME: add handling of the SMPTE version tag
         throwMessage("Required attribute 'id' is missing.");
@@ -246,14 +243,7 @@ void CTFReaderTransformElt::start(const char ** atts)
     else
     {
         setVersion(requestedVersion);  // TODO: do we care about this when SMPTE?
-        if(m_isSMPTE) 
-        {
-            setCLFVersion(requestedSMPTEVersion);
-        } 
-        else if (m_isCLF)
-        {
-            setCLFVersion(requestedCLFVersion);
-        }
+        setCLFVersion(requestedCLFVersion);
     }
 }
 
@@ -276,9 +266,9 @@ const char * CTFReaderTransformElt::getTypeName() const
     static const std::string n(TAG_PROCESS_LIST);
     return n.c_str();
 }
-void CTFReaderTransformElt::setID(const std::string& idStr)
+void CTFReaderTransformElt::setIDElement(const std::string& idStr)
 {
-    getTransform()->setID(idStr.c_str());
+    getTransform()->setIDElement(idStr.c_str());
 }
 
 void CTFReaderTransformElt::setVersion(const CTFVersion & ver)
@@ -323,7 +313,7 @@ void CTFReaderIdElt::end()
     auto* pTransformnElt = dynamic_cast<CTFReaderTransformElt*>(getParent().get());
     if (pTransformnElt)
     {
-        pTransformnElt->setID(m_id);
+        pTransformnElt->setIDElement(m_id);
     }
 }
 
