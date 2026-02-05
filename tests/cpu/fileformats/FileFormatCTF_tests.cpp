@@ -3909,16 +3909,10 @@ void WriteGroupCTF(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & ou
     group->write(cfg, OCIO::FILEFORMAT_CTF, outputTransform);
 }
 
-void WriteGroupCLF_Academy(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & outputTransform)
+void WriteGroupCLF(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & outputTransform)
 {
     OCIO::ConstConfigRcPtr cfg = OCIO::Config::CreateRaw();
-    group->write(cfg, OCIO::FILEFORMAT_CLF_ACADEMY, outputTransform);
-}
-
-void WriteGroupCLF_SMPTE(OCIO::ConstGroupTransformRcPtr group, std::ostringstream & outputTransform)
-{
-    OCIO::ConstConfigRcPtr cfg = OCIO::Config::CreateRaw();
-    group->write(cfg, OCIO::FILEFORMAT_CLF_SMPTE, outputTransform);
+    group->write(cfg, OCIO::FILEFORMAT_CLF, outputTransform);
 }
 
 void ValidateFixedFunctionStyle(OCIO::FixedFunctionOpData::Style style,
@@ -5513,7 +5507,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     {
         const std::string result = outputTransform.str();
@@ -5528,7 +5522,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
     lut->setInterpolation(OCIO::INTERP_BEST);
 
     group->appendTransform(lut);
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     {
         const std::string result = outputTransform.str();
@@ -5543,7 +5537,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
     lut->setInterpolation(OCIO::INTERP_LINEAR);
 
     group->appendTransform(lut);
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     {
         const std::string result = outputTransform.str();
@@ -5557,7 +5551,7 @@ OCIO_ADD_TEST(CTFTransform, save_lut1d_interpolation)
 
     lut->setInterpolation(OCIO::INTERP_CUBIC);
     group->appendTransform(lut);
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform), OCIO::Exception,
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform), OCIO::Exception,
                           "1D LUT does not support interpolation algorithm: cubic");
 }
 
@@ -5716,11 +5710,11 @@ OCIO_ADD_TEST(CTFTransform, load_edit_save_matrix_clf)
     // CLF Academy
     {
         std::ostringstream outputTransform;
-        OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+        OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
         const std::string expectedCLF_Academy{
             R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="b5cc7aed-d405-4d8b-b64b-382b2341a378" name="old array dims example">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="b5cc7aed-d405-4d8b-b64b-382b2341a378" name="old array dims example">
     <Description>Basic matrix example using CLF v2 dim syntax</Description>
     <InputDescriptor>RGB</InputDescriptor>
     <OutputDescriptor>XYZ</OutputDescriptor>
@@ -5742,41 +5736,41 @@ OCIO_ADD_TEST(CTFTransform, load_edit_save_matrix_clf)
     }
 
     // CLF SMPTE
-    {
-        // The ID is not SMPTE compliant.
-        std::ostringstream outputTransform;
-        OCIO_CHECK_THROW_WHAT(WriteGroupCLF_SMPTE(group, outputTransform), OCIO::Exception, 
-        "'b5cc7aed-d405-4d8b-b64b-382b2341a378' is not a ST2136-1:2024 compliant Id value.");
-
-        // Fix the ID to be SMPTE compliant.
-        group->getFormatMetadata().setID("urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378");
-        
-        outputTransform.str("");
-        OCIO_CHECK_NO_THROW(WriteGroupCLF_SMPTE(group, outputTransform));
-
-        const std::string expectedCLF_SMPTE{
-        R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList xmlns="http://www.smpte-ra.org/ns/2136-1/2024" compCLFversion="ST2136-1:2024" name="old array dims example">
-    <Id>urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378</Id>
-    <Description>Basic matrix example using CLF v2 dim syntax</Description>
-    <InputDescriptor>RGB</InputDescriptor>
-    <OutputDescriptor>XYZ</OutputDescriptor>
-    <Matrix id="c61daf06-539f-4254-81fc-9800e6d02a37" inBitDepth="32f" outBitDepth="32f">
-        <Description>Legacy matrix</Description>
-        <Description>Note that dim=&quot;3 3 3&quot; should be supported for CLF v2 compatibility</Description>
-        <Description>Added description</Description>
-        <Array dim="3 4">
-          0.4123908          0.35758434          0.18048079                 0.1
-         0.21263901          0.71516868          0.07219232                 1.2
-         0.01933082          0.01191948          0.95053215                 2.3
-        </Array>
-    </Matrix>
-</ProcessList>
-)"};
-
-        OCIO_CHECK_EQUAL(expectedCLF_SMPTE.size(), outputTransform.str().size());
-        OCIO_CHECK_EQUAL(expectedCLF_SMPTE, outputTransform.str());
-    }
+//     {
+//         // The ID is not SMPTE compliant.
+//         std::ostringstream outputTransform;
+//         OCIO_CHECK_THROW_WHAT(WriteGroupCLF_SMPTE(group, outputTransform), OCIO::Exception, 
+//         "'b5cc7aed-d405-4d8b-b64b-382b2341a378' is not a ST2136-1:2024 compliant Id value.");
+// 
+//         // Fix the ID to be SMPTE compliant.
+//         group->getFormatMetadata().setID("urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378");
+//         
+//         outputTransform.str("");
+//         OCIO_CHECK_NO_THROW(WriteGroupCLF_SMPTE(group, outputTransform));
+// 
+//         const std::string expectedCLF_SMPTE{
+//         R"(<?xml version="1.0" encoding="UTF-8"?>
+// <ProcessList xmlns="http://www.smpte-ra.org/ns/2136-1/2024" compCLFversion="ST2136-1:2024" name="old array dims example">
+//     <Id>urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378</Id>
+//     <Description>Basic matrix example using CLF v2 dim syntax</Description>
+//     <InputDescriptor>RGB</InputDescriptor>
+//     <OutputDescriptor>XYZ</OutputDescriptor>
+//     <Matrix id="c61daf06-539f-4254-81fc-9800e6d02a37" inBitDepth="32f" outBitDepth="32f">
+//         <Description>Legacy matrix</Description>
+//         <Description>Note that dim=&quot;3 3 3&quot; should be supported for CLF v2 compatibility</Description>
+//         <Description>Added description</Description>
+//         <Array dim="3 4">
+//           0.4123908          0.35758434          0.18048079                 0.1
+//          0.21263901          0.71516868          0.07219232                 1.2
+//          0.01933082          0.01191948          0.95053215                 2.3
+//         </Array>
+//     </Matrix>
+// </ProcessList>
+// )"};
+// 
+//         OCIO_CHECK_EQUAL(expectedCLF_SMPTE.size(), outputTransform.str().size());
+//         OCIO_CHECK_EQUAL(expectedCLF_SMPTE, outputTransform.str());
+//     }
 
     // CTF
     {
@@ -5788,7 +5782,7 @@ OCIO_ADD_TEST(CTFTransform, load_edit_save_matrix_clf)
 
         const std::string expectedCTF{
             R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList version="1.3" id="urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378" name="old array dims example">
+<ProcessList version="1.3" id="b5cc7aed-d405-4d8b-b64b-382b2341a378" name="old array dims example">
     <Description>Basic matrix example using CLF v2 dim syntax</Description>
     <InputDescriptor>RGB</InputDescriptor>
     <OutputDescriptor>XYZ</OutputDescriptor>
@@ -5830,11 +5824,11 @@ OCIO_ADD_TEST(CTFTransform, matrix3x3_clf)
     group->appendTransform(mat);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     // In/out bit-depth equal, matrix not scaled.
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Matrix inBitDepth="10i" outBitDepth="10i">
         <Array dim="3 3">
   0.333333333333333    3.33333333333333    33.3333333333333
@@ -5886,7 +5880,7 @@ OCIO_ADD_TEST(CTFTransform, matrix_offset_alpha_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     // Alpha not handled by CLF.
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform),
                           OCIO::Exception, 
                           "Transform uses the 'Matrix with alpha component' op which cannot be written as CLF");
 }
@@ -6079,10 +6073,10 @@ OCIO_ADD_TEST(CTFTransform, cdl_clf)
     subSub3.addAttribute("LastName", "Lean");
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="cdl1">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="cdl1">
     <Description>ProcessList description</Description>
     <Description>=======================</Description>
     <Info>
@@ -6243,11 +6237,11 @@ OCIO_ADD_TEST(CTFTransform, range1_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     const std::string expected{
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<ProcessList compCLFversion=\"3\" id=\"UID42\">\n"
+        "<ProcessList compCLFversion=\"3\" xmlns=\"http://www.smpte-ra.org/ns/2136-1/2024\" id=\"UID42\">\n"
         "    <InputDescriptor>Input descriptor</InputDescriptor>\n"
         "    <OutputDescriptor>Output descriptor</OutputDescriptor>\n"
         "    <Range id=\"Range42\" name=\"TestRange\" inBitDepth=\"8i\" outBitDepth=\"32f\">\n"
@@ -6278,11 +6272,11 @@ OCIO_ADD_TEST(CTFTransform, range2_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     const std::string expected{
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<ProcessList compCLFversion=\"3\" id=\"UID42\">\n"
+        "<ProcessList compCLFversion=\"3\" xmlns=\"http://www.smpte-ra.org/ns/2136-1/2024\" id=\"UID42\">\n"
         "    <Range id=\"Range42\" inBitDepth=\"10i\" outBitDepth=\"8i\">\n"
         "        <minInValue> 102.3 </minInValue>\n"
         "        <minOutValue> 25.5 </minOutValue>\n"
@@ -6310,10 +6304,10 @@ OCIO_ADD_TEST(CTFTransform, range3_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Range id="Range42" inBitDepth="16f" outBitDepth="12i">
         <minInValue> 0 </minInValue>
         <minOutValue> 0 </minOutValue>
@@ -6344,11 +6338,11 @@ OCIO_ADD_TEST(CTFTransform, range4_clf)
     group->appendTransform(range);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     // Range is saved in the forward direction.
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Range id="Range42" inBitDepth="12i" outBitDepth="16f">
         <minInValue> 2047.5 </minInValue>
         <maxInValue> 4095 </maxInValue>
@@ -6419,10 +6413,10 @@ OCIO_ADD_TEST(CTFTransform, gamma1_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Exponent inBitDepth="32f" outBitDepth="32f" style="basicRev">
         <ExponentParams exponent="2.6" />
     </Exponent>
@@ -6462,10 +6456,10 @@ OCIO_ADD_TEST(CTFTransform, gamma1_mirror_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Exponent inBitDepth="32f" outBitDepth="32f" style="basicMirrorRev">
         <ExponentParams exponent="2.6" />
     </Exponent>
@@ -6505,10 +6499,10 @@ OCIO_ADD_TEST(CTFTransform, gamma1_pass_thru_ctf)
     OCIO_CHECK_EQUAL(expected, outputTransform.str());
 
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Exponent inBitDepth="32f" outBitDepth="32f" style="basicPassThruRev">
         <ExponentParams exponent="2.6" />
     </Exponent>
@@ -6554,7 +6548,7 @@ OCIO_ADD_TEST(CTFTransform, gamma2_ctf)
 
     // CLF does not allow alpha channel.
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransformCLF),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransformCLF),
                           OCIO::Exception,
                           "Transform uses the 'Gamma with alpha component' op which cannot be written as CLF");
 }
@@ -6590,10 +6584,10 @@ OCIO_ADD_TEST(CTFTransform, gamma3_ctf)
 
     // CLF does not allow alpha channel.
     std::ostringstream outputTransformCLF;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransformCLF));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransformCLF));
 
     const std::string expectedCLF{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Exponent inBitDepth="32f" outBitDepth="32f" style="monCurveFwd">
         <ExponentParams exponent="2.42" offset="0.099" />
     </Exponent>
@@ -7840,10 +7834,10 @@ OCIO_ADD_TEST(CTFTransform, lut1d_clf)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_NO_THROW(WriteGroupCLF_Academy(group, outputTransform));
+    OCIO_CHECK_NO_THROW(WriteGroupCLF(group, outputTransform));
 
     const std::string expected{ R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UIDLUT42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UIDLUT42">
     <LUT1D inBitDepth="32f" outBitDepth="32f" interpolation="linear">
         <Array dim="2 1">
           0
@@ -7867,7 +7861,7 @@ OCIO_ADD_TEST(CTFTransform, lut1d_inverse_clf)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform),
                           OCIO::Exception,
                           "Transform uses the 'InverseLUT1D' op which cannot be written as CLF");
 }
@@ -8245,7 +8239,7 @@ OCIO_ADD_TEST(CTFTransform, lut3d_inverse_clf)
     group->appendTransform(lut);
 
     std::ostringstream outputTransform;
-    OCIO_CHECK_THROW_WHAT(WriteGroupCLF_Academy(group, outputTransform),
+    OCIO_CHECK_THROW_WHAT(WriteGroupCLF(group, outputTransform),
                           OCIO::Exception,
                           "Transform uses the 'InverseLUT3D' op which cannot be written as CLF");
 }
@@ -8618,7 +8612,7 @@ OCIO_ADD_TEST(FileFormatCTF, bake_1d)
 
     const std::string expectedCLF{
 R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <LUT1D inBitDepth="32f" outBitDepth="32f">
         <Array dim="2 1">
           0
@@ -8807,7 +8801,7 @@ OCIO_ADD_TEST(FileFormatCTF, bake_3d)
 
     const std::string expectedCLF{
 R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="TestID">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="TestID">
     <Description>OpenColorIO Test Line 1</Description>
     <Description>OpenColorIO Test Line 2</Description>
     <InputDescriptor>Input descriptor</InputDescriptor>
@@ -8939,7 +8933,7 @@ OCIO_ADD_TEST(FileFormatCTF, bake_1d_3d)
 
     const std::string expectedCLF{
 R"(<?xml version="1.0" encoding="UTF-8"?>
-<ProcessList compCLFversion="3" id="UID42">
+<ProcessList compCLFversion="3" xmlns="http://www.smpte-ra.org/ns/2136-1/2024" id="UID42">
     <Range inBitDepth="32f" outBitDepth="32f">
         <minInValue> -0.125 </minInValue>
         <maxInValue> 1.125 </maxInValue>

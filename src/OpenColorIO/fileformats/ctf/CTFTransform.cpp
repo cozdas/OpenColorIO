@@ -2578,20 +2578,14 @@ void TransformWriter::write() const
             throw Exception("Cannot write transform with unknown sub-format.");
             break;
 
-        case SubFormat::eCLF_AMPAS:
+        case SubFormat::eCLF:
+            // For CLF, we're writing versions per both the Academy and SMPTE
+            // requirements.
             writeVersion = CTF_PROCESS_LIST_VERSION_2_0;
             attributes.push_back(XmlFormatter::Attribute(
                 ATTR_COMP_CLF_VERSION, "3"));
-            break;
-
-        case SubFormat::eCLF_SMPTE:
-            writeVersion = CTF_PROCESS_LIST_VERSION_2_0;
-
             attributes.push_back(XmlFormatter::Attribute(
-                ATTR_XMLNS, "http://www.smpte-ra.org/ns/2136-1/2024"));  // TODO: create a named constant?
-
-            attributes.push_back(XmlFormatter::Attribute(
-                ATTR_COMP_CLF_VERSION, "ST2136-1:2024")); // TODO: create a named constant?
+                ATTR_XMLNS, "http://www.smpte-ra.org/ns/2136-1/2024"));
             break;
 
         case SubFormat::eCTF:
@@ -2604,29 +2598,15 @@ void TransformWriter::write() const
                 ATTR_VERSION, fversion.str()));
           break;
     }
-
+  
+    // Id attribute
     std::string id = m_transform->getID();
     if (id.empty())
     {
-        id = generateID();
+        id = generateID(false); // use the SMPTE format for the Id attribute too?
     }
-
-    if(m_subFormat == SubFormat::eCLF_SMPTE && !ValidateSMPTEId(id))
-    {
-        std::ostringstream ss;
-        ss << "'" << id << "' is not a ST2136-1:2024 compliant Id value.";
-        throw Exception(ss.str().c_str());
-    }
+    attributes.push_back(XmlFormatter::Attribute(ATTR_ID, id));
     
-    // SMPTE variant will use an Id tag. Others will use an attribute in
-    // processList.
-    // TODO: write the attribute for SMPTE as well?
-    if(m_subFormat == SubFormat::eCLF_AMPAS ||
-       m_subFormat == SubFormat::eCTF)
-    {
-        attributes.push_back(XmlFormatter::Attribute(ATTR_ID, id));
-    }
-
     const std::string& name = m_transform->getName();
     if (!name.empty())
     {
@@ -2642,12 +2622,22 @@ void TransformWriter::write() const
     m_formatter.writeStartTag(processListTag, attributes);
     {
         XmlScopeIndent scopeIndent(m_formatter);
-
-        // SMPTE variant uses the Id tag for id.
-        if(m_subFormat == SubFormat::eCLF_SMPTE)
+        
+        // Id element 
+        
+        // TODO: We won't create an Id element value if it's missing. Should we
+        // give users helper function to generate SMPTE complaint Id? If so,
+        // where?
+        std::string idEl = m_transform->getIDElement();
+        if(m_subFormat == SubFormat::eCLF && !idEl.empty())
         {
-            // TODO: validate the format of the Id to match SMPTE requirements?
-            m_formatter.writeContentTag(TAG_ID, id);
+            if(m_subFormat == SubFormat::eCLF && !ValidateSMPTEId(idEl))
+            {
+                std::ostringstream ss;
+                ss << "'" << idEl << "' is not a ST2136-1:2024 compliant Id value.";
+                throw Exception(ss.str().c_str());
+            }
+            m_formatter.writeContentTag(TAG_ID, idEl);
         }
 
         WriteDescriptions(m_formatter, TAG_DESCRIPTION, m_transform->getDescriptions());
@@ -2706,7 +2696,7 @@ void TransformWriter::writeProcessListMetadata(const FormatMetadataImpl& m) cons
     }
 }
 
-std::string TransformWriter::generateID() const
+std::string TransformWriter::generateID(bool isSMPTEFormat) const
 {
     std::string id;
     auto & ops = m_transform->getOps();
@@ -2717,7 +2707,7 @@ std::string TransformWriter::generateID() const
 
     // If this is smpte, format the id to match the requirements Otherwise use
     // the original cache ID for backward compatibility.
-    if(m_subFormat == SubFormat::eCLF_SMPTE)
+    if(isSMPTEFormat)
     {
         id = "urn:uuid:" + CacheIDHashUUID(id.c_str(), id.size());
     }
@@ -2788,9 +2778,7 @@ void TransformWriter::writeOps(const CTFVersion & version) const
     // values on write. Otherwise, default to 32f.
     BitDepth inBD = BIT_DEPTH_F32;
     BitDepth outBD = BIT_DEPTH_F32;
-    bool isCLF = (m_subFormat == SubFormat::eCLF_AMPAS ||
-                  m_subFormat == SubFormat::eCLF_SMPTE);
-
+    bool isCLF = m_subFormat == SubFormat::eCLF;
     auto & ops = m_transform->getOps();
     size_t numOps = ops.size();
     size_t numSavedOps = 0;

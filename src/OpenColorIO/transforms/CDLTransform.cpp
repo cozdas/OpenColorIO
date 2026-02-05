@@ -7,7 +7,7 @@
 
 #include <OpenColorIO/OpenColorIO.h>
 
-#include "fileformats/cdl/CDLParser.h"
+//#include "fileformats/cdl/CDLParser.h"
 #include "Logging.h"
 #include "MathUtils.h"
 #include "Mutex.h"

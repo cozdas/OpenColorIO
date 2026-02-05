@@ -148,10 +148,10 @@ public:
 
 void LocalFileFormat::getFormatInfo(FormatInfoVec & formatInfoVec) const
 {
-    // CLF - Academy/ASC
+    // CLF - Academy/ASC & SMPTE uses the same format
     {
         FormatInfo info;
-        info.name = FILEFORMAT_CLF_ACADEMY;
+        info.name = FILEFORMAT_CLF;
         info.extension = "clf";
         info.capabilities = FormatCapabilityFlags(FORMAT_CAPABILITY_READ |
                                                   FORMAT_CAPABILITY_BAKE |
@@ -160,22 +160,6 @@ void LocalFileFormat::getFormatInfo(FormatInfoVec & formatInfoVec) const
         info.bake_capabilities = FormatBakeFlags( FORMAT_BAKE_CAPABILITY_3DLUT |
                                                   FORMAT_BAKE_CAPABILITY_1DLUT |
                                                   FORMAT_BAKE_CAPABILITY_1D_3D_LUT);
-        formatInfoVec.push_back(info);
-    }
-
-    // CLF - SMPTE
-    {
-        FormatInfo info;
-        info.name = FILEFORMAT_CLF_SMPTE;
-        info.extension = "clf";
-        info.capabilities = FormatCapabilityFlags(FORMAT_CAPABILITY_READ |
-                                                  FORMAT_CAPABILITY_BAKE |
-                                                  FORMAT_CAPABILITY_WRITE);
-        
-        info.bake_capabilities = FormatBakeFlags( FORMAT_BAKE_CAPABILITY_3DLUT |
-                                                  FORMAT_BAKE_CAPABILITY_1DLUT |
-                                                  FORMAT_BAKE_CAPABILITY_1D_3D_LUT);
-
         formatInfoVec.push_back(info);
     }
 
@@ -1602,11 +1586,7 @@ void LocalFileFormat::write(const ConstConfigRcPtr & config,
     
     if (Platform::Strcasecmp(formatName.c_str(), FILEFORMAT_CLF) == 0)
     {
-        subFormat = TransformWriter::SubFormat::eCLF_AMPAS;
-    } 
-    else if(Platform::Strcasecmp(formatName.c_str(), FILEFORMAT_CLF_SMPTE) == 0)
-    {
-        subFormat = TransformWriter::SubFormat::eCLF_SMPTE;
+        subFormat = TransformWriter::SubFormat::eCLF;
     } 
     else if (Platform::Strcasecmp(formatName.c_str(), FILEFORMAT_CTF) == 0) 
     {

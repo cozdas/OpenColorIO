@@ -164,8 +164,8 @@ OCIO_ADD_TEST(Baker, bake_3dlut)
             }
         }
 
-        OCIO_CHECK_EQUAL(13, bake->getNumFormats());
-        OCIO_CHECK_EQUAL("cinespace", std::string(bake->getFormatNameByIndex(5)));
+        OCIO_CHECK_EQUAL(12, bake->getNumFormats());
+        OCIO_CHECK_EQUAL("cinespace", std::string(bake->getFormatNameByIndex(4)));
         OCIO_CHECK_EQUAL("3dl", std::string(bake->getFormatExtensionByIndex(1)));
     }
 

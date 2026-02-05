@@ -288,8 +288,7 @@ class TransformWriter : public XmlElementWriter
      enum class SubFormat : uint8_t
      {
          eUNKNOWN,
-         eCLF_AMPAS, 
-         eCLF_SMPTE, 
+         eCLF, 
          eCTF
      };
 
@@ -310,7 +309,7 @@ private:
     void writeProcessListMetadata(const FormatMetadataImpl & m) const;
     void writeOpMetadata(const FormatMetadataImpl & m) const;
     void writeOps(const CTFVersion & version) const;
-    std::string generateID() const;
+    std::string generateID(bool isSMPTEFormat) const;
 
 private:
     ConstCTFReaderTransformPtr  m_transform;

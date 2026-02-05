@@ -70,7 +70,7 @@ std::string GetFormatName(const std::string & extension)
 
 OCIO_ADD_TEST(GroupTransform, write_formats)
 {
-    OCIO_CHECK_EQUAL(OCIO::GroupTransform::GetNumWriteFormats(), 6);
+    OCIO_CHECK_EQUAL(OCIO::GroupTransform::GetNumWriteFormats(), 5);
 
     OCIO_CHECK_EQUAL(GetFormatName("CLF"), OCIO::FILEFORMAT_CLF);
     OCIO_CHECK_EQUAL(GetFormatName("CTF"), OCIO::FILEFORMAT_CTF);
