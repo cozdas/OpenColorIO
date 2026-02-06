@@ -29,6 +29,105 @@ OCIO::LocalCachedFileRcPtr LoadCLFFile(const std::string & fileName)
 }
 }
 
+// **************** NEW TESTS, MAY NEED MOVING AROUND **************
+
+OCIO_ADD_TEST(FileFormatCTF, smpte_id_element)
+{
+    const std::string ctfFile("clf/bit_depth_identity.clf");
+    OCIO::LocalCachedFileRcPtr cachedFile;
+    OCIO_CHECK_NO_THROW(cachedFile = LoadCLFFile(ctfFile));
+    OCIO_REQUIRE_ASSERT((bool)cachedFile);
+    OCIO_CHECK_EQUAL(cachedFile->m_transform->getID(), "urn:uuid:9d768121-0cf9-40a3-a8e3-7b49f79858a7");
+    OCIO_REQUIRE_EQUAL(cachedFile->m_transform->getDescriptions().size(), 2);
+    OCIO_CHECK_EQUAL(cachedFile->m_transform->getDescriptions()[0],
+                        "Identity transform illustrating Array bit depth scaling");
+    OCIO_CHECK_EQUAL(cachedFile->m_transform->getDescriptions()[1],
+                        "Can be loaded by either SMPTE or CLF v3 parsers");
+    const OCIO::ConstOpDataVec & opList = cachedFile->m_transform->getOps();
+    OCIO_REQUIRE_EQUAL(opList.size(), 3);
+
+    // Check the ops.
+    auto mat1 = OCIO::DynamicPtrCast<const OCIO::MatrixOpData>(opList[0]);
+    OCIO_REQUIRE_ASSERT(mat1);
+    OCIO_CHECK_EQUAL(mat1->getFileInputBitDepth(), OCIO::BIT_DEPTH_UINT8);
+    OCIO_CHECK_EQUAL(mat1->getFileOutputBitDepth(), OCIO::BIT_DEPTH_UINT16);
+
+    auto lut = OCIO::DynamicPtrCast<const OCIO::Lut1DOpData>(opList[1]);
+    OCIO_REQUIRE_ASSERT(lut);
+    OCIO_CHECK_EQUAL(lut->getFileOutputBitDepth(), OCIO::BIT_DEPTH_UINT16);
+        
+    auto mat2 = OCIO::DynamicPtrCast<const OCIO::MatrixOpData>(opList[2]);
+    OCIO_REQUIRE_ASSERT(mat2);
+    OCIO_CHECK_EQUAL(mat2->getFileInputBitDepth(), OCIO::BIT_DEPTH_UINT16);
+    OCIO_CHECK_EQUAL(mat2->getFileOutputBitDepth(), OCIO::BIT_DEPTH_UINT16);
+
+    // Check identity.
+    OCIO::ConstProcessorRcPtr processor;
+    OCIO_CHECK_NO_THROW(processor = OCIO::GetFileTransformProcessor(ctfFile));
+    OCIO_REQUIRE_ASSERT(processor);
+    auto procOpt = processor->getOptimizedCPUProcessor(
+        OCIO::BIT_DEPTH_UINT8, 
+        OCIO::BIT_DEPTH_UINT16,
+        OCIO::OPTIMIZATION_DEFAULT);
+    OCIO_CHECK_ASSERT(procOpt->isIdentity());
+}
+
+OCIO_ADD_TEST(FileFormatCTF, non_smpte_xmlns)
+{
+    const std::string ctfFile("clf/pre-smpte_only/process_list_v3_namespace.clf");
+    OCIO::LocalCachedFileRcPtr cachedFile;
+    OCIO_CHECK_NO_THROW(cachedFile = LoadCLFFile(ctfFile));
+
+    // TODO: Extend?
+}
+
+OCIO_ADD_TEST(FileFormatCTF, smpte_all_metadata)
+{
+    const std::string ctfFile("clf/smpte_only/broadcast_profile_lut33.clf");
+    OCIO::LocalCachedFileRcPtr cachedFile;
+    OCIO_CHECK_NO_THROW(cachedFile = LoadCLFFile(ctfFile));
+
+    // This passes with a single "Unrecognized element" warning for xmlns:clfbp
+    // TODO: Should we try to ignore it silently?
+    // TODO: Extend?
+}
+
+OCIO_ADD_TEST(FileFormatCTF, smpte_namespaces)
+{
+    const std::string ctfFile("clf/smpte_only/namespaces.clf");
+    OCIO::LocalCachedFileRcPtr cachedFile;
+    OCIO_CHECK_THROW_WHAT(cachedFile = LoadCLFFile(ctfFile),
+                          OCIO::Exception,
+                          "is not a CTF/CLF file.");
+
+    // TODO: Should we try to make this pass?
+}
+
+OCIO_ADD_TEST(FileFormatCTF, smpte_signature)
+{
+    const std::string ctfFile("clf/smpte_only/signature.clf");
+    OCIO::LocalCachedFileRcPtr cachedFile;
+    OCIO_CHECK_NO_THROW(cachedFile = LoadCLFFile(ctfFile));
+
+    // This passes with many "Unrecognized element" warnings
+    // TODO: Try to ignore the name-spaced elements?
+    // TODO: Extend?
+}
+
+OCIO_ADD_TEST(FileFormatCTF, smpte_id_bad_value)
+{
+    const std::string ctfFile("clf/smpte_only/illegal/id_bad_value.clf");
+    OCIO::LocalCachedFileRcPtr cachedFile;
+    OCIO_CHECK_THROW_WHAT(cachedFile = LoadCLFFile(ctfFile), 
+                          OCIO::Exception,
+                          "'3bae2da8' is not a ST2136-1:2024 complaint Id value.");
+}
+
+// *****************************************************************
+
+
+
+
 OCIO_ADD_TEST(FileFormatCTF, missing_file)
 {
     // Test LoadCLFFile helper function with missing file.
@@ -97,44 +196,6 @@ OCIO_ADD_TEST(FileFormatCTF, clf_examples)
         OCIO_REQUIRE_EQUAL(desc.size(), 1);
         OCIO_CHECK_EQUAL(desc[0], " 3D LUT ");
     }
-
-    {
-        const std::string ctfFile("clf/bit_depth_identity.clf");
-        OCIO_CHECK_NO_THROW(cachedFile = LoadCLFFile(ctfFile));
-        OCIO_REQUIRE_ASSERT((bool)cachedFile);
-        // TODO: the same ID is defined both in <ProcessList> tag's id attrib and
-        // the <Id> tag so this test doesn't really figure out which one wins.
-        // It might be a good idea to make them different and check the correct
-        // one wins.
-        OCIO_CHECK_EQUAL(cachedFile->m_transform->getID(), "urn:uuid:9d768121-0cf9-40a3-a8e3-7b49f79858a7");
-        OCIO_REQUIRE_EQUAL(cachedFile->m_transform->getDescriptions().size(), 2);
-        OCIO_CHECK_EQUAL(cachedFile->m_transform->getDescriptions()[0],
-                         "Identity transform illustrating Array bit depth scaling");
-        OCIO_CHECK_EQUAL(cachedFile->m_transform->getDescriptions()[1],
-                         "Can be loaded by either SMPTE or CLF v3 parsers");
-        const OCIO::ConstOpDataVec & opList = cachedFile->m_transform->getOps();
-        OCIO_REQUIRE_EQUAL(opList.size(), 3);
-
-        auto mat1 = OCIO::DynamicPtrCast<const OCIO::MatrixOpData>(opList[0]);
-        OCIO_REQUIRE_ASSERT(mat1);
-        OCIO_CHECK_EQUAL(mat1->getFileInputBitDepth(), OCIO::BIT_DEPTH_UINT8);
-        OCIO_CHECK_EQUAL(mat1->getFileOutputBitDepth(), OCIO::BIT_DEPTH_UINT16);
-
-        auto lut = OCIO::DynamicPtrCast<const OCIO::Lut1DOpData>(opList[1]);
-        OCIO_REQUIRE_ASSERT(lut);
-        OCIO_CHECK_EQUAL(lut->getFileOutputBitDepth(), OCIO::BIT_DEPTH_UINT16);
-        
-        auto mat2 = OCIO::DynamicPtrCast<const OCIO::MatrixOpData>(opList[2]);
-        OCIO_REQUIRE_ASSERT(mat2);
-        OCIO_CHECK_EQUAL(mat2->getFileInputBitDepth(), OCIO::BIT_DEPTH_UINT16);
-        OCIO_CHECK_EQUAL(mat2->getFileOutputBitDepth(), OCIO::BIT_DEPTH_UINT16);
-
-        // TODO check identity.
-
-        
-
-    }
-
 
     {
         const std::string ctfFile("clf/matrix_3x4_example.clf");
@@ -5686,43 +5747,6 @@ OCIO_ADD_TEST(CTFTransform, load_edit_save_matrix_clf)
         OCIO_CHECK_EQUAL(expectedCLF_Academy.size(), outputTransform.str().size());
         OCIO_CHECK_EQUAL(expectedCLF_Academy, outputTransform.str());
     }
-
-    // CLF SMPTE
-//     {
-//         // The ID is not SMPTE compliant.
-//         std::ostringstream outputTransform;
-//         OCIO_CHECK_THROW_WHAT(WriteGroupCLF_SMPTE(group, outputTransform), OCIO::Exception, 
-//         "'b5cc7aed-d405-4d8b-b64b-382b2341a378' is not a ST2136-1:2024 compliant Id value.");
-// 
-//         // Fix the ID to be SMPTE compliant.
-//         group->getFormatMetadata().setID("urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378");
-//         
-//         outputTransform.str("");
-//         OCIO_CHECK_NO_THROW(WriteGroupCLF_SMPTE(group, outputTransform));
-// 
-//         const std::string expectedCLF_SMPTE{
-//         R"(<?xml version="1.0" encoding="UTF-8"?>
-// <ProcessList xmlns="http://www.smpte-ra.org/ns/2136-1/2024" compCLFversion="ST2136-1:2024" name="old array dims example">
-//     <Id>urn:uuid:b5cc7aed-d405-4d8b-b64b-382b2341a378</Id>
-//     <Description>Basic matrix example using CLF v2 dim syntax</Description>
-//     <InputDescriptor>RGB</InputDescriptor>
-//     <OutputDescriptor>XYZ</OutputDescriptor>
-//     <Matrix id="c61daf06-539f-4254-81fc-9800e6d02a37" inBitDepth="32f" outBitDepth="32f">
-//         <Description>Legacy matrix</Description>
-//         <Description>Note that dim=&quot;3 3 3&quot; should be supported for CLF v2 compatibility</Description>
-//         <Description>Added description</Description>
-//         <Array dim="3 4">
-//           0.4123908          0.35758434          0.18048079                 0.1
-//          0.21263901          0.71516868          0.07219232                 1.2
-//          0.01933082          0.01191948          0.95053215                 2.3
-//         </Array>
-//     </Matrix>
-// </ProcessList>
-// )"};
-// 
-//         OCIO_CHECK_EQUAL(expectedCLF_SMPTE.size(), outputTransform.str().size());
-//         OCIO_CHECK_EQUAL(expectedCLF_SMPTE, outputTransform.str());
-//     }
 
     // CTF
     {
