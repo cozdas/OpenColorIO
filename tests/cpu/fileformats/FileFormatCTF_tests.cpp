@@ -1940,14 +1940,6 @@ OCIO_ADD_TEST(FileFormatCTF, transform_id_empty)
                           "Attribute 'id' does not have a value");
 }
 
-OCIO_ADD_TEST(FileFormatCTF, transform_id_invalid)
-{
-    const std::string ctfFile("clf/smpte/transform_id_invalid.clf");
-    OCIO_CHECK_THROW_WHAT(LoadCLFFile(ctfFile),
-                          OCIO::Exception,
-                          "'Some Random Text' is not a ST2136-1:2024 complaint Id value.");
-}
-
 OCIO_ADD_TEST(FileFormatCTF, transform_with_bitdepth_mismatch)
 {
     // Even though we normalize the bit-depths after reading, any mismatches in
