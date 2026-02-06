@@ -24,8 +24,15 @@ namespace OCIO_NAMESPACE
 class CTFVersion
 {
 public:
+    enum StringFormat
+    {
+        eNumericOnly   = 0,     // Numeric version is always accepted.
+        eSMPTE_Long    = 1 << 1,
+        eSMPTE_Short   = 1 << 2
+    };
+    
     // Will throw if versionString is not formatted like a version.
-    explicit CTFVersion(const std::string & versionString);
+    explicit CTFVersion(const std::string & versionString, StringFormat acceptedFormat = eNumericOnly);
 
     CTFVersion()
     {

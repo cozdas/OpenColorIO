@@ -155,5 +155,5 @@ END METADATA
 
         fmts = bake.getFormats()
         self.assertEqual(len(fmts), 12)
-        self.assertEqual("cinespace", fmts[5][0])
+        self.assertEqual("cinespace", fmts[4][0])
         self.assertEqual("3dl", fmts[1][1])

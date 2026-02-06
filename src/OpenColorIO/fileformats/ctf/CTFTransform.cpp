@@ -40,36 +40,33 @@ namespace OCIO_NAMESPACE
 static constexpr unsigned DOUBLE_PRECISION = 15;
 
 
-CTFVersion::CTFVersion(const std::string & versionString) 
+CTFVersion::CTFVersion(const std::string & versionString, StringFormat acceptedFormat) 
     : m_major(0), m_minor(0), m_revision(0) 
 {
-    // Parse the version string to see if that matches the SMPTE namespace/version
-    // patterns. If so store the version string and consider equivalent to v3.0.
+    // Parse the version string to see if that matches the SMPTE
+    // namespace/version patterns. If so store the version string and consider
+    // equivalent to v3.0.
+    if(acceptedFormat & ( StringFormat::eSMPTE_Long | StringFormat::eSMPTE_Short))
     {
-        std::regex smpteRegexFull(
-            "^http://www\\.smpte-ra\\.org/ns/2136-1/(\\d{4})$",
-            std::regex::icase);  // Do we really want to ignore case here?
-
-        std::regex smpteRegexShort(
-            "^ST2136-1:(\\d{4})$", 
-            std::regex::icase);
-
-        std::smatch match;
-        bool res = std::regex_match(versionString, match, smpteRegexFull);
-        if(!res) 
+        bool res = false;
+        if(acceptedFormat & StringFormat::eSMPTE_Long) 
         {
-            res = std::regex_match(versionString, match, smpteRegexShort);
+            res = (0 == Platform::Strcasecmp(versionString.c_str(), 
+                "http://www.smpte-ra.org/ns/2136-1/2024"));
+        }
+
+        if(!res && acceptedFormat & StringFormat::eSMPTE_Short) 
+        {
+            res = (0 == Platform::Strcasecmp(versionString.c_str(), 
+                "ST2136-1:2024"));
         }
 
         if (res)
         {
-            if (match.size() == 2) 
-            {
-                m_version_string = versionString;
-                m_major = 3;
-            }
+            m_version_string = versionString;
+            m_major = 3;
             return;
-        };
+        }
     }
 
     // For non-SMPTE namespace versions, parse as MAJOR[.MINOR[.REVISION]]

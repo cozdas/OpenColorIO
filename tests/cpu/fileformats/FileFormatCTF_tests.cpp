@@ -39,46 +39,6 @@ OCIO_ADD_TEST(FileFormatCTF, missing_file)
                           "Error opening test file.");
 }
 
-void DumpElements(std::string& sp, const OCIO::FormatMetadata& meta)
-{
-
-    std::cout << sp << "Element name : " << meta.getElementName() << std::endl;
-    std::cout << sp << "Element value: " << meta.getElementValue() << std::endl;
-    std::cout << sp << "Name         : " << meta.getName() << std::endl;
-    std::cout << sp << "ID           : " << meta.getID() << std::endl;
-    std::cout << sp << "Element attributes: " << std::endl;
-    int natt = meta.getNumAttributes();
-
-    for (int i = 0; i<natt; ++i)
-    {
-        std::cout << sp << "  Attribute name: " << meta.getAttributeName(i)
-                << std::endl;
-        std::cout << sp << "  Attribute value: " << meta.getAttributeValue(i)
-                << std::endl;
-    }
-
-    int nChildren = meta.getNumChildrenElements();
-    std::cout << sp << "Number of child elements: " << nChildren << std::endl;
-    for (int i=0 ; i<nChildren; ++i)
-    {
-        DumpElements(sp + "  ", meta.getChildElement(i));
-    }
-}
-
-OCIO_ADD_TEST(FileFormatCTF, temp)
-{
-    const std::string ctfFile("clf/lut1d_example.clf");
-    auto proc = OCIO::GetFileTransformProcessor(ctfFile);
-    auto& meta= proc->getFormatMetadata();
-
-    DumpElements(std::string(), meta);
-
-    auto grp = proc->createGroupTransform();
-    auto& meta2 = grp->getFormatMetadata();
-    DumpElements(std::string(), meta2);
-
-}
-
 OCIO_ADD_TEST(FileFormatCTF, clf_examples)
 {
     OCIO::LocalCachedFileRcPtr cachedFile;
@@ -1432,7 +1392,7 @@ OCIO_ADD_TEST(FileFormatCTF, difficult_syntax)
     OCIO_REQUIRE_ASSERT((bool)cachedFile);
 
     const OCIO::CTFVersion clfVersion = cachedFile->m_transform->getCLFVersion();
-    const OCIO::CTFVersion ver("http://www.smpte-ra.org/ns/2136-1/2024");
+    const OCIO::CTFVersion ver("http://www.smpte-ra.org/ns/2136-1/2024", OCIO::CTFVersion::eSMPTE_Long);
     OCIO_CHECK_EQUAL(clfVersion, ver);
 
     OCIO_CHECK_EQUAL(cachedFile->m_transform->getID(), "id1");

@@ -87,7 +87,7 @@ void CTFReaderTransformElt::start(const char ** atts)
             // Check if xmlns atrribute holds a SMPTE version string.
             try
             {
-                auto version = CTFVersion(atts[i + 1]);
+                auto version = CTFVersion(atts[i + 1], CTFVersion::StringFormat::eSMPTE_Long);
                 
                 if (isVersionFound)
                 {
@@ -181,7 +181,7 @@ void CTFReaderTransformElt::start(const char ** atts)
             try
             {
                 std::string verString(pVer);
-                requestedCLFVersion = CTFVersion(verString);
+                requestedCLFVersion = CTFVersion(verString, CTFVersion::StringFormat::eSMPTE_Short);
             }
             catch (Exception& ce)
             {
